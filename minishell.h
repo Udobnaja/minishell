@@ -1,0 +1,23 @@
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdlib.h>
+
+# include "environment/environment.h"
+# include "parser/parser.h"
+
+typedef struct s_env_store
+{
+	t_env	*head;
+}	t_env_store;
+
+typedef struct s_shell
+{
+	t_env_store	*env_store;
+	int			last_status;
+	char		*history_path;
+}	t_shell;
+
+#endif
