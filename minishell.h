@@ -5,13 +5,8 @@
 # include <readline/history.h>
 # include <stdlib.h>
 
-# include "environment/environment.h"
+# include "environment/env.h"
 # include "parser/parser.h"
-
-typedef struct s_env_store
-{
-	t_env	*head;
-}	t_env_store;
 
 typedef struct s_shell
 {
