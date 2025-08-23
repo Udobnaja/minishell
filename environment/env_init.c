@@ -9,13 +9,11 @@ t_env_status 	env_empty_init(t_env_store *store)
 	status = env_set_current_pwd(store);
 	if (status != ENV_OK)
 		return (status);
-	status = env_set_shlvl(store, "1");
-	if (status != ENV_OK)
-		return (status);
-	return (env_set_start_underscore(store, "minishell"));
+	return (env_set_shlvl(store, "1"));
 }
 
-t_env_status 	env_init_from_envp(t_env_store *store, char *const envp[])
+t_env_status 	env_init_from_envp(
+	t_env_store *store, char *const envp[])
 {
 	int				i;
 	t_env_status	status;

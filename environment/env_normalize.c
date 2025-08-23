@@ -12,10 +12,7 @@ t_env_status 	env_normalize(t_env_store *store)
 		if (status != ENV_OK)
 			return (status);
 	}
-	status = env_increment_shlvl(store);
-	if (status != ENV_OK)
-		return (status);	
-	return (env_set_start_underscore(store, "minishell"));
+	return (env_increment_shlvl(store));
 }
 
 t_env_status 	env_set_current_pwd(t_env_store *store)

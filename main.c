@@ -3,7 +3,7 @@
 char *get_prompt(char *default_name)
 {
 	(void) (default_name);
-	return ("minishell$");
+	return ("minishell $ ");
 }
 
 // TODO: MSH-6
@@ -25,9 +25,12 @@ void	ft_bzero(void *s, size_t n)
 int main (int argc, char **argv, char **env)
 {
 	t_shell shell;
+	const char *sh_name;
 
-	(void) (argc);
-	(void) (argv);
+	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
+		sh_name = argv[0];
+	else
+		sh_name = "minishell";
 
 	ft_bzero(&shell, sizeof(t_shell));
 	// TODO: MSH-6
@@ -35,7 +38,7 @@ int main (int argc, char **argv, char **env)
 	if (!shell.env_store)
 		// TODO: MSH-10 Errors Facade
     	return (1);
-	if (env_init(shell.env_store, env) != ENV_OK)
+	if (env_init(shell.env_store, env, sh_name) != ENV_OK)
 	{
 		env_destroy(&shell.env_store);
 		// TODO: MSH-10 Errors Facade
