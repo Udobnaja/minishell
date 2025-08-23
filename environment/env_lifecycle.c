@@ -12,19 +12,11 @@ t_env_status 	env_init(t_env_store *store, char *const envp[])
 {
 	t_env_status	status;
 
-	if (!store)
-		return (ENV_ALLOC_ERROR);
-
 	if (!envp || !envp[0])
-		// later
-		return (ENV_OK);
+		status = env_empty_init(store);
 	else
-	{
 		status = env_init_from_envp(store, envp);
-		if (status != ENV_OK)
-			return (status);
-	}
-	return (ENV_OK);
+	return (status);
 }
 
 void	env_clear(t_env_store *store)

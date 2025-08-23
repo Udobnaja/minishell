@@ -13,4 +13,6 @@ t_env_status 	env_init(t_env_store *store, char *const envp[]);
 void			env_clear(t_env_store *store);
 void			env_destroy(t_env_store **store);
 
+t_env_status	env_set(t_env_store *s, const char *key, const char *value);
+
 #endif

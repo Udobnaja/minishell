@@ -1,7 +1,8 @@
 #include "minishell.h"
 
-char *get_prompt()
+char *get_prompt(char *default_name)
 {
+	(void) (default_name);
 	return ("minishell$");
 }
 
@@ -44,7 +45,7 @@ int main (int argc, char **argv, char **env)
 
 	while(1)
 	{
-		line = readline(get_prompt());
+		line = readline(get_prompt(argv[0]));
 		if (!line)
 			break;
 		if (*line)

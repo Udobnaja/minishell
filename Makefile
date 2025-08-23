@@ -9,7 +9,9 @@ SRC := \
 	environment/env_lifecycle.c \
 	environment/env_init.c \
 	environment/env_parse.c \
-	environment/env_utils.c
+	environment/env_utils.c \
+	environment/env_operations.c \
+	environment/env_normalize.c
 
 OBJ := $(SRC:.c=.o)
 

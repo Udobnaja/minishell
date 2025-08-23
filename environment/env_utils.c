@@ -26,3 +26,18 @@ void	env_push_node(t_env_store *store, t_env	*node)
 		cur->next = node;
 	}
 }
+
+t_env	*env_lookup(t_env_store *store, const char *key)
+{
+	t_env *cur;
+
+	cur = store->head;
+	while (cur)
+	{
+		// TODO: MSH-6
+		if (strcmp(cur->key, key) == 0)
+			return (cur);
+		cur = cur->next;
+	}
+    return (NULL);
+}
