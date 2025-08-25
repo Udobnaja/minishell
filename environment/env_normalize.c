@@ -47,21 +47,16 @@ static t_env_status	env_increment_shlvl(t_env_store *store)
 
 	error = 0;
 	node = env_lookup(store, "SHLVL");
-	if (!node)
+	if (!node || !node->value)
 		return (env_set_shlvl(store, "1"));
-	(void) (error); // TODO: MSH-6 delete this str
-	(void) (str_shlvl); // TODO: MSH-6 delete this str
-	(void) (shlvl); // TODO: MSH-6 delete this str
-	// include safe stoi
-	// shlvl = ft_satoi(node->value, &error);
-	// if (error || shlvl < 0 || shlvl >= 999) // TODO: Define this number in header
-	// 	return (env_set_shlvl(store, "1"));
-	// shlvl += 1;
-	// str_shlvl = ft_itoa(shlvl);
-	// if (!str_shlvl)
-	// 	return (ENV_ALLOC_ERROR);
-	// status = env_set(store, "SHLVL", str_shlvl);
-	// free(str_shlvl);
-	status = ENV_OK; // TODO: MSH-6 delete this str
+	shlvl = ft_satoi(node->value, &error);
+	if (error || shlvl < 0 || shlvl >= 999) // TODO: Define this number in header
+		return (env_set_shlvl(store, "1"));
+	shlvl += 1;
+	str_shlvl = ft_itoa(shlvl);
+	if (!str_shlvl)
+		return (ENV_ALLOC_ERROR);
+	status = env_set(store, "SHLVL", str_shlvl);
+	free(str_shlvl);
 	return (status);
 }

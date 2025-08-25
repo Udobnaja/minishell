@@ -4,7 +4,7 @@ t_env_store *env_store_create(void)
 {
 	t_env_store *s;
 
-	s = calloc(1, sizeof *s); // TODO: MSH-6
+	s = ft_calloc(1, sizeof *s);
 	return s;
 }
 

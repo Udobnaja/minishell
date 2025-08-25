@@ -34,8 +34,7 @@ t_env	*env_lookup(t_env_store *store, const char *key)
 	cur = store->head;
 	while (cur)
 	{
-		// TODO: MSH-6
-		if (strcmp(cur->key, key) == 0)
+		if (ft_strcmp(cur->key, key) == 0)
 			return (cur);
 		cur = cur->next;
 	}

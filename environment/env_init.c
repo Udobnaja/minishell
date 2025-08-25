@@ -34,16 +34,20 @@ static t_env_status 	env_add_row(t_env_store *store, char *row)
 	char			*key;
 	char			*value;
 	t_env_status	status;
+	char			*trimmed_row;
 
 	key = NULL;
 	value = NULL;
-	// TODO: MSH-6
-	// Include ft_trim from libft
-	// " \t\r\n"
-	// dont forget to free
-	// dont forget to check trimmed_row[0] == '\0'
-	// if so frre end status OK
-	status = env_parse_row(row, &key, &value);
+	trimmed_row = ft_strtrim(row, "\t\r\n");
+	if (!trimmed_row)
+		return (ENV_ALLOC_ERROR);
+	if (trimmed_row[0] == '\0')
+	{
+		free(trimmed_row);
+		return (ENV_OK);
+	}	
+	status = env_parse_row(trimmed_row, &key, &value);
+	free(trimmed_row);
 	if (status != ENV_OK)
 		return (status);
 	return (env_set_internal(store, key, value));

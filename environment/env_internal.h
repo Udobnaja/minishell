@@ -1,11 +1,8 @@
 #ifndef ENV_INTERNAL_H
 # define ENV_INTERNAL_H
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <string.h> // TODO: MSH-6
 # include "env.h"
-
+# include "../libft/libft.h"
 
 typedef struct s_env
 {
