@@ -17,6 +17,7 @@
 # include <stdarg.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 
 # define BASE16L "0123456789abcdef"
 # define BASE16U "0123456789ABCDEF"
@@ -31,6 +32,7 @@ int		ft_isprint(int c);
 int		ft_tolower(int c);
 int		ft_toupper(int c);
 int		ft_atoi(const char *nptr);
+int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 int		ft_putchar_fd(char c, int fd);
