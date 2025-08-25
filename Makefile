@@ -22,10 +22,10 @@ LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(NAME) $(LIBFT)
+all: $(NAME)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(LIBFTFLAGS) -o $(NAME) $(OBJ) -lreadline
+$(NAME): $(LIBFT) $(OBJ)
+	$(CC) $(CFLAGS) $(OBJ) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
