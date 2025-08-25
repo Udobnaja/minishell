@@ -15,19 +15,29 @@ SRC := \
 
 OBJ := $(SRC:.c=.o)
 
+LIBFT_DIR := ./libft
+LIBFT := $(LIBFT_DIR)/libft.a
+LIBFTFLAGS := -L$(LIBFT_DIR) -lft
+
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(NAME)
+all: $(NAME) $(LIBFT)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -lreadline
+	$(CC) $(CFLAGS) $(LIBFTFLAGS) -o $(NAME) $(OBJ) -lreadline
+
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
 
 clean:
-	rm -f $(OBJ)
+	rm -rf $(OBJ)
+	$(MAKE) -C $(LIBFT_DIR) clean
+
 
 fclean: clean
 	rm -f $(NAME)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
