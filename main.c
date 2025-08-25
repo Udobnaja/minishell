@@ -6,22 +6,6 @@ char *get_prompt(char *default_name)
 	return ("minishell $ ");
 }
 
-// TODO: MSH-6
-void	*ft_memset(void *b, int c, size_t len)
-{
-	unsigned char	*ptr;
-
-	ptr = (unsigned char *)b;
-	while (len--)
-		*ptr++ = (unsigned char)c;
-	return (b);
-}
-void	ft_bzero(void *s, size_t n)
-{
-	ft_memset(s, 0, n);
-}
-
-
 int main (int argc, char **argv, char **env)
 {
 	t_shell shell;
@@ -33,7 +17,6 @@ int main (int argc, char **argv, char **env)
 		sh_name = "minishell";
 
 	ft_bzero(&shell, sizeof(t_shell));
-	// TODO: MSH-6
 	shell.env_store = env_store_create();
 	if (!shell.env_store)
 		// TODO: MSH-10 Errors Facade
