@@ -32,7 +32,8 @@ void	env_clear(t_env_store *store)
 	while (cur) {
 		next = cur->next;
 		free(cur->key);
-		free(cur->value);
+		if (cur->value)
+			free(cur->value);
 		free(cur);
 		cur = next;
 	}
