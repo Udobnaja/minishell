@@ -5,12 +5,12 @@ t_env_status	env_set(t_env_store *store, const char *key, const char *value)
     char *d_key;
     char *d_value;
 
-    d_key = strdup(key);
+    d_key = ft_strdup(key);
     if (!d_key)
         return (ENV_ALLOC_ERROR);
     if (value)
     {
-        d_value = strdup(value);
+        d_value = ft_strdup(value);
         if (!d_value)
         {
             free(d_key);
