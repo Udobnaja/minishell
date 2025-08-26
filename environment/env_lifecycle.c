@@ -35,6 +35,7 @@ void	env_clear(t_env_store *store)
 		cur = next;
 	}
 	store->head = NULL;
+	store->size = 0;
 }
 
 void env_destroy(t_env_store **store)

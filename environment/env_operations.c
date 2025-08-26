@@ -19,7 +19,6 @@ t_env_status	env_set(t_env_store *store, const char *key, const char *value)
 	}
 	else
 		d_value = NULL;
-		 
 	return (env_set_internal(store, d_key, d_value));
 }
 
@@ -43,6 +42,7 @@ t_env_status	env_set_internal(t_env_store *store, char *key, char *value)
 		return (ENV_ALLOC_ERROR);
 	}
 	env_push_node(store, node);
+	store->size++;
 	return (ENV_OK);
 }
 
@@ -62,6 +62,7 @@ void	env_unset(t_env_store *store, const char *key)
 			else
 				store->head = cur->next;
 			env_free_node(cur);
+			store->size--;
 			return ;
 		}
 		prev = cur;

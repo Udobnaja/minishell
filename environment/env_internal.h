@@ -14,6 +14,7 @@ typedef struct s_env
 typedef struct s_env_store
 {
 	t_env	*head;
+	size_t	size;
 }	t_env_store;
 
 t_env_status 	env_init_from_envp(t_env_store *store, char *const envp[]);
