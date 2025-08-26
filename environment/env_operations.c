@@ -68,3 +68,13 @@ void	env_unset(t_env_store *store, const char *key)
 		cur = cur->next;
 	}
 }
+
+const char	*env_get_value(t_env_store *store, const char *key)
+{
+	t_env	        *node;
+
+	node = env_lookup(store, key);
+	if (!node)
+		return (NULL);
+	return (node->value);
+}

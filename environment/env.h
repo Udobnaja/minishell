@@ -15,7 +15,7 @@ void			env_destroy(t_env_store **store);
 
 t_env_status	env_set(t_env_store *store, const char *key, const char *value);
 void			env_unset(t_env_store *store, const char *key);
-char 			*env_get_value(t_env_store *store, const char *key);
+const char 		*env_get_value(t_env_store *store, const char *key);
 char			**env_to_envp(t_env_store *store);
 
 
