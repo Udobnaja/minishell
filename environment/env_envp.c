@@ -1,14 +1,16 @@
 #include "env_internal.h"
 
-static char *env_str_from_node(t_env *node);
+static char		*env_str_from_node(const t_env *node);
+static size_t	env_count_entries(const t_env_store *store);
 
-char	**env_to_envp(t_env_store *store)
+char	**env_to_envp(const t_env_store *store)
 {
 	char 	**envp;
 	t_env 	*cur;
 	size_t	i;
 
-	envp = ft_calloc(store->size + 1, sizeof(char *));
+	envp = ft_calloc(
+		env_count_entries(store) + 1, sizeof(char *));
 	if (!envp)
 		return (NULL);
 	cur = store->head;
@@ -19,7 +21,7 @@ char	**env_to_envp(t_env_store *store)
 		{
 			envp[i] = env_str_from_node(cur);
 			if (!envp[i])
-				return (env_envp_free(envp), NULL);
+				return (env_free_envp(envp), NULL);
 			i++;
 		}
 		cur = cur->next;
@@ -28,7 +30,7 @@ char	**env_to_envp(t_env_store *store)
 	return (envp);
 }
 
-void env_envp_free(char **envp)
+void	env_free_envp(char **envp)
 {
 	size_t	i;
 
@@ -43,7 +45,7 @@ void env_envp_free(char **envp)
 	free(envp);
 }
 
-static char *env_str_from_node(t_env *node)
+static char	*env_str_from_node(const t_env *node)
 {
 	const size_t	key_len = ft_strlen(node->key);
 	const size_t	value_len = ft_strlen(node->value);
@@ -57,4 +59,19 @@ static char *env_str_from_node(t_env *node)
 	ft_memcpy(str + key_len + 1, node->value, value_len);
 	str[key_len + 1 + value_len] = '\0';
 	return (str);
+}
+
+static size_t	env_count_entries(const t_env_store *store)
+{
+    size_t i;
+	t_env *cur;
+
+	i = 0;
+    cur = store->head;
+    while (cur) {
+		if (cur->value)
+			i++;
+		cur = cur->next;
+	}
+    return (i);
 }

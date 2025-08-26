@@ -2,7 +2,7 @@
 
 static int  env_pair_from_node(t_env_pair *dst, const t_env *node);
 
-t_env_pair *env_pairs_dup(t_env_store *store)
+t_env_pair *env_pairs_dup(const t_env_store *store)
 {
 	t_env_pair	*pairs;
 	t_env 		*cur;
@@ -26,7 +26,7 @@ t_env_pair *env_pairs_dup(t_env_store *store)
 	return (pairs);
 }
 
-void env_pairs_free(t_env_pair *pairs, size_t size)
+void env_pairs_free(t_env_pair *pairs, const size_t size)
 {
     size_t i;
 

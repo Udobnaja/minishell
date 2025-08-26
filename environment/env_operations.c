@@ -70,7 +70,7 @@ void	env_unset(t_env_store *store, const char *key)
 	}
 }
 
-const char	*env_get_value(t_env_store *store, const char *key)
+const char	*env_get_value(const t_env_store *store, const char *key)
 {
 	t_env	        *node;
 

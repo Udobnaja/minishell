@@ -27,7 +27,7 @@ void	env_push_node(t_env_store *store, t_env	*node)
 	}
 }
 
-t_env	*env_lookup(t_env_store *store, const char *key)
+t_env	*env_lookup(const t_env_store *store, const char *key)
 {
 	t_env *cur;
 

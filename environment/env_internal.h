@@ -21,7 +21,7 @@ t_env_status 	env_init_from_envp(t_env_store *store, char *const envp[]);
 t_env_status 	env_empty_init(t_env_store *store);
 t_env_status	env_parse_row(const char *row, char **key, char **value);
 t_env			*env_create_node(char *key, char *value);
-t_env			*env_lookup(t_env_store *store, const char *key);
+t_env			*env_lookup(const t_env_store *store, const char *key);
 t_env_status	env_set_internal(t_env_store *store, char *key, char *value);
 t_env_status 	env_set_current_pwd(t_env_store *store);
 t_env_status 	env_set_shlvl(t_env_store *store, const char *lvl);

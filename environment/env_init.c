@@ -1,6 +1,6 @@
 #include "env_internal.h"
 
-static t_env_status 	env_add_row(t_env_store *store, char *row);
+static t_env_status 	env_add_row(t_env_store *store, const char *row);
 
 t_env_status 	env_empty_init(t_env_store *store)
 {
@@ -29,7 +29,7 @@ t_env_status 	env_init_from_envp(
 	return (env_normalize(store));
 }
 
-static t_env_status 	env_add_row(t_env_store *store, char *row)
+static t_env_status 	env_add_row(t_env_store *store, const char *row)
 {
 	char			*key;
 	char			*value;

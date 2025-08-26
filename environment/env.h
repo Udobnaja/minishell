@@ -24,12 +24,12 @@ size_t			env_size(const t_env_store *store);
 
 t_env_status	env_set(t_env_store *store, const char *key, const char *value);
 void			env_unset(t_env_store *store, const char *key);
-const char 		*env_get_value(t_env_store *store, const char *key);
+const char 		*env_get_value(const t_env_store *store, const char *key);
 
-char			**env_to_envp(t_env_store *store);
-t_env_pair		*env_pairs_dup(t_env_store *store);
-void			env_pairs_free(t_env_pair *pairs, size_t size);
-void			env_envp_free(char **envp);
+char			**env_to_envp(const t_env_store *store);
+t_env_pair		*env_pairs_dup(const t_env_store *store);
+void			env_pairs_free(t_env_pair *pairs, const size_t size);
+void			env_free_envp(char **envp);
 
 
 #endif
