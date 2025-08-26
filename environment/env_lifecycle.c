@@ -31,10 +31,7 @@ void	env_clear(t_env_store *store)
 	cur = store->head;
 	while (cur) {
 		next = cur->next;
-		free(cur->key);
-		if (cur->value)
-			free(cur->value);
-		free(cur);
+		env_free_node(cur);
 		cur = next;
 	}
 	store->head = NULL;

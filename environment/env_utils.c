@@ -40,3 +40,10 @@ t_env	*env_lookup(t_env_store *store, const char *key)
 	}
     return (NULL);
 }
+
+void	env_free_node(t_env	*node)
+{
+	free(node->key);
+	free(node->value);
+	free(node);
+}
