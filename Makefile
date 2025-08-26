@@ -12,7 +12,8 @@ SRC := \
 	environment/env_utils.c \
 	environment/env_operations.c \
 	environment/env_normalize.c \
-	environment/env_convert.c
+	environment/env_envp.c \
+	environment/env_pairs.c
 
 OBJ := $(SRC:.c=.o)
 

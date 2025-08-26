@@ -1,6 +1,5 @@
 #include "env_internal.h"
 
-static void env_free_envp(char **envp);
 static char *env_str_from_node(t_env *node);
 
 char	**env_to_envp(t_env_store *store)
@@ -20,7 +19,7 @@ char	**env_to_envp(t_env_store *store)
 		{
 			envp[i] = env_str_from_node(cur);
 			if (!envp[i])
-				return (env_free_envp(envp), NULL);
+				return (env_envp_free(envp), NULL);
 			i++;
 		}
 		cur = cur->next;
@@ -29,7 +28,7 @@ char	**env_to_envp(t_env_store *store)
 	return (envp);
 }
 
-static void env_free_envp(char **envp)
+void env_envp_free(char **envp)
 {
 	size_t	i;
 

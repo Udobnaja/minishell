@@ -79,3 +79,8 @@ const char	*env_get_value(t_env_store *store, const char *key)
 		return (NULL);
 	return (node->value);
 }
+
+size_t	env_size(const t_env_store *store)
+{
+	return store->size;
+}
