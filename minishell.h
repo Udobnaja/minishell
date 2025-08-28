@@ -5,8 +5,11 @@
 # include <readline/history.h>
 
 # include "libft/libft.h"
+# include "errors/errors.h"
 # include "environment/env.h"
 # include "parser/parser.h"
+
+# define SHELL_NAME "minishell"
 
 typedef struct s_shell
 {
