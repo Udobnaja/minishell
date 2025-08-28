@@ -20,8 +20,7 @@ ft_satoi.c ft_strcmp.c ft_isspace.c
 GNL_SRC := get_next_line.c
 
 
-PRINTF_SRC := $(wildcard $(PRINTF_DIR)/*.c)
-
+PRINTF_SRC := $(addprefix $(PRINTF_DIR)/, ft_printf.c ft_functions.c ft_eprintf.c)
 
 OBJ        := $(SRCS:.c=.o)
 GNL_OBJ    := $(addprefix $(GNL_DIR)/,$(GNL_SRC:.c=.o))

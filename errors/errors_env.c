@@ -1,4 +1,4 @@
-#include "errors.h"
+#include "errors_internal.h"
 
 const char *err_env_msg(int code) 
 {
@@ -6,7 +6,7 @@ const char *err_env_msg(int code)
     	[ENV_ALLOC_ERROR] = "allocation failed"
 	};
 	const int size = sizeof(map) / sizeof(*map);
-	
+
 	if (code < 0 || code >= size)
         return NULL;
 	return map[code];

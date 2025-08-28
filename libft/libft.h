@@ -66,6 +66,7 @@ void	*ft_free(char **res);
 
 // print f
 int		ft_printf(const char *str, ...);
+int     ft_eprintf(const char *format, ...);
 int		ft_format(const char *str, va_list *argc);
 int		ft_write_ptr(void *ptr);
 int		ft_write_int(long num);

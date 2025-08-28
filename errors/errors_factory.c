@@ -1,9 +1,10 @@
-#include "errors.h"
+#include "errors_internal.h"
 
 static const char *(*err_resolver(t_err_domain domain))(int);
 
-t_error err_create(t_err_domain domain, int code)
+t_error err_create(t_err_domain domain, int code, t_err_payload payload)
 {
+    (void)(payload); // TODO: uncomment in future tasks ifneeded
     t_error     error;
     const char  *(*resolver)(int);
     const char  *message = NULL;
