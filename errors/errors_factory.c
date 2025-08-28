@@ -4,7 +4,6 @@ static const char *(*err_resolver(t_err_domain domain))(int);
 
 t_error err_create(t_err_domain domain, int code, t_err_payload payload)
 {
-    (void)(payload); // TODO: uncomment in future tasks ifneeded
     t_error     error;
     const char  *(*resolver)(int);
     const char  *message = NULL;
@@ -12,6 +11,7 @@ t_error err_create(t_err_domain domain, int code, t_err_payload payload)
 	error.domain = domain;
 	error.code = code;
 	error.msg[0] = '\0';
+    error.payload = payload;
 
     resolver = err_resolver(domain);
     if (resolver)
