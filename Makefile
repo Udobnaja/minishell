@@ -2,10 +2,9 @@ NAME := minishell
 
 CC := cc
 
-CFLAGS := -Wall -Wextra -Werror -I.  
+CFLAGS := -Wall -Wextra -Werror -I.
 
-SRC := \
-	main.c \
+ENV_SRC := \
 	environment/env_lifecycle.c \
 	environment/env_init.c \
 	environment/env_parse.c \
@@ -14,6 +13,16 @@ SRC := \
 	environment/env_normalize.c \
 	environment/env_envp.c \
 	environment/env_pairs.c
+
+ERRORS_SRC := \
+	errors/errors.c \
+	errors/errors_env.c \
+	errors/errors_factory.c
+
+SRC := \
+	main.c \
+	$(ENV_SRC) \
+	$(ERRORS_SRC)
 
 OBJ := $(SRC:.c=.o)
 

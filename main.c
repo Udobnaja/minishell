@@ -1,12 +1,14 @@
 #include "minishell.h"
 
-char *get_prompt(char *default_name)
+static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name);
+
+const char *get_prompt(char *default_name)
 {
 	(void) (default_name);
 	return ("minishell $ ");
 }
 
-int main (int argc, char **argv, char **env)
+int main (int argc, char **argv, char **envp)
 {
 	t_shell shell;
 	const char *sh_name;
@@ -14,19 +16,11 @@ int main (int argc, char **argv, char **env)
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
 	else
-		sh_name = "minishell";
-
+		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
-	shell.env_store = env_store_create();
-	if (!shell.env_store)
-		// TODO: MSH-10 Errors Facade
-    	return (1);
-	if (env_init(shell.env_store, env, sh_name) != ENV_OK)
-	{
-		env_destroy(&shell.env_store);
-		// TODO: MSH-10 Errors Facade
+	if (sh_env_init(&shell, envp, sh_name) != ENV_OK)
 		return (1);
-	}
+	
 	char *line;
 
 	while(1)
@@ -41,4 +35,28 @@ int main (int argc, char **argv, char **env)
 	}
 	env_destroy(&shell.env_store);
 	return (0);
+}
+
+static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name)
+{
+	t_error			error;
+	t_env_status	status;
+
+	shell->env_store = env_store_create();
+	if (!shell->env_store)
+	{
+		status = ENV_ALLOC_ERROR;
+		error = err_create(ERR_ENV, status);
+		err_print(&error);
+    	return (status);
+	}
+	status = env_init(shell->env_store, envp, sh_name);
+	if (status != ENV_OK)
+	{
+		env_destroy(&shell->env_store);
+		error = err_create(ERR_ENV, status);
+		err_print(&error);
+		return (status);
+	}
+	return (status);
 }
