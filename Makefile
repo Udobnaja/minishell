@@ -17,6 +17,7 @@ ENV_SRC := \
 ERRORS_SRC := \
 	errors/errors_reporter.c \
 	errors/errors_env.c \
+	errors/errors_parser.c \
 	errors/errors_factory.c
 
 SRC := \

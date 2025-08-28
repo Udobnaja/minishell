@@ -12,6 +12,10 @@ typedef struct s_error
 }	t_error;
 
 const char  *err_env_msg(int code);
+const char  *err_lexer_msg(int code);
+const char  *err_parser_msg(int code);
+const char  *err_expansion_msg(int code);
+const char  *err_heredoc_msg(int code);
 t_error     err_create(t_err_domain domain, int code, t_err_payload payload);
 
 #endif

@@ -27,7 +27,11 @@ static const char *(*err_resolver(t_err_domain domain))(int)
 {
 	static const char *(*table[])(int) = {
         [ERR_NONE] = NULL,
-        [ERR_ENV] = err_env_msg};
+        [ERR_ENV] = err_env_msg,
+        [ERR_LEXER] = err_lexer_msg,
+        [ERR_PARSER] = err_parser_msg,
+        [ERR_EXPANSION] = err_expansion_msg,
+        [ERR_HEREDOC] = err_heredoc_msg};
     const size_t size = sizeof table / sizeof *table;
 
     if (domain < 0 || domain >= (int)size)

@@ -44,7 +44,7 @@ typedef struct s_token
 
 typedef enum e_parser_status {
 	PARSE_OK = 0,
-	PARSE_SYNTAX_UNEXPECTED_TOKEN
+	PARSE_UNEXPECTED_TOKEN
 }	t_parser_status;
 
 #endif
