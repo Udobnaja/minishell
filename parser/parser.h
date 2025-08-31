@@ -3,8 +3,6 @@
 
 # include "../pipeline/pipeline.h"
 # include "./lexer/lexer.h"
-# include "./expansion/expansion.h"
-# include "./heredoc/heredoc.h"
 
 typedef enum e_token_type
 {

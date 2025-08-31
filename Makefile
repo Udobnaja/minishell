@@ -18,7 +18,9 @@ ERRORS_SRC := \
 	errors/errors_reporter.c \
 	errors/errors_env_msgs.c \
 	errors/errors_parser_msgs.c \
-	errors/errors_factory.c
+	errors/errors_expansion_msg.c \
+	errors/errors_heredoc_msg.c \
+	errors/errors_factory.c 
 
 SRC := \
 	main.c \

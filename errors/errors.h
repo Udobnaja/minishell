@@ -6,6 +6,8 @@
 # include "../libft/libft.h"
 # include "../environment/env_internal.h"
 # include "../parser/parser.h"
+# include "../expansion/expansion.h"
+# include "../heredoc/heredoc.h"
 
 typedef struct s_error t_error;
 
