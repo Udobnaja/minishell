@@ -2,6 +2,7 @@
 # define PARSER_H
 
 # include "../pipeline/pipeline.h"
+# include "./lexer/lexer.h"
 
 typedef enum e_token_type
 {
@@ -38,5 +39,10 @@ typedef struct s_token
 	t_token_type	type;
 	t_word			word;
 }	t_token;
+
+typedef enum e_parser_status {
+	PARSE_OK = 0,
+	PARSE_UNEXPECTED_TOKEN
+}	t_parser_status;
 
 #endif

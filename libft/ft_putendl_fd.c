@@ -13,7 +13,7 @@
 #include "libft.h"
 // the same way like ft_putstr_fd, it just adds a newline character at the end
 
-void	ft_putendl_fd(char *s, int fd)
+void	ft_putendl_fd(const char *s, int fd)
 {
 	while (*s)
 	{

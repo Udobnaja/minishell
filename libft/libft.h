@@ -50,7 +50,7 @@ char	*ft_itoa(int n);
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 void	ft_striteri(char *s, void (*f)(unsigned int, char *));
 void	ft_putstr_fd(char *s, int fd);
-void	ft_putendl_fd(char *s, int fd);
+void	ft_putendl_fd(const char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
@@ -66,6 +66,7 @@ void	*ft_free(char **res);
 
 // print f
 int		ft_printf(const char *str, ...);
+int     ft_eprintf(const char *format, ...);
 int		ft_format(const char *str, va_list *argc);
 int		ft_write_ptr(void *ptr);
 int		ft_write_int(long num);
