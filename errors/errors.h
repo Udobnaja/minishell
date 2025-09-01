@@ -8,6 +8,7 @@
 # include "../parser/parser.h"
 # include "../expansion/expansion.h"
 # include "../heredoc/heredoc.h"
+# include "../executor/executor.h"
 
 typedef struct s_error t_error;
 
