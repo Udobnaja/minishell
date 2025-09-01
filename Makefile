@@ -27,6 +27,7 @@ ERRORS_SRC := \
 	errors/errors_env_msgs.c \
 	errors/errors_parser_msgs.c \
 	errors/errors_expansion_msg.c \
+	errors/err_exec_msg.c \
 	errors/errors_heredoc_msg.c \
 	errors/errors_factory.c 
 

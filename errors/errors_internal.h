@@ -17,5 +17,6 @@ const char  *err_parser_msg(int code);
 const char  *err_expansion_msg(int code);
 const char  *err_heredoc_msg(int code);
 t_error     err_create(t_err_domain domain, int code, t_err_payload payload);
+const char 	*err_exec_msg(int code);
 
 #endif

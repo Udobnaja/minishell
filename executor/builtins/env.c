@@ -4,15 +4,15 @@ t_exec_status env(t_shell *sh, const t_cmd cmd)
 {
     char **envp;
     size_t i;
-    if(cmd.argv[1] != NULL) // проверить ли ещё !cmd.argv ?
+    if(cmd.argv[1] != NULL) 
     {
-        ft_putstr_fd("minishell:env:too many arguments\n", STDERR_FILENO);
+        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, (t_err_payload){0}); // TODO: move lvl up
         return EXEC_TOO_MANY_ARGS;
     }
     envp = env_to_envp(sh->env_store);
     if(!envp)
     {
-        ft_putstr_fd("minishell:env:allocation error\n", STDERR_FILENO);
+        err_print(ERR_EXEC, EXEC_ALLOC_ERROR, (t_err_payload){0}); // TODO: move lvl up
         return EXEC_ALLOC_ERROR;
     }
     i = 0;
