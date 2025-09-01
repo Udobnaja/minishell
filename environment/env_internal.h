@@ -2,7 +2,7 @@
 # define ENV_INTERNAL_H
 
 # include "env.h"
-# include "../libft/libft.h"
+# include "libft.h"
 
 typedef struct s_env
 {

@@ -4,7 +4,8 @@
 # include "libft.h"
 # include "pipeline.h"
 # include "env.h"
-# include "minishell.h"
+# include "shell.h"
+# include "errors.h"
 
 typedef enum e_exec_status {
 	EXEC_OK = 0,

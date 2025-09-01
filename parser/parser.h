@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "../pipeline/pipeline.h"
+# include "pipeline.h"
 # include "./lexer/lexer.h"
 
 typedef enum e_token_type

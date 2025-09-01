@@ -6,7 +6,8 @@ LIBFT_DIR := ./libft
 LIBFT := $(LIBFT_DIR)/libft.a
 LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 
-CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) -I./environment -I./pipeline -I./executor
+CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
+	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
