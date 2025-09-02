@@ -1,9 +1,9 @@
 #include "lexer_internal.h"
 
-static t_lex_result lex_ok();
-static t_lex_result lex_err(t_lex_status e, char invalid_char);
+static t_lex_result	lex_ok();
+static t_lex_result	lex_err(t_lex_status e, char invalid_char);
 
-t_lex_result lex_tokenize(const char *str, t_token_list	*token_list)
+t_lex_result	lex_tokenize(const char *str, t_token_list	*token_list)
 {
 	size_t			i;
 	t_lex_token_result	token_result;
@@ -30,7 +30,7 @@ t_lex_result lex_tokenize(const char *str, t_token_list	*token_list)
 	return (lex_ok());
 }
 
-static t_lex_result lex_ok()
+static t_lex_result	lex_ok()
 {
     t_lex_result result;
 
@@ -39,7 +39,7 @@ static t_lex_result lex_ok()
 	return (result);
 }
 
-static t_lex_result lex_err(t_lex_status e, char invalid_char)
+static t_lex_result	lex_err(t_lex_status e, char invalid_char)
 {
     t_lex_result result;
 

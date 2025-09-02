@@ -1,6 +1,6 @@
 #include "lexer_internal.h"
 
-t_token_list *lex_create_token_list(void)
+t_token_list	*lex_create_token_list(void)
 {
 	t_token_list *s;
 
@@ -27,7 +27,7 @@ void	lex_clear_token_list(t_token_list *list)
 	list->size = 0;
 }
 
-void lex_destroy_token_list(t_token_list **list)
+void	lex_destroy_token_list(t_token_list **list)
 {
 	if (!list || !*list) return;
 	lex_clear_token_list(*list);

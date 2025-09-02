@@ -1,9 +1,9 @@
 #include "lexer_internal.h"
 
-static t_lex_count_result lex_count_error(t_lex_status e, char invalid_char);
-static t_lex_count_result lex_count_ok(int count);
+static t_lex_count_result	lex_count_error(t_lex_status e, char invalid_char);
+static t_lex_count_result	lex_count_ok(int count);
 
-t_lex_count_result lex_count_word_pieces(const char *str)
+t_lex_count_result	lex_count_word_pieces(const char *str)
 {
 	int		count;
 	size_t	i;
@@ -30,7 +30,7 @@ t_lex_count_result lex_count_word_pieces(const char *str)
 	return (lex_count_ok(count));	
 }
 
-static t_lex_count_result lex_count_error(t_lex_status e, char invalid_char)
+static t_lex_count_result	lex_count_error(t_lex_status e, char invalid_char)
 {
 	t_lex_count_result result;
 	
@@ -39,7 +39,7 @@ static t_lex_count_result lex_count_error(t_lex_status e, char invalid_char)
 	return (result);
 }
 
-static t_lex_count_result lex_count_ok(int count)
+static t_lex_count_result	lex_count_ok(int count)
 {
 	t_lex_count_result result;
 	

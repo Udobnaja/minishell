@@ -3,7 +3,7 @@
 static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c));
 static t_quote				lex_quote_type(int c);
 
-t_lex_parse_result lex_parse_word(const char *str, t_token *token)
+t_lex_parse_result	lex_parse_word(const char *str, t_token *token)
 {
 	size_t			i;
 	size_t			piece_i;
@@ -30,7 +30,7 @@ t_lex_parse_result lex_parse_word(const char *str, t_token *token)
 	return (lex_parse_ok(i));
 }
 
-static t_lex_parse_result lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c))
+static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c))
 {
 	size_t i;
 
@@ -46,7 +46,7 @@ static t_lex_parse_result lex_parse_piece(const char *str, t_piece *piece, t_quo
 	return (lex_parse_ok(i));
 }
 
-static t_quote lex_quote_type(int c)
+static t_quote	lex_quote_type(int c)
 {
 	if (c == '"')
 		return (DBL);
