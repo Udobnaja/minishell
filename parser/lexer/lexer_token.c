@@ -53,7 +53,7 @@ static t_lex_token_result	lex_create_operator_token(const char *str)
 	if (parse_res.status != LEX_OK)
 	{
 		lex_free_token(token);
-		return lex_token_err(parse_res.status, 0);
+		return lex_token_err(parse_res.status, parse_res.payload.invalid_char);
 	}		
 	return (lex_token_ok(token, parse_res.payload.consumed));
 }

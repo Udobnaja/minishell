@@ -5,10 +5,11 @@ static t_token_type	lex_redir_type(int c, int len);
 t_lex_parse_result	lex_parse_operator(const char *str, t_token *token)
 {
 	const char operator = str[0];
+
 	if (str[0] == '|')
 	{
 		if (str[1] && str[1] == operator)
-			return (lex_parse_err(LEX_INVALID_SEQ, operator));
+			return (lex_parse_err(LEX_INVALID_SEQ, str[1]));
 		token->type = T_PIPE;
 		return (lex_parse_ok(1));
 	}

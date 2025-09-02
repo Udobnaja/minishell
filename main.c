@@ -94,7 +94,7 @@ static t_lex_status	sh_lex(const char *str, t_token_list *token_list)
 	char			token[2];
 
 	payload = (t_err_payload){0};
-	result = lex_tokenize(str, token_list);;
+	result = lex_tokenize(str, token_list);
 	if (result.status != LEX_OK)
 	{
 		if (result.invalid_char)
