@@ -14,6 +14,7 @@ t_lex_result lex_tokenize(const char *str, t_token_list	*token_list)
 	{
 		while (str[i] && ft_isspace(str[i]))
 			i++;
+		if (!str[i]) break;
 		token_result = lex_create_token(str + i);
 		if (token_result.status != LEX_OK)
 			return (lex_err(token_result.status, token_result.payload.error.invalid_char));

@@ -26,12 +26,12 @@ static t_lex_token_result	lex_create_word_token(const char *str)
 		return lex_token_err(LEX_ALLOC_ERROR, 0);
 	init_status = init_word_token(token, count_res.payload.count);
 	if (init_status != LEX_OK)
-		return lex_token_err(init_status, 0);
-	if (count_res.payload.count == 0)
 	{
 		lex_free_token(token);
-		return (lex_token_ok(token, 0));
+		return lex_token_err(init_status, 0);
 	}
+	if (count_res.payload.count == 0)
+		return (lex_token_ok(token, 0));
 	parse_res = lex_parse_word(str, token);
 	if (parse_res.status != LEX_OK)
 	{
