@@ -1,6 +1,8 @@
 #include "minishell.h"
 
 static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name);
+static t_parser_status	sh_parse(const char *str);
+static t_lex_status		sh_lex(const char *str, t_token_list *token_list);
 
 const char *get_prompt(char *default_name)
 {
@@ -29,7 +31,10 @@ int main(int argc, char **argv, char **envp)
 		if (!line)
 			break;
 		if (*line)
+		{
 			add_history(line);
+			sh_parse(line);
+		}		
 		free(line);
 		line = NULL;
 	}
@@ -57,3 +62,49 @@ static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name
 	}
 	return (status);
 }
+
+static t_parser_status	sh_parse(const char *str)
+{
+	t_token_list	*token_list;
+	t_parser_status	status;
+	t_lex_status	tokenize_status;
+
+	token_list = ft_calloc(1, sizeof *token_list);
+	if (!token_list)
+	{
+		status = PARSE_ALLOC_ERROR;
+		err_print(ERR_LEXER, status, (t_err_payload){0});
+		return (status);
+	}
+	tokenize_status = sh_lex(str, token_list);
+	if (tokenize_status != LEX_OK)
+	{
+		// TODO: destroy token_list
+		return (PARSE_LEX_ERROR);
+	}
+	// TODO: destroy token_list
+	return (PARSE_OK);
+}
+
+static t_lex_status	sh_lex(const char *str, t_token_list *token_list)
+{
+	t_lex_result	result;
+	t_err_payload	payload;
+	char			token[2];
+
+	payload = (t_err_payload){0};
+	result = lex_tokenize(str, token_list);;
+	if (result.status != LEX_OK)
+	{
+		if (result.invalid_char)
+		{
+			token[0] = result.invalid_char;
+			token[1] = '\0';
+			payload.token = token;	
+		}	
+		err_print(ERR_LEXER, result.status, payload);
+		return (result.status);
+	}
+	return (result.status);
+}
+

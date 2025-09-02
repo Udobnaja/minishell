@@ -1,6 +1,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
+# include "libft.h"
+
 # include "pipeline.h"
 # include "./lexer/lexer.h"
 
@@ -42,7 +44,20 @@ typedef struct s_token
 
 typedef enum e_parser_status {
 	PARSE_OK = 0,
-	PARSE_UNEXPECTED_TOKEN
+	PARSE_UNEXPECTED_TOKEN,
+	PARSE_ALLOC_ERROR,
+	PARSE_LEX_ERROR
 }	t_parser_status;
+
+typedef struct s_token_node {
+    t_token        		*token;
+    struct s_token_nod	*next;
+} t_token_node;
+
+typedef struct s_token_list {
+    t_token_node  *head;
+    t_token_node  *tail;
+    size_t      size;
+} t_token_list;
 
 #endif
