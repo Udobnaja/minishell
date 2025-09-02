@@ -54,9 +54,15 @@ void				lex_push_node(t_token_list *list, t_token_node *node);
 t_token_node		*lex_create_node(t_token *token);
 void				lex_free_node(t_token_node	*node);
 void				lex_free_token(t_token	*token);
-t_lex_token_result	lex_create_word_token(const char *str);
+t_lex_token_result	lex_create_token(const char *str);
 t_lex_parse_result	lex_parse_word(const char *str, t_token *token);
+t_lex_parse_result	lex_parse_operator(const char *str, t_token *token);
 int					(*lex_stop_resolver(t_quote quote))(int);
 t_lex_count_result	lex_count_word_pieces(const char *str);
+int					lex_is_operator(unsigned char c);
+t_lex_parse_result	lex_parse_ok(int consumed);
+t_lex_parse_result	lex_parse_err(t_lex_status e, char invalid_char);
+t_lex_token_result	lex_token_ok(t_token *token, size_t consumed);
+t_lex_token_result	lex_token_err(t_lex_status status, char invalid_char);
 
 #endif

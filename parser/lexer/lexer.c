@@ -14,17 +14,10 @@ t_lex_result lex_tokenize(const char *str, t_token_list	*token_list)
 	{
 		while (str[i] && ft_isspace(str[i]))
 			i++;
-		if (str[i] == '>' || str[i] == '<' || str[i] == '|')
-		{
-			// TODO: create tokens with redir adn pipes + valid
-			i++;
-			continue;
-		} else {
-			token_result = lex_create_word_token(str + i);
-			if (token_result.status != LEX_OK)
-				return (lex_err(token_result.status, token_result.payload.error.invalid_char));
-			i += token_result.payload.success.consumed;			
-		}
+		token_result = lex_create_token(str + i);
+		if (token_result.status != LEX_OK)
+			return (lex_err(token_result.status, token_result.payload.error.invalid_char));
+		i += token_result.payload.success.consumed;
 		token_node = lex_create_node(token_result.payload.success.token);
 		if (!token_node)
 		{

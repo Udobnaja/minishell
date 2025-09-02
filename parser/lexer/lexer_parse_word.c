@@ -1,7 +1,5 @@
 #include "lexer_internal.h"
 
-static t_lex_parse_result	lex_parse_ok(int consumed);
-static t_lex_parse_result	lex_parse_err(t_lex_status e, char invalid_char);
 static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c));
 static t_quote				lex_quote_type(int c);
 
@@ -30,24 +28,6 @@ t_lex_parse_result lex_parse_word(const char *str, t_token *token)
 		piece_i++;
 	}	
 	return (lex_parse_ok(i));
-}
-
-static t_lex_parse_result lex_parse_ok(int consumed)
-{
-	t_lex_parse_result result;
-
-	result.status = LEX_OK;
-	result.payload.consumed = consumed;
-	return (result);
-}
-
-static t_lex_parse_result lex_parse_err(t_lex_status e, char invalid_char)
-{
-	t_lex_parse_result result;
-
-	result.status = e;
-	result.payload.invalid_char = invalid_char;
-	return (result);
 }
 
 static t_lex_parse_result lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c))
