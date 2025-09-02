@@ -21,7 +21,12 @@ ENV_SRC := \
 	environment/env_pairs.c 
 
 PARSE_SRC := \
-	parser/lexer/lexer.c
+	parser/lexer/lexer.c \
+	parser/lexer/lexer_utils.c \
+	parser/lexer/lexer_token.c \
+	parser/lexer/lexer_word_stop_resolver.c \
+	parser/lexer/lexer_count_word_pieces.c \
+	parser/lexer/lexer_parse_word.c
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c

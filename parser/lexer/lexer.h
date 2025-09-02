@@ -1,6 +1,8 @@
 #ifndef LEXER_H
 # define LEXER_H
 
+# include "libft.h"
+
 typedef enum e_lex_status {
 	LEX_OK = 0,
 	LEX_UNMATCHED_QUOTES,
@@ -9,52 +11,52 @@ typedef enum e_lex_status {
 	// LEX_UNSUPPORTED_TOKEN
 }	t_lex_status;
 
-typedef union u_lex_count_payload
+typedef enum e_token_type
 {
+	T_WORD,
+	T_PIPE,
+	T_REDIR_IN,
+	T_REDIR_OUT,
+	T_REDIR_APP,
+	T_HEREDOC,
+	T_EOF
+}	t_token_type;
+
+typedef enum e_quote
+{
+	NONE,
+	SGL,
+	DBL
+}	t_quote;
+
+typedef struct s_piece
+{
+	char	*text;
+	t_quote	quote;
+}	t_piece;
+
+typedef struct s_word
+{
+	t_piece	*pieces;
 	int		count;
-	char	invalid_char;
-}	t_lex_count_payload;
+}	t_word;
 
-typedef struct s_lex_count_result
+typedef struct s_token
 {
-	t_lex_status		status;
-	t_lex_count_payload	payload;
-}	t_lex_count_result;
+	t_token_type	type;
+	t_word			word;
+}	t_token;
 
-typedef struct s_lex_token_success
-{
-	t_token *token;
-	size_t  consumed;
-}	t_lex_token_success;
+typedef struct s_token_node {
+    t_token        		*token;
+    struct s_token_node	*next;
+} t_token_node;
 
-typedef struct s_lex_token_error
-{
-	char	invalid_char;
-}	t_lex_token_error;
-
-typedef union u_lex_token_payload
-{
-	t_lex_token_success	success;
-	t_lex_token_error	error;
-}	t_lex_token_payload;
-
-typedef struct s_lex_token_result
-{
-    t_lex_status		status;
-    t_lex_token_payload	payload;
-}	t_lex_token_result;
-
-typedef union u_lex_parse_payload
-{
-	int		consumed;
-	char	invalid_char;
-}	t_lex_parse_payload;
-
-typedef struct s_lex_parse_result
-{
-	t_lex_status	status;
-	t_lex_parse_payload	payload;
-}	t_lex_parse_result;
+typedef struct s_token_list {
+    t_token_node  *head;
+    t_token_node  *tail;
+    size_t      size;
+} t_token_list;
 
 typedef struct s_lex_result
 {
