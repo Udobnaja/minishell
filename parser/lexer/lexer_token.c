@@ -2,9 +2,9 @@
 
 static t_lex_token_result lex_token_ok(t_token *token, size_t consumed);
 static t_lex_token_result lex_token_err(t_lex_status status, char invalid_char);
-static t_lex_status	init_word_token(t_token *token, int pieces_count);
+static t_lex_status	init_word_token(t_token *token, size_t pieces_count);
 
-t_lex_token_result	create_word_token(const char *str)
+t_lex_token_result	lex_create_word_token(const char *str)
 {
 	t_lex_parse_result			parse_res;
 	t_lex_status				init_status;
@@ -13,26 +13,35 @@ t_lex_token_result	create_word_token(const char *str)
 	
 	if (count_res.status != LEX_OK)
 		return (lex_token_err(count_res.status, count_res.payload.invalid_char));
-	token = calloc(1, sizeof(t_token));
+	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
 		return lex_token_err(LEX_ALLOC_ERROR, 0);
 	init_status = init_word_token(token, count_res.payload.count);
 	if (init_status != LEX_OK)
-		//     free(token); 
+	{
+		lex_free_token(token);
 		return lex_token_err(init_status, 0);
+	}
 	parse_res = lex_parse_word(str, token);
 	if (parse_res.status != LEX_OK)
-		//     free(token); 
+	{
+		lex_free_token(token);
 		return lex_token_err(parse_res.status, 0);
+	}		
 	return (lex_token_ok(token, parse_res.payload.consumed));
 }
 
-static t_lex_status	init_word_token(t_token *token, int pieces_count)
+static t_lex_status	init_word_token(t_token *token, size_t pieces_count)
 {
 	ft_bzero(token, sizeof(t_token));
 	token->type = T_WORD;
 	token->word.count = pieces_count;
-	token->word.pieces = malloc((pieces_count) * sizeof(t_piece));
+	if (pieces_count == 0)
+	{
+        token->word.pieces = NULL;
+        return LEX_OK;
+    }
+	token->word.pieces = ft_calloc(pieces_count, sizeof *token->word.pieces);
 	if (!token->word.pieces)
 		return (LEX_ALLOC_ERROR);
 	return (LEX_OK);

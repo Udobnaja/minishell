@@ -38,7 +38,7 @@ typedef struct s_piece
 typedef struct s_word
 {
 	t_piece	*pieces;
-	int		count;
+	size_t	count;
 }	t_word;
 
 typedef struct s_token
@@ -64,6 +64,9 @@ typedef struct s_lex_result
 	char			invalid_char;
 }	t_lex_result;
 
+t_token_list	*lex_create_token_list(void);
+void			lex_clear_token_list(t_token_list *list);
+void			lex_destroy_token_list(t_token_list **list);
 t_lex_result lex_tokenize(const char *str, t_token_list	*token_list);
 
 #endif

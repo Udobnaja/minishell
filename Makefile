@@ -22,11 +22,13 @@ ENV_SRC := \
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
+	parser/lexer/lexer_lifecycle.c \
 	parser/lexer/lexer_utils.c \
+	parser/lexer/lexer_token_utils.c \
 	parser/lexer/lexer_token.c \
 	parser/lexer/lexer_word_stop_resolver.c \
 	parser/lexer/lexer_count_word_pieces.c \
-	parser/lexer/lexer_parse_word.c
+	parser/lexer/lexer_parse_word.c 
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c

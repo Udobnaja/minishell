@@ -79,10 +79,11 @@ static t_parser_status	sh_parse(const char *str)
 	tokenize_status = sh_lex(str, token_list);
 	if (tokenize_status != LEX_OK)
 	{
-		// TODO: destroy token_list
+		lex_destroy_token_list(&token_list);
 		return (PARSE_LEX_ERROR);
 	}
-	// TODO: destroy token_list
+
+	lex_destroy_token_list(&token_list);
 	return (PARSE_OK);
 }
 

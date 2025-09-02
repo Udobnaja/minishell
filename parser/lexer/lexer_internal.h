@@ -52,7 +52,9 @@ typedef struct s_lex_parse_result
 
 void				lex_push_node(t_token_list *list, t_token_node *node);
 t_token_node		*lex_create_node(t_token *token);
-t_lex_token_result	create_word_token(const char *str);
+void				lex_free_node(t_token_node	*node);
+void				lex_free_token(t_token	*token);
+t_lex_token_result	lex_create_word_token(const char *str);
 t_lex_parse_result	lex_parse_word(const char *str, t_token *token);
 int					(*lex_stop_resolver(t_quote quote))(int);
 t_lex_count_result	lex_count_word_pieces(const char *str);
