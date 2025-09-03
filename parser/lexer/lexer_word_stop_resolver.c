@@ -4,7 +4,7 @@ static int	stop_space_or_quote(int c);
 static int	stop_until_sgl(int c);
 static int	stop_until_dbl(int c);
 
-int	(*lex_stop_resolver(t_quote quote))(int)
+int	(*lex_stop_resolver(t_quote quote))(int c)
 {
 	if (quote == SGL)
 		return (stop_until_sgl);
@@ -20,7 +20,7 @@ static int	stop_space_or_quote(int c)
 	return (ft_isspace(c));
 }
 
-static int	stop_until_sgl(int c) 
+static int	stop_until_sgl(int c)
 {
 	return (c == '\'');
 }
@@ -28,5 +28,4 @@ static int	stop_until_sgl(int c)
 static int	stop_until_dbl(int c)
 {
 	return (c == '"');
-
 }

@@ -1,6 +1,5 @@
 #include "lexer_internal.h"
 
-
 t_lex_parse_result	lex_parse_ok(int consumed)
 {
 	t_lex_parse_result	result;

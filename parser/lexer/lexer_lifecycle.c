@@ -2,9 +2,9 @@
 
 t_token_list	*lex_create_token_list(void)
 {
-	t_token_list *s;
+	t_token_list	*s;
 
-	s = ft_calloc(1, sizeof *s);
+	s = ft_calloc(1, sizeof(*s));
 	return (s);
 }
 
@@ -14,7 +14,7 @@ void	lex_clear_token_list(t_token_list *list)
 	t_token_node	*next;
 
 	if (!list)
-		return;
+		return ;
 	cur = list->head;
 	while (cur)
 	{
@@ -29,7 +29,8 @@ void	lex_clear_token_list(t_token_list *list)
 
 void	lex_destroy_token_list(t_token_list **list)
 {
-	if (!list || !*list) return;
+	if (!list || !*list)
+		return ;
 	lex_clear_token_list(*list);
 	free(*list);
 	*list = NULL;

@@ -7,9 +7,10 @@ void	lex_push_node(t_token_list *list, t_token_node *node)
 		list->head = node;
 		list->tail = node;
 	}
-	else {
+	else
+	{
 		list->tail->next = node;
-		list->tail = node; 
+		list->tail = node;
 	}
 	list->size++;
 }

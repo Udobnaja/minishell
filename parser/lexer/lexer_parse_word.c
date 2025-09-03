@@ -1,16 +1,17 @@
 #include "lexer_internal.h"
 
-static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c));
+static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece,
+								t_quote quote, int (*stop)(int c));
 static t_quote				lex_quote_type(int c);
 
 t_lex_parse_result	lex_parse_word(const char *str, t_token *token)
 {
-	size_t			i;
-	size_t			piece_i;
-	t_quote 		quote;
+	size_t				i;
+	size_t				piece_i;
+	t_quote				quote;
 	t_lex_parse_result	result;
-	int				(*stop)(int);
-	
+	int					(*stop)(int);
+
 	i = 0;
 	piece_i = 0;
 	while (str[i] && !ft_isspace(str[i]))
@@ -19,20 +20,22 @@ t_lex_parse_result	lex_parse_word(const char *str, t_token *token)
 		stop = lex_stop_resolver(quote);
 		if (quote != NONE)
 			i++;
-		result = lex_parse_piece(str + i, &token->word.pieces[piece_i], quote, stop);
+		result = lex_parse_piece(str + i,
+				&token->word.pieces[piece_i], quote, stop);
 		if (result.status != LEX_OK)
 			return (result);
-		i += result.payload.consumed;	
+		i += result.payload.consumed;
 		if (quote != NONE)
 			i++;
 		piece_i++;
-	}	
+	}
 	return (lex_parse_ok(i));
 }
 
-static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece, t_quote quote, int (*stop)(int c))
+static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece,
+								t_quote quote, int (*stop)(int c))
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (str[i] && (!stop(str[i])))
@@ -52,5 +55,5 @@ static t_quote	lex_quote_type(int c)
 		return (DBL);
 	if (c == '\'')
 		return (SGL);
-	return (NONE);	
+	return (NONE);
 }
