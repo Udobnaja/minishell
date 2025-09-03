@@ -40,5 +40,5 @@ static t_token_type	lex_redir_type(int c, int len)
 			return (T_REDIR_IN);
 		return (T_HEREDOC);
 	}
-	return T_EOF;
+	return (T_EOF);
 }

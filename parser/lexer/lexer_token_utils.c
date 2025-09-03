@@ -22,7 +22,7 @@ void	lex_free_token(t_token	*token)
 
 int	lex_is_operator(unsigned char c)
 {
-	return c == '>' || c == '<' || c == '|';
+	return (c == '>' || c == '<' || c == '|');
 }
 
 t_lex_token_result	lex_token_ok(t_token *token, size_t consumed)

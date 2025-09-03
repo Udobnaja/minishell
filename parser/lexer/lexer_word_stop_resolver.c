@@ -7,10 +7,10 @@ static int	stop_until_dbl(int c);
 int	(*lex_stop_resolver(t_quote quote))(int)
 {
 	if (quote == SGL)
-		return stop_until_sgl;
+		return (stop_until_sgl);
 	if (quote == DBL)
-		return stop_until_dbl;
-	return stop_space_or_quote;
+		return (stop_until_dbl);
+	return (stop_space_or_quote);
 }
 
 static int	stop_space_or_quote(int c)
