@@ -10,7 +10,7 @@ void	err_print(t_err_domain domain, int code, t_err_payload payload)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (err_has_payload(&error))
 	{
-		if (error.domain == ERR_LEXER && error.code == LEX_UNMATCHED_QUOTES)
+		if (error.domain == ERR_LEXER && error.payload.token)
 			ft_eprintf(error.msg, error.payload.token);
 		else if (error.domain == ERR_PARSER && error.code == PARSE_UNEXPECTED_TOKEN)  
 			ft_eprintf(error.msg, error.payload.token);
