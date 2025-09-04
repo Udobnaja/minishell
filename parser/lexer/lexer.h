@@ -7,7 +7,8 @@ typedef enum e_lex_status {
 	LEX_OK = 0,
 	LEX_UNMATCHED_QUOTES,
 	LEX_ALLOC_ERROR,
-	LEX_INVALID_SEQ
+	LEX_INVALID_SEQ,
+	LEX_INTERNAL_ERROR
 }	t_lex_status;
 
 typedef enum e_token_type

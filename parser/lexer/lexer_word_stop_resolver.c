@@ -1,6 +1,5 @@
 #include "lexer_internal.h"
 
-static int	stop_space_or_quote(int c);
 static int	stop_until_sgl(int c);
 static int	stop_until_dbl(int c);
 
@@ -10,12 +9,14 @@ int	(*lex_stop_resolver(t_quote quote))(int c)
 		return (stop_until_sgl);
 	if (quote == DBL)
 		return (stop_until_dbl);
-	return (stop_space_or_quote);
+	return (lex_stop_until_new_piece);
 }
 
-static int	stop_space_or_quote(int c)
+int	lex_stop_until_new_piece(int c)
 {
 	if (c == '\'' || c == '"')
+		return (1);
+	if (lex_is_operator(c))
 		return (1);
 	return (ft_isspace(c));
 }
