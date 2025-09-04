@@ -14,7 +14,7 @@ t_lex_parse_result	lex_parse_word(const char *str, t_token *token)
 
 	i = 0;
 	piece_i = 0;
-	while (str[i] && !ft_isspace(str[i]))
+	while (str[i] && !ft_isspace(str[i]) && !lex_is_operator(str[i]))
 	{
 		quote = lex_quote_type(str[i]);
 		stop = lex_stop_resolver(quote);

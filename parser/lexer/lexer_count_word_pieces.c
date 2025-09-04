@@ -5,13 +5,13 @@ static t_lex_count_result	lex_count_ok(int count);
 
 t_lex_count_result	lex_count_word_pieces(const char *str)
 {
-	int		count;
+	size_t	count;
 	size_t	i;
 	char	q;
 
 	count = 0;
 	i = 0;
-	while (str[i] && !ft_isspace(str[i]))
+	while (str[i] && !ft_isspace(str[i]) && !lex_is_operator(str[i]))
 	{
 		if (str[i] == '"' || str[i] == '\'')
 		{
@@ -24,8 +24,7 @@ t_lex_count_result	lex_count_word_pieces(const char *str)
 			i++;
 		}
 		else
-			while (str[i] && (!ft_isspace(str[i])
-					&& str[i] != '\'' && str[i] != '"'))
+			while (str[i] && (!lex_stop_until_new_piece(str[i])))
 				i++;
 		count++;
 	}
