@@ -5,7 +5,8 @@ const char *err_lexer_msg(int code)
 	static const char *map[] = {
     	[LEX_UNMATCHED_QUOTES] = "syntax error unexpected EOF while looking for matching `%s'",
 		[LEX_ALLOC_ERROR] = "allocation failed",
-		[LEX_INVALID_SEQ] = "syntax error near unexpected token `%s'"
+		[LEX_INVALID_SEQ] = "syntax error near unexpected token `%s'",
+		[LEX_INTERNAL_ERROR] = "internal error"
 	};
 	const int size = sizeof(map) / sizeof(*map);
 

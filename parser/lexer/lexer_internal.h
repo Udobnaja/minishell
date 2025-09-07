@@ -60,6 +60,7 @@ t_lex_parse_result	lex_parse_operator(const char *str, t_token *token);
 int					(*lex_stop_resolver(t_quote quote))(int);
 t_lex_count_result	lex_count_word_pieces(const char *str);
 int					lex_is_operator(unsigned char c);
+int					lex_stop_until_new_piece(int c);
 t_lex_parse_result	lex_parse_ok(int consumed);
 t_lex_parse_result	lex_parse_err(t_lex_status e, char invalid_char);
 t_lex_token_result	lex_token_ok(t_token *token, size_t consumed);
