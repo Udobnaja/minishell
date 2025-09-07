@@ -30,7 +30,8 @@ PARSE_SRC := \
 	parser/lexer/lexer_count_word_pieces.c \
 	parser/lexer/lexer_parse_utils.c \
 	parser/lexer/lexer_parse_word.c \
-	parser/lexer/lexer_parse_operator.c 
+	parser/lexer/lexer_parse_operator.c \
+	parser/parser.c 
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c

@@ -63,6 +63,44 @@ static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name
 	return (status);
 }
 
+static const char *sh_token_to_char(t_token_type type)
+{
+	if (type == T_PIPE)
+		return ("|");
+	if (type == T_REDIR_IN)
+		return ("<");
+	if (type == T_REDIR_OUT)
+		return (">");
+	if (type == T_REDIR_APP)
+		return (">>");
+	if (type == T_HEREDOC)
+		return ("<<");
+	return ("?");
+}
+
+static t_parser_status	sh_pre_parse(t_token_list *token_list)
+{
+	t_err_payload		payload;
+	t_pre_parse_result	result;
+	char				token[3];
+
+	payload = (t_err_payload){0};
+	result = prs_pre_parse(token_list);
+	if (result.status != PARSE_OK)
+	{
+		if (!result.token->next)
+		{
+			payload.token = "newline";
+		} else {
+			ft_strlcpy(token, sh_token_to_char(result.token->token->type), sizeof token);
+			payload.token = token;
+		}
+		err_print(ERR_PARSER, result.status, payload);
+		return (result.status);
+	}
+	return (PARSE_OK);
+}
+
 static t_parser_status	sh_parse(const char *str)
 {
 	t_token_list	*token_list;
@@ -81,6 +119,11 @@ static t_parser_status	sh_parse(const char *str)
 	{
 		lex_destroy_token_list(&token_list);
 		return (PARSE_LEX_ERROR);
+	}
+	if (sh_pre_parse(token_list) != PARSE_OK)
+	{
+		lex_destroy_token_list(&token_list);
+		return (PARSE_UNEXPECTED_TOKEN);
 	}
 
 	lex_destroy_token_list(&token_list);
