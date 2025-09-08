@@ -9,6 +9,9 @@ LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
 	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors
 
+SH_SRC := \
+	sh/sh_init.c \
+	sh/sh_parse.c
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
@@ -47,13 +50,13 @@ ERRORS_SRC := \
 
 SRC := \
 	main.c \
+	$(SH_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
 	$(PARSE_SRC)
 
 OBJ := $(SRC:.c=.o)
-
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

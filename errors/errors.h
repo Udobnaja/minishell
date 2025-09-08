@@ -3,12 +3,12 @@
 
 # include <stdio.h>
 
-# include "../libft/libft.h"
-# include "../environment/env_internal.h"
-# include "../parser/parser.h"
-# include "../expansion/expansion.h"
-# include "../heredoc/heredoc.h"
-# include "../executor/executor.h"
+# include "libft.h"
+# include "env.h"
+# include "parser.h"
+# include "expansion/expansion.h"
+# include "heredoc/heredoc.h"
+# include "executor.h"
 
 typedef struct s_error t_error;
 
@@ -25,10 +25,10 @@ typedef enum e_err_domain
 
 typedef union u_err_payload
 {
-	int		errno_val;
-	char	*token;
-	char	*path;
-	char	*command;
+	int			errno_val;
+	const char	*token;
+	char		*path;
+	char		*command;
 }	t_err_payload;
 
 

@@ -14,7 +14,7 @@ typedef enum e_parser_status {
 typedef struct s_pre_parse_result
 {
 	t_parser_status	status;
-	t_token_node	*token;
+	t_token_node	*invalid;
 }	t_pre_parse_result;
 
 t_pre_parse_result	prs_pre_parse(t_token_list	*token_list);

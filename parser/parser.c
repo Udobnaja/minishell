@@ -19,7 +19,7 @@ static t_token_node *prs_validate_pipe(t_token_node *pipe)
 		if (cur->token->type == T_WORD)
 			return (NULL);
 		if (cur->token->type == T_PIPE)
-			return (pipe);
+			return (cur);
 		if (prs_is_redirect(cur->token->type))
 		{
 			if (!cur->next || cur->next->token->type != T_WORD)
@@ -27,15 +27,16 @@ static t_token_node *prs_validate_pipe(t_token_node *pipe)
 			cur = cur->next->next;	
 			continue;
 		}
-		return (pipe);	
+		return (cur);	
 	}
+	pipe->token->type = T_EOF;
 	return (pipe);
 }
 
 static t_token_node *prs_validate_tokens_order(t_token_list	*token_list)
 {
 	t_token_node *cur;
-	t_token_node *invalid_pipe;
+	t_token_node *invalid;
 
 	cur = token_list->head;
 	if (cur->token->type == T_PIPE)
@@ -46,9 +47,9 @@ static t_token_node *prs_validate_tokens_order(t_token_list	*token_list)
 			return (cur);
 		else if (cur->token->type == T_PIPE)
 		{
-			invalid_pipe = prs_validate_pipe(cur);	
-			if (invalid_pipe)
-				return (invalid_pipe);
+			invalid = prs_validate_pipe(cur);	
+			if (invalid)
+				return (invalid);
 		}		
 		else if (prs_is_redirect(cur->token->type) && cur->next->token->type != T_WORD)
 			return (cur);
@@ -62,7 +63,7 @@ static t_pre_parse_result	prs_ok(void)
 	t_pre_parse_result	result;
 
 	result.status = PARSE_OK;
-	result.token = NULL;
+	result.invalid = NULL;
 	return (result);
 }
 
@@ -71,7 +72,7 @@ static t_pre_parse_result	prs_err(t_parser_status e, t_token_node *node)
 	t_pre_parse_result	result;
 
 	result.status = e;
-	result.token = node;
+	result.invalid = node;
 	return (result);
 }
 
