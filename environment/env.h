@@ -21,6 +21,7 @@ void			env_clear(t_env_store *store);
 void			env_destroy(t_env_store **store);
 
 size_t			env_size(const t_env_store *store);
+int				env_is_valid_key(char *key);
 
 t_env_status	env_set(t_env_store *store, const char *key, const char *value);
 void			env_unset(t_env_store *store, const char *key);
