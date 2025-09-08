@@ -1,6 +1,21 @@
 #include "../executor.h"
+t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
+{
+    t_cmd cmd = *pipeline->cmds[0];
 
-static bool validate_unset(const char *str)
+    if (cmd.builtin_kind == BUILTIN_ENV)
+    {
+       return env(sh, cmd);
+    } else if (cmd.builtin_kind == BUILTIN_UNSET)
+    {
+        return unset(sh, cmd);
+    } else if (cmd.builtin_kind == BUILTIN_EXPORT)
+    {
+        return export(sh, cmd);
+    } 
+    return (EXEC_OK);
+}
+bool exec_check_errors(const char *str)
 {
     if(!str || str[0] != '-')
         return(false);
@@ -12,34 +27,6 @@ static bool validate_unset(const char *str)
         return(false);
     return(true);
 }
-int env_unset(t_env_store *store, const char *name)
-{
-    t_env *cur;
-    t_env *prev;
-
-    if(!store || !name)
-        return -1;
-    prev = NULL;
-    cur  = store->head;
-    while(cur)
-    {
-        if(ft_strcmp(cur->key, name) == 0)
-        {
-            if(prev)
-                prev->next = cur->next;
-            else 
-                store->head = cur->next;
-            env_free_node(cur);
-            if(store->size > 0)
-                store->size--;
-            return 0;
-        }
-        prev = cur;
-        cur = cur->next;
-    }
-    return 0;
-}
-
 t_exec_status unset(t_shell *sh, const t_cmd cmd)
 {
     size_t i;
@@ -47,10 +34,10 @@ t_exec_status unset(t_shell *sh, const t_cmd cmd)
     i = 1;
     if (!cmd.argv[1])
         return EXEC_OK;
-    if (validate_unset(cmd.argv[1]))
+    if (exec_check_errors(cmd.argv[1]))
     {
-        err_print(ERR_EXEC, ERROR_INVALID_OPTION, (t_err_payload){0});
-        return ERROR_INVALID_OPTION;
+        err_print(ERR_EXEC, EXEC_ERROR_INVALID_OPTION, (t_err_payload){0});
+        return EXEC_ERROR_INVALID_OPTION;
     }
     while(cmd.argv[i] != NULL)
     {

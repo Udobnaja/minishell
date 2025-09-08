@@ -5,6 +5,7 @@
 # include <readline/history.h>
 
 # include "sh/shell.h"
+# include "pipeline/pipeline.h"
 
 # define SHELL_NAME "minishell"
 
