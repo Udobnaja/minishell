@@ -1,6 +1,10 @@
 #ifndef HEREDOC_H
 # define HEREDOC_H
 
+# include <readline/readline.h>
+# include <readline/history.h>
+# include "libft.h"
+
 typedef enum e_heredoc_status {
 	HEREDOC_OK = 0,
 	HEREDOC_ABORTED, // TODO: not sure that it is a error
