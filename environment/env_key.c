@@ -1,6 +1,6 @@
 #include "env_internal.h"
 
-int env_is_valid_key(char *key)
+int env_key_is_valid(const char *key)
 {
     size_t i;
 

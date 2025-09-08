@@ -9,7 +9,7 @@ char	*expn_expand(char *str, const t_env_store *store, int last_status)
 		return ft_strdup(str);
 	if (str[1] == '?' && str[2] == '\0')
 		return ft_itoa(last_status);
-	if (env_is_valid_key(str + 1))
+	if (env_key_is_valid(str + 1))
 	{
 		value = env_get_value(store, str + 1);
 		if (!value)
