@@ -17,7 +17,7 @@ typedef enum e_exec_status {
 }	t_exec_status;
 
 //builtins
-bool exec_check_errors(const char *str);
+bool exec_is_invalid_option(const char *str);
 t_exec_status unset(t_shell *sh, const t_cmd cmd);
 t_exec_status env(t_shell *sh, const t_cmd cmd);
 t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline);

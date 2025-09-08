@@ -15,10 +15,10 @@ int main(int argc, char **argv, char **envp)
 	t_cmd *cmd = malloc(sizeof(t_cmd));
 	char **argv_cmd = malloc(3 * sizeof(char *));
 	t_cmd **cmds = malloc(sizeof(t_cmd *));
-	cmd->name = "unset";
-	argv_cmd[0] = "unset";
+	cmd->name = "export";
+	argv_cmd[0] = "export";
 	argv_cmd[1] = NULL;
-	//argv_cmd[2] = NULL;
+	// argv_cmd[2] = NULL;
 	cmd->argv = argv_cmd;
 	cmd->redirect_list = NULL;
 	cmd->builtin_kind = BUILTIN_EXPORT;

@@ -15,7 +15,7 @@ t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
     } 
     return (EXEC_OK);
 }
-bool exec_check_errors(const char *str)
+bool exec_is_invalid_option(const char *str)
 {
     if(!str || str[0] != '-')
         return(false);
@@ -34,7 +34,7 @@ t_exec_status unset(t_shell *sh, const t_cmd cmd)
     i = 1;
     if (!cmd.argv[1])
         return EXEC_OK;
-    if (exec_check_errors(cmd.argv[1]))
+    if (exec_is_invalid_option(cmd.argv[1]))
     {
         err_print(ERR_EXEC, EXEC_ERROR_INVALID_OPTION, (t_err_payload){0});
         return EXEC_ERROR_INVALID_OPTION;
