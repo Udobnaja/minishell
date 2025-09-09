@@ -9,6 +9,9 @@ LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
 	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors
 
+SH_SRC := \
+	sh/sh_init.c \
+	sh/sh_parse.c
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
@@ -30,7 +33,8 @@ PARSE_SRC := \
 	parser/lexer/lexer_count_word_pieces.c \
 	parser/lexer/lexer_parse_utils.c \
 	parser/lexer/lexer_parse_word.c \
-	parser/lexer/lexer_parse_operator.c 
+	parser/lexer/lexer_parse_operator.c \
+	parser/parser.c 
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c
@@ -46,13 +50,13 @@ ERRORS_SRC := \
 
 SRC := \
 	main.c \
+	$(SH_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
 	$(PARSE_SRC)
 
 OBJ := $(SRC:.c=.o)
-
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

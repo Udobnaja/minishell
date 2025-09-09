@@ -1,0 +1,93 @@
+#include "shell.h"
+
+static t_lex_status		sh_lex(const char *str, t_token_list *token_list);
+static t_parser_status	sh_pre_parse(t_token_list *token_list);
+static const char		*sh_token_to_char(t_token_type type);
+
+t_parser_status	sh_parse(const char *str)
+{
+	t_token_list	*token_list;
+	t_parser_status	status;
+	t_lex_status	tokenize_status;
+
+	token_list = ft_calloc(1, sizeof *token_list); // TODO: возможно это унести на уровень инита
+	if (!token_list)
+	{
+		status = PARSE_ALLOC_ERROR;
+		err_print(ERR_LEXER, status, (t_err_payload){0});
+		return (status);
+	}
+	tokenize_status = sh_lex(str, token_list);
+	if (tokenize_status != LEX_OK)
+	{
+		lex_destroy_token_list(&token_list);
+		return (PARSE_LEX_ERROR);
+	}
+	if (sh_pre_parse(token_list) != PARSE_OK)
+	{
+		lex_destroy_token_list(&token_list);
+		return (PARSE_UNEXPECTED_TOKEN);
+	}
+	lex_destroy_token_list(&token_list);
+	return (PARSE_OK);
+}
+
+static const char *sh_token_to_char(t_token_type type)
+{
+	if (type == T_PIPE)
+		return ("|");
+	if (type == T_REDIR_IN)
+		return ("<");
+	if (type == T_REDIR_OUT)
+		return (">");
+	if (type == T_REDIR_APP)
+		return (">>");
+	if (type == T_HEREDOC)
+		return ("<<");
+	if (type == T_EOF)
+		return ("newline");	
+	return ("?");
+}
+
+static t_lex_status	sh_lex(const char *str, t_token_list *token_list)
+{
+	t_lex_result	result;
+	t_err_payload	payload;
+	char			token[2];
+
+	payload = (t_err_payload){0};
+	result = lex_tokenize(str, token_list);
+	if (result.status != LEX_OK)
+	{
+		if (result.invalid_char)
+		{
+			token[0] = result.invalid_char;
+			token[1] = '\0';
+			payload.token = token;	
+		}	
+		err_print(ERR_LEXER, result.status, payload);
+		return (result.status);
+	}
+	return (result.status);
+}
+
+static t_parser_status	sh_pre_parse(t_token_list *token_list)
+{
+	t_err_payload		payload;
+	t_pre_parse_result	result;
+
+	payload = (t_err_payload){0};
+	result = prs_pre_parse(token_list);
+	if (result.status != PARSE_OK)
+	{
+		if (result.invalid->token->type == T_PIPE)
+			payload.token = sh_token_to_char(result.invalid->token->type);
+		else if (!result.invalid->next || result.invalid->token->type == T_EOF)
+			payload.token = "newline";
+		else 
+			payload.token = sh_token_to_char(result.invalid->next->token->type);
+		err_print(ERR_PARSER, result.status, payload);
+		return (result.status);
+	}
+	return (PARSE_OK);
+}
