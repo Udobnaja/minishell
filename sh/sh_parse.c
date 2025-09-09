@@ -69,7 +69,7 @@ static t_lex_status	sh_lex(const char *str, t_token_list *token_list)
 	return (result.status);
 }
 
-static const char *sh_token_error_payload(t_token_node *invalid_node, size_t token_list_size)
+static const char *sh_err_token_label(t_token_node *invalid_node, size_t token_list_size)
 {
 	t_token_type type;
 
@@ -90,7 +90,7 @@ static t_parser_status	sh_pre_parse(t_token_list *token_list)
 	result = prs_pre_parse(token_list);
 	if (result.status != PARSE_OK)
 	{
-		payload.token = sh_token_error_payload(result.invalid, token_list->size);
+		payload.token = sh_err_token_label(result.invalid, token_list->size);
 		err_print(ERR_PARSER, result.status, payload);
 		return (result.status);
 	}
