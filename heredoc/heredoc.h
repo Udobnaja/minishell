@@ -5,6 +5,8 @@
 # include <readline/history.h>
 # include "libft.h"
 
+#define HEREDOC_MAX 16 // MB transfer it to sh 
+
 typedef enum e_heredoc_status {
 	HEREDOC_OK = 0,
 	HEREDOC_ABORTED, // TODO: not sure that it is a error
