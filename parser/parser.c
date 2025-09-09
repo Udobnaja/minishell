@@ -14,23 +14,19 @@ static t_token_node *prs_validate_pipe(t_token_node *pipe)
 	t_token_node *cur;
 
 	cur = pipe->next;
-	while (cur)
+	if (!cur)
+		return (pipe);
+	if (cur->token->type == T_WORD)
+		return (NULL);
+	if (cur->token->type == T_PIPE)
+		return (cur);
+	if (prs_is_redirect(cur->token->type))
 	{
-		if (cur->token->type == T_WORD)
-			return (NULL);
-		if (cur->token->type == T_PIPE)
+		if (!cur->next || cur->next->token->type != T_WORD)
 			return (cur);
-		if (prs_is_redirect(cur->token->type))
-		{
-			if (!cur->next || cur->next->token->type != T_WORD)
-				return (cur);
-			cur = cur->next->next;	
-			continue;
-		}
-		return (cur);	
+		return (NULL);	
 	}
-	pipe->token->type = T_EOF;
-	return (pipe);
+	return (cur);
 }
 
 static t_token_node *prs_validate_tokens_order(t_token_list	*token_list)
