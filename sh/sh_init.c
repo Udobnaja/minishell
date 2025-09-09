@@ -1,8 +1,6 @@
 #include "shell_internal.h"
 
-static int sh_env_status_is_fatal(t_env_status status);
-
-static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name)
+t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name)
 {
 	t_env_status	status;
 
@@ -23,7 +21,7 @@ static t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name
 	return (status);
 }
 
-static int sh_env_status_is_fatal(t_env_status status)
+int sh_env_status_is_fatal(t_env_status status)
 {
 	return (status == ENV_ALLOC_ERROR);
 }
