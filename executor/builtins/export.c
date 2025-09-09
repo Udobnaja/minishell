@@ -53,28 +53,20 @@ void exec_export_print_list(t_env_pair *pairs, size_t size)
 
 t_exec_status exec_check_identifier(char *str)
 {
-    size_t i;
+    size_t  i;
+    char    *key;
+    int     is_key_valid;
 
-    if(!str || !(ft_isalpha(str[0]) || str[0] == '_'))
-    {
-        ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-        ft_putstr_fd(str, STDERR_FILENO);
-        ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-        return EXEC_INVALID_IDENTIFIER;
-    }
-    i = 1;
-    while(str[i] && str[i] != '=')
-    {
-        if(!(ft_isalnum(str[i]) || str[i] == '_'))
-        {
-            ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-            ft_putstr_fd(str, STDERR_FILENO);
-            ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
-            return EXEC_INVALID_IDENTIFIER;
-        }
+    while (str[i] && str[i] != '=')
         i++;
-    }
-    return EXEC_OK;
+    key = ft_substr(str, 0, (size_t)(i));
+    if(!key)
+        return EXEC_ALLOC_ERROR;
+    is_key_valid = env_key_is_valid(key);
+    free(key);
+    if (is_key_valid)
+        return (EXEC_OK);
+    return (EXEC_INVALID_IDENTIFIER);    
 }
 
 t_exec_status export_no_value(t_env_store *store, char *av)
@@ -104,10 +96,11 @@ t_exec_status export_set_pairs(t_env_store *store, char *av, char *eqpos)
 
 t_exec_status exec_apply_export(t_env_store *store, char *av)
 {
-    char *equal; 
+    char *equal;
+    const t_exec_status key_status = exec_check_identifier(av);
 
-    if(exec_check_identifier(av) != EXEC_OK)
-        return EXEC_INVALID_IDENTIFIER;
+    if( key_status != EXEC_OK)
+        return key_status;
     equal = ft_strchr(av, '=');
     if(equal == NULL)
         return export_no_value(store, av);
