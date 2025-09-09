@@ -6,6 +6,7 @@
 
 # include "sh/shell.h"
 # include "pipeline/pipeline.h"
+# include "executor.h"
 
 # define SHELL_NAME "minishell"
 

@@ -1,4 +1,4 @@
-#include "../executor.h"
+#include "executor_internal.h"
 
 void exec_sort_list(t_env_pair *pairs ,size_t size)
 {
@@ -25,7 +25,7 @@ void exec_sort_list(t_env_pair *pairs ,size_t size)
 
 }
 
-void exec_export_print_list(t_env_pair *pairs, size_t size)
+void export_print_list(t_env_pair *pairs, size_t size)
 {
     size_t i;
 
@@ -94,7 +94,7 @@ t_exec_status export_set_pairs(t_env_store *store, char *av, char *eqpos)
     return result;
 }
 
-t_exec_status exec_apply_export(t_env_store *store, char *av)
+t_exec_status export_apply(t_env_store *store, char *av)
 {
     char *equal;
     const t_exec_status key_status = exec_check_identifier(av);
@@ -120,7 +120,7 @@ t_exec_status export_if_no_av(t_env_store *store)
     if (!pairs)
         return EXEC_ALLOC_ERROR;
     exec_sort_list(pairs, size);
-    exec_export_print_list(pairs, size);
+    export_print_list(pairs, size);
     env_pairs_free(pairs, size);
     return EXEC_OK;
 }
@@ -148,7 +148,7 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     status = EXEC_OK;
     while(cmd.argv[i])
     {
-        tmp_status = exec_apply_export(sh->env_store, cmd.argv[i]);
+        tmp_status = export_apply(sh->env_store, cmd.argv[i]);
         if (exec_is_status_fatal(tmp_status))
             return (tmp_status);
         else if (tmp_status != EXEC_OK)

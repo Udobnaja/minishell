@@ -1,4 +1,5 @@
-#include "../executor.h"
+#include "executor_internal.h"
+
 t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
 {
     t_cmd cmd = *pipeline->cmds[0];
