@@ -21,7 +21,8 @@ ENV_SRC := \
 	environment/env_operations.c \
 	environment/env_normalize.c \
 	environment/env_envp.c \
-	environment/env_pairs.c 
+	environment/env_pairs.c \
+	environment/env_key.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
@@ -35,6 +36,9 @@ PARSE_SRC := \
 	parser/lexer/lexer_parse_word.c \
 	parser/lexer/lexer_parse_operator.c \
 	parser/parser.c 
+
+EXPANSION_SRC := \
+	expansion/expansion.c
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c
