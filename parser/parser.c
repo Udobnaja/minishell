@@ -19,7 +19,7 @@ static t_token_node *prs_validate_pipe(t_token_node *pipe)
 	if (cur->token->type == T_WORD)
 		return (NULL);
 	if (cur->token->type == T_PIPE)
-		return (cur);
+		return (pipe);
 	if (prs_is_redirect(cur->token->type))
 	{
 		if (!cur->next || cur->next->token->type != T_WORD)
