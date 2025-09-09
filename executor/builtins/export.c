@@ -57,6 +57,7 @@ t_exec_status exec_check_identifier(char *str)
     char    *key;
     int     is_key_valid;
 
+    i = 0;
     while (str[i] && str[i] != '=')
         i++;
     key = ft_substr(str, 0, (size_t)(i));
