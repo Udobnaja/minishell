@@ -139,14 +139,15 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     if (!cmd.argv[1])
         return export_if_no_av(sh->env_store);
     i = 1;
+    if (exec_is_invalid_option(cmd.argv[1]))
+    {
+        status = EXEC_ERROR_INVALID_OPTION;
+        err_print(ERR_EXEC, status, (t_err_payload){0});
+        return status;
+    }
     status = EXEC_OK;
     while(cmd.argv[i])
     {
-        if (exec_is_invalid_option(cmd.argv[i]))
-        {
-            status = EXEC_ERROR_INVALID_OPTION;
-            err_print(ERR_EXEC, tmp_status, (t_err_payload){0});
-        }
         tmp_status = exec_apply_export(sh->env_store, cmd.argv[i]);
         if (exec_is_status_fatal(tmp_status))
             return (tmp_status);
