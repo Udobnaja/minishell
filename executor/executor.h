@@ -1,16 +1,18 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include "libft.h"
 # include "pipeline.h"
-# include "env.h"
 # include "shell.h"
-# include "errors.h"
 
 typedef enum e_exec_status {
 	EXEC_OK = 0,
 	EXEC_TOO_MANY_ARGS,
-    EXEC_ALLOC_ERROR
+    EXEC_ALLOC_ERROR,
+	EXEC_ERROR_INVALID_OPTION,
+	EXEC_INVALID_IDENTIFIER
 }	t_exec_status;
+
+t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline);
+
 
 #endif

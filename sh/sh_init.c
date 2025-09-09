@@ -1,4 +1,4 @@
-#include "shell.h"
+#include "shell_internal.h"
 
 t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name)
 {

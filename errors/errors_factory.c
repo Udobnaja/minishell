@@ -35,7 +35,7 @@ static const char *(*err_resolver(t_err_domain domain))(int)
         [ERR_EXEC] = err_exec_msg};
     const size_t size = sizeof table / sizeof *table;
 
-    if (domain < 0 || domain >= (int)size)
+    if (domain < 0 || domain >= size)
         return NULL;
     return table[domain];
 }

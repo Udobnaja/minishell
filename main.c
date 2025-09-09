@@ -11,6 +11,22 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	const char *sh_name;
 
+	t_pipeline pipeline;
+	t_cmd *cmd = malloc(sizeof(t_cmd));
+	char **argv_cmd = malloc(3 * sizeof(char *));
+	t_cmd **cmds = malloc(sizeof(t_cmd *));
+	cmd->name = "export";
+	argv_cmd[0] = "export";
+	argv_cmd[1] = NULL;
+	// argv_cmd[2] = NULL;
+	cmd->argv = argv_cmd;
+	cmd->redirect_list = NULL;
+	cmd->builtin_kind = BUILTIN_EXPORT;
+	cmds[0] = cmd;
+
+	pipeline.count = 1;
+	pipeline.cmds = cmds;
+
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
 	else
@@ -31,6 +47,7 @@ int main(int argc, char **argv, char **envp)
 			add_history(line);
 			sh_parse(line);
 		}		
+		mock_exec(&shell, &pipeline);	
 		free(line);
 		line = NULL;
 	}

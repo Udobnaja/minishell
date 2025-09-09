@@ -3,7 +3,6 @@
 
 # include "env.h"
 # include "libft.h"
-# include "errors.h"
 # include "parser.h"
 
 typedef struct s_shell

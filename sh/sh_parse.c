@@ -1,4 +1,4 @@
-#include "shell.h"
+#include "shell_internal.h"
 
 static t_lex_status		sh_lex(const char *str, t_token_list *token_list);
 static t_parser_status	sh_pre_parse(t_token_list *token_list);

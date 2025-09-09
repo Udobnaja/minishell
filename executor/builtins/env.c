@@ -1,4 +1,4 @@
-#include "../executor.h"
+#include "executor_internal.h"
 
 t_exec_status env(t_shell *sh, const t_cmd cmd)
 {

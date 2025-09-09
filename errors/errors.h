@@ -28,6 +28,7 @@ typedef union u_err_payload
 	int			errno_val;
 	const char	*token;
 	char		*path;
+	const char	*identifier;
 	char		*command;
 }	t_err_payload;
 
