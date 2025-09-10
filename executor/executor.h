@@ -9,7 +9,8 @@ typedef enum e_exec_status {
 	EXEC_TOO_MANY_ARGS,
     EXEC_ALLOC_ERROR,
 	EXEC_ERROR_INVALID_OPTION,
-	EXEC_INVALID_IDENTIFIER
+	EXEC_INVALID_IDENTIFIER,
+	EXEC_ERR_PWD
 }	t_exec_status;
 
 t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline);
