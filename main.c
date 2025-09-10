@@ -32,7 +32,8 @@ int main(int argc, char **argv, char **envp)
 	else
 		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
-	if (sh_env_init(&shell, envp, sh_name) != ENV_OK)
+	if (sh_env_status_is_fatal(
+		sh_env_init(&shell, envp, sh_name)))
 		return (1);
 	
 	char *line;
@@ -54,4 +55,3 @@ int main(int argc, char **argv, char **envp)
 	env_destroy(&shell.env_store);
 	return (0);
 }
-

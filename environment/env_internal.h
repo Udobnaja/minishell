@@ -1,8 +1,9 @@
 #ifndef ENV_INTERNAL_H
 # define ENV_INTERNAL_H
 
-# include "env.h"
+# include "utils.h"
 # include "libft.h"
+# include "env.h"
 
 typedef struct s_env
 {

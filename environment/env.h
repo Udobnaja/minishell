@@ -7,6 +7,7 @@ typedef struct s_env_store t_env_store;
 
 typedef enum e_env_status {
 	ENV_OK = 0,
+	ENV_WARN_NO_CWD,
 	ENV_ALLOC_ERROR
 }	t_env_status;
 

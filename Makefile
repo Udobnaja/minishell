@@ -7,11 +7,14 @@ LIBFT := $(LIBFT_DIR)/libft.a
 LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 
 CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
-	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors
+	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils
 
 SH_SRC := \
 	sh/sh_init.c \
 	sh/sh_parse.c
+
+UTILS_SRC := \
+	utils/u_getcwd.c
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
@@ -57,6 +60,7 @@ ERRORS_SRC := \
 SRC := \
 	main.c \
 	$(SH_SRC) \
+	$(UTILS_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
