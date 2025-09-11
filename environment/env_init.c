@@ -9,10 +9,7 @@ t_env_status 	env_empty_init(t_env_store *store)
 	status = env_set_current_pwd(store);
 	if (status != ENV_OK)
 		return (status);
-	status = env_set_shlvl(store, "1");
-	if (status != ENV_OK)
-		return (status);
-	return (env_set(store, "OLDPWD", NULL));	
+	return (env_set_shlvl(store, "1"));
 }
 
 t_env_status 	env_init_from_envp(

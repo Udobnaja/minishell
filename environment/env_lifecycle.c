@@ -18,6 +18,12 @@ t_env_status 	env_init(t_env_store *store, char *const envp[], const char *sh_na
 		status = env_init_from_envp(store, envp);
 	if (status != ENV_OK)
 		return (status);
+	if (!env_lookup(store, "OLDPWD"))
+	{
+		status = env_set(store, "OLDPWD", NULL);
+		if (status != ENV_OK)
+			return (status);
+	}
 	return (env_set_start_underscore(store, sh_name));
 }
 
