@@ -42,8 +42,8 @@ t_exec_status unset(t_shell *sh, const t_cmd cmd)
         return EXEC_OK;
     if (exec_is_invalid_option(cmd.argv[1]))
     {
-        err_print(ERR_EXEC, EXEC_ERROR_INVALID_OPTION, (t_err_payload){0});
-        return EXEC_ERROR_INVALID_OPTION;
+        err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, (t_err_payload){0});
+        return EXEC_ERR_INVALID_OPTION;
     }
     while(cmd.argv[i] != NULL)
     {

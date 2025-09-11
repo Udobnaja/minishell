@@ -62,7 +62,7 @@ t_exec_status exec_check_identifier(char *str)
         i++;
     key = ft_substr(str, 0, (size_t)(i));
     if(!key)
-        return EXEC_ALLOC_ERROR;
+        return EXEC_ALLOC_ERR;
     is_key_valid = env_key_is_valid(key);
     free(key);
     if (is_key_valid)
@@ -73,7 +73,7 @@ t_exec_status exec_check_identifier(char *str)
 t_exec_status export_no_value(t_env_store *store, char *av)
 {
     if(env_set(store, av, NULL) != ENV_OK)
-        return EXEC_ALLOC_ERROR;
+        return EXEC_ALLOC_ERR;
     return EXEC_OK;
 }
 
@@ -85,10 +85,10 @@ t_exec_status export_set_pairs(t_env_store *store, char *av, char *eqpos)
 
     key = ft_substr(av, 0, (size_t)(eqpos - av));
     if(!key)
-        return EXEC_ALLOC_ERROR;
+        return EXEC_ALLOC_ERR;
     value = eqpos + 1;
     if(env_set(store, key, value) != ENV_OK)
-        result = EXEC_ALLOC_ERROR;
+        result = EXEC_ALLOC_ERR;
     else    
         result = EXEC_OK;  
     free(key);
@@ -119,7 +119,7 @@ t_exec_status export_if_no_av(t_env_store *store)
         return EXEC_OK;
     pairs = env_pairs_dup(store);
     if (!pairs)
-        return EXEC_ALLOC_ERROR;
+        return EXEC_ALLOC_ERR;
     exec_sort_list(pairs, size);
     export_print_list(pairs, size);
     env_pairs_free(pairs, size);
@@ -128,7 +128,7 @@ t_exec_status export_if_no_av(t_env_store *store)
 
 bool exec_is_status_fatal(t_exec_status status)
 {
-    return(status == EXEC_ALLOC_ERROR);
+    return(status == EXEC_ALLOC_ERR);
 }
 
 t_exec_status export(t_shell *sh, const t_cmd cmd)
@@ -144,7 +144,7 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     i = 1;
     if (exec_is_invalid_option(cmd.argv[1]))
     {
-        status = EXEC_ERROR_INVALID_OPTION;
+        status = EXEC_ERR_INVALID_OPTION;
         err_print(ERR_EXEC, status, payload);
         return status;
     }

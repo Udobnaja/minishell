@@ -15,7 +15,7 @@ void	err_print(t_err_domain domain, int code, t_err_payload payload)
 		else if (error.domain == ERR_PARSER && error.payload.token)  
 			ft_eprintf(error.msg, error.payload.token);
 		else if (error.domain == ERR_EXEC && error.payload.identifier)
-			ft_eprintf(error.msg, error.payload.token);
+			ft_eprintf(error.msg, error.payload.identifier);
 		else
 			ft_putstr_fd(error.msg, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);	

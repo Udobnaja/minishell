@@ -2,6 +2,7 @@
 # define EXECUTOR_INTERNAL_H
 
 #include <stdbool.h>
+#include <errno.h>
 # include "libft.h"
 # include "env.h"
 
