@@ -1,50 +1,101 @@
 
 #include "heredoc.h"
 
-// TODO: status
-
-static int hd_is_end_of_key(char c) {
-    return (ft_isspace(c) || c == '\'' || c == '"');
+static int heredoc_end_of_key(char c) {
+    if (ft_isspace(c) || c == '\'' || c == '"' || c == '$')
+        return (1);
+    return !(ft_isalnum(c) || c == '_');
 }
 
-// heredoc_write
-// static char *heredoc_expand 
-
-static ssize_t hd_write_until_key(char *str, int fd)
+static t_heredoc_status heredoc_write_until_expansion(char *str, int fd, size_t *consumed)
 {
 	size_t i;
 
 	i = 0;
 	while (str[i] && str[i] != '$')
 		i++;
-	return (write(fd, str, i));
+	if (write(fd, str, i) < 0)
+		return (HEREDOC_WRITE_ERROR);
+	*consumed += i;	
+	return (HEREDOC_OK);
 }
 
-static ssize_t hd_write_key(char *str, int fd)
+char *heredoc_create_env_key(char *str)
+{
+	size_t	i;
+	char	*key;
+
+	i = 1;
+	if (str[i] == '?')
+		i++;
+	else if (str[i] && (ft_isalpha(str[i]) || str[i] == '_'))
+	{
+		i++;
+		while(str[i] && !heredoc_end_of_key(str[i]))
+			i++;
+	}	
+	key = malloc(i + 1);
+	if (!key)
+		return NULL;
+	ft_memcpy(key, str, i);
+	key[i] = '\0';
+	return (key);
+}
+
+t_heredoc_status heredoc_write_expansion(char *str, int fd, t_shell *sh, size_t *consumed)
+{
+	char   *key;
+	char   *expanded;
+
+	key = heredoc_create_env_key(str);
+	if (!key)
+		return (HEREDOC_ALLOC_ERROR);	
+	expanded = expn_expand(key, sh->env_store, sh->last_status);
+	if (!expanded)
+	{
+		free(key);
+		return (HEREDOC_ALLOC_ERROR);
+	}
+	if (ft_putstr_fd(expanded, fd) < 0)
+	{
+		free(key);
+		free(expanded);
+		return (HEREDOC_WRITE_ERROR);
+	}	
+	*consumed += (ft_strlen(key));	
+	free(key);
+	free(expanded);
+	return (HEREDOC_OK);
+}
+
+t_heredoc_status heredoc_expand(char *document, int fd, t_shell *sh)
 {
 	size_t i;
-	char *key;
-	ssize_t write_result;
+	t_heredoc_status status;
 
 	i = 0;
-	while(str[i] && hd_is_end_of_key(str[i]))
-		i++;
-	key = malloc(i + 1);
-	if (key)
-		return (-1);
-	ft_memcpy(key, str, i);
-	key[i + 1] = '\0';
-	// try to do expansion here
-
-	// not forgot to free borrow thing
-	write_result = write(fd, key, i); // i + 1. will be \0
-	free(key);
-	return (write_result);
+	while (document[i])
+	{	
+		status = heredoc_write_until_expansion(document + i, fd, &i);
+		if (status != HEREDOC_OK)
+				return (status);
+		if (document[i] == '$')
+		{
+			status = heredoc_write_expansion(document + i, fd, sh, &i);
+			if (status != HEREDOC_OK)
+				return (status);
+		}
+	}
+	if (ft_putstr_fd("\n", fd) < 0)
+		return (HEREDOC_WRITE_ERROR);
+	return (HEREDOC_OK);	
 }
 
-void hd_read_write(char *eof, int fd, int has_expansion)
+
+t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_shell *sh)
 {
 	char *line;
+	t_heredoc_status status;
 
 	while(1)
 	{
@@ -54,38 +105,27 @@ void hd_read_write(char *eof, int fd, int has_expansion)
 		if (ft_strcmp(line, eof) == 0)
 		{
 			free(line);
-			line = NULL;
-			return;
+			return (HEREDOC_OK);
 		}
 		if (!has_expansion)
 		{
-			if (ft_putendl_fd(fd, line) < 0)
-				return ; // TODO: throw error
+			if (ft_putendl_fd(line, fd) < 0)
+			{
+				free(line);
+				return (HEREDOC_WRITE_ERROR);
+			}
 		}
 		else
 		{
-			size_t i;
-			ssize_t write_result;
-
-			i = 0;
-			while (line[i])
-			{	
-				write_result = hd_write_until_key(line + i, fd);
-				if (write_result < 0)
-					return ; // TODO: throw error
-				i += write_result;
-				if (line[i] == '$')
-				{
-					write_result = hd_write_key(line + i, fd);
-					if (write_result < 0)
-						return ; // TODO: throw error
-					i += write_result;
-				}
+			status = heredoc_expand(line, fd, sh);
+			if (status != HEREDOC_OK)
+			{
+				free(line);
+				return (status);
 			}
-			if (write(fd, "\n", 1) < 0)
-				return ; // TODO: throw error
 		}		
 		free(line);
 		line = NULL;
 	}
+	return (HEREDOC_OK);
 }
