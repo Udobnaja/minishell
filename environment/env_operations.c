@@ -30,6 +30,8 @@ t_env_status	env_set_internal(t_env_store *store, char *key, char *value)
 	if (node)
 	{
 		free(key);
+		if (!value)
+			return (ENV_OK);	
 		free(node->value);
 		node->value = value;
 		return (ENV_OK);
