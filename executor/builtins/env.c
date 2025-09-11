@@ -12,8 +12,8 @@ t_exec_status env(t_shell *sh, const t_cmd cmd)
     envp = env_to_envp(sh->env_store);
     if(!envp)
     {
-        err_print(ERR_EXEC, EXEC_ALLOC_ERROR, (t_err_payload){0}); // TODO: move lvl up
-        return EXEC_ALLOC_ERROR;
+        err_print(ERR_EXEC, EXEC_ALLOC_ERR, (t_err_payload){0}); // TODO: move lvl up
+        return EXEC_ALLOC_ERR;
     }
     i = 0;
     while(envp[i])

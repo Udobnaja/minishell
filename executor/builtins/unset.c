@@ -10,9 +10,14 @@ t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
     } else if (cmd.builtin_kind == BUILTIN_UNSET)
     {
         return unset(sh, cmd);
-    } else if (cmd.builtin_kind == BUILTIN_EXPORT)
+    } 
+    else if (cmd.builtin_kind == BUILTIN_EXPORT)
     {
         return export(sh, cmd);
+    } 
+    else if (cmd.builtin_kind == BUILTIN_PWD)
+    {
+        return pwd(sh, cmd);
     } 
     return (EXEC_OK);
 }
@@ -37,8 +42,8 @@ t_exec_status unset(t_shell *sh, const t_cmd cmd)
         return EXEC_OK;
     if (exec_is_invalid_option(cmd.argv[1]))
     {
-        err_print(ERR_EXEC, EXEC_ERROR_INVALID_OPTION, (t_err_payload){0});
-        return EXEC_ERROR_INVALID_OPTION;
+        err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, (t_err_payload){0});
+        return EXEC_ERR_INVALID_OPTION;
     }
     while(cmd.argv[i] != NULL)
     {
