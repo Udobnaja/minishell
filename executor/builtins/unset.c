@@ -19,19 +19,19 @@ t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
     {
         return pwd(sh, cmd);
     } 
+    else if (cmd.builtin_kind == BUILTIN_PWD)
+    {
+        return cd(sh, cmd);
+    } 
     return (EXEC_OK);
 }
 bool exec_is_invalid_option(const char *str)
 {
-    if(!str || str[0] != '-')
+    if(!str)
         return(false);
-    if(str[1] =='\0')
+    if(str[0] == '-')
         return(true);
-    if(str[1] != '-')
-        return(true);
-    if(str[1] == '-' && str[2] == '\0')
-        return(false);
-    return(true);
+    return(false);
 }
 t_exec_status unset(t_shell *sh, const t_cmd cmd)
 {

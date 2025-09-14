@@ -21,7 +21,7 @@ int main(int argc, char **argv, char **envp)
 	// argv_cmd[2] = NULL;
 	cmd->argv = argv_cmd;
 	cmd->redirect_list = NULL;
-	cmd->builtin_kind = BUILTIN_PWD;
+	cmd->builtin_kind = BUILTIN_CD;
 	cmds[0] = cmd;
 
 	pipeline.count = 1;
