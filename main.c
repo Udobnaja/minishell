@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 		if (*line)
 		{
 			add_history(line);
-			msh_parse(line);
+			msh_parse(line, &shell);
 		}		
 		mock_exec(&shell, &pipeline);	
 		free(line);

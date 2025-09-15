@@ -12,7 +12,8 @@
 # define SHELL_NAME "minishell"
 
 t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name);
-t_parser_status	msh_parse(const char *str);
+t_parser_status	msh_parse(const char *str, t_shell *shell);
 int				msh_env_status_is_fatal(t_env_status status);
+t_parser_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh);
 
 #endif

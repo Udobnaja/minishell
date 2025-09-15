@@ -68,12 +68,15 @@ SRC := \
 	main.c \
 	msh_init.c \
 	msh_parse.c \
+	msh_heredoc.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
-	$(PARSE_SRC)
+	$(PARSE_SRC) \
+	$(HEREDOC_SRC) \
+	$(EXPANSION_SRC)
 
 OBJ := $(SRC:.c=.o)
 
