@@ -32,8 +32,8 @@ int main(int argc, char **argv, char **envp)
 	else
 		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
-	if (sh_env_status_is_fatal(
-		sh_env_init(&shell, envp, sh_name)))
+	if (msh_env_status_is_fatal(
+		msh_env_init(&shell, envp, sh_name)))
 		return (1);
 	
 	char *line;
@@ -46,7 +46,7 @@ int main(int argc, char **argv, char **envp)
 		if (*line)
 		{
 			add_history(line);
-			sh_parse(line);
+			msh_parse(line);
 		}		
 		mock_exec(&shell, &pipeline);	
 		free(line);

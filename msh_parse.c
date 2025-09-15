@@ -1,10 +1,10 @@
-#include "shell_internal.h"
+#include "minishell.h"
 
 static t_lex_status		sh_lex(const char *str, t_token_list *token_list);
 static t_parser_status	sh_pre_parse(t_token_list *token_list);
 static const char		*sh_token_to_char(t_token_type type);
 
-t_parser_status	sh_parse(const char *str)
+t_parser_status	msh_parse(const char *str)
 {
 	t_token_list	*token_list;
 	t_parser_status	status;

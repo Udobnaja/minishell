@@ -27,9 +27,4 @@ typedef struct s_shell
 int				sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
 int				sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
 
-// TODO: probably not sh layer — miinishel layer
-t_env_status	sh_env_init(t_shell *shell, char **envp, const char *sh_name);
-t_parser_status	sh_parse(const char *str);
-int				sh_env_status_is_fatal(t_env_status status);
-
 #endif

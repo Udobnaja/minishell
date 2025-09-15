@@ -18,7 +18,7 @@ t_heredoc_result	heredoc_write_to_tmpfile(t_shell *sh, char *eof, int has_expans
 	status = heredoc_to_fd(eof, fd, has_expansion, sh);
 	if (status != HEREDOC_OK)
 		return (close(fd), unlink(path), heredoc_write_err(status));
-	fd2 = open(path, O_RDONLY | SH_O_CLOEXEC);
+	fd2 = open(path, O_RDONLY);
 	if (fd2 < 0)
     {
       result = heredoc_err(errno);
