@@ -12,11 +12,11 @@
 
 #include "libft.h"
 
-static size_t	trimcheck(char c, char const *set)
+static int	ft_shouldtrim(char c, const char *set)
 {
 	while (*set)
 	{
-		if (*set == c)
+		if (c == *set)
 			return (1);
 		set++;
 	}
@@ -25,20 +25,23 @@ static size_t	trimcheck(char c, char const *set)
 
 char	*ft_strtrim(char const *s1, char const *set)
 {
-	char	*trimmed;
-	size_t	start;
-	size_t	end;
+	size_t	left;
+	size_t	right;
+	size_t	alloc_size;
+	char	*alloc_memory;
 
-	if (!s1)
-		return (ft_strdup(""));
-	start = 0;
-	end = ft_strlen(s1)-1;
-	while (trimcheck(s1[start], set))
-		start++;
-	while (trimcheck(s1[end], set))
-		end--;
-	trimmed = ft_substr(s1 + start, 0, end - start + 1);
-	if (!trimmed)
+	if (!s1 || !set)
 		return (NULL);
-	return (trimmed);
+	left = 0;
+	while (s1[left] && ft_shouldtrim(s1[left], set))
+		left++;
+	right = ft_strlen(s1);
+	while (right > left && ft_shouldtrim(s1[right - 1], set))
+		right--;
+	alloc_size = (right - left) + 1;
+	alloc_memory = malloc(alloc_size * sizeof(char));
+	if (!alloc_memory)
+		return (NULL);
+	ft_strlcpy(alloc_memory, s1 + left, alloc_size);
+	return (alloc_memory);
 }

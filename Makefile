@@ -11,7 +11,8 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
 
 SH_SRC := \
 	sh/sh_init.c \
-	sh/sh_parse.c
+	sh/sh_parse.c \
+	sh/sh_tempdir.c
 
 UTILS_SRC := \
 	utils/u_getcwd.c \
@@ -31,7 +32,7 @@ ENV_SRC := \
 HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
-	heredoc/temp_file.c
+	heredoc/tempfile.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
