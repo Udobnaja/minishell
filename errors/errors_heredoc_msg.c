@@ -6,6 +6,9 @@ const char *err_heredoc_msg(int code)
     	[HEREDOC_ABORTED] = "", // TODO: Not sure
 		[HEREDOC_CREATE_FAIL] = "cannot create temp file for here-document: Too many open files",
 		[HEREDOC_EXCEED_LIMIT] = "maximum here-document count exceeded",
+		[HEREDOC_ALLOC_ERROR] = "Cannot allocate memory",
+		[HEREDOC_WRITE_ERROR] = "Input/output error",
+		[HEREDOC_ERRNO] = "%s"  
 	};
 	const int size = sizeof(map) / sizeof(*map);
 

@@ -1,6 +1,14 @@
 #ifndef ERRORS_INTERNAL_H
 # define ERRORS_INTERNAL_H
 
+# include <stdio.h>
+# include <strings.h>
+# include "libft.h"
+# include "env.h"
+# include "parser.h"
+# include "expansion/expansion.h"
+# include "heredoc.h"
+# include "executor.h"
 # include "errors.h"
 
 typedef struct s_error

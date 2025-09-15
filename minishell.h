@@ -7,6 +7,7 @@
 # include "shell.h"
 # include "pipeline.h"
 # include "executor.h"
+# include "heredoc.h"
 # include "errors.h"
 
 # define SHELL_NAME "minishell"
