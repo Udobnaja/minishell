@@ -85,6 +85,7 @@ static t_parser_status	msh_pre_parse(t_token_list *token_list, t_shell *shell)
 {
 	t_err_payload		payload;
 	t_pre_parse_result	result;
+	t_parser_status		status;
 
 	payload = (t_err_payload){0};
 	result = prs_pre_parse(token_list);
@@ -94,6 +95,8 @@ static t_parser_status	msh_pre_parse(t_token_list *token_list, t_shell *shell)
 		err_print(ERR_PARSER, result.status, payload);
 		return (result.status);
 	}
-
+	status = msh_pre_heredocs(token_list);
+	if (status != PARSE_OK)
+		return (status);
 	return (msh_prepare_heredocs(token_list, shell));
 }

@@ -68,6 +68,7 @@ SRC := \
 	main.c \
 	msh_init.c \
 	msh_parse.c \
+	msh_pre_heredoc.c \
 	msh_heredoc.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
