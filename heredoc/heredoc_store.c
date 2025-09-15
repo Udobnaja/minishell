@@ -2,6 +2,26 @@
 
 static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_store);
 
+void heredoc_store_clear(t_heredoc_store *store)
+{
+    size_t i;
+
+    if (!store)
+        return;
+    i = 0;
+    while (i < store->count)
+    {
+        if (store->entries[i].fd >= 0)
+            close(store->entries[i].fd);
+        i++;
+    }
+    
+    free(store->entries);
+    store->entries = NULL;
+    store->count = 0;
+    store->capacity = 0;
+}
+
 int	heredoc_store_add(t_heredoc_store *store, int fd)
 {
 	t_heredoc_entry	*entries;
@@ -10,7 +30,7 @@ int	heredoc_store_add(t_heredoc_store *store, int fd)
 	if (store->capacity == 0 || store->count >= store->capacity)
 	{
 		if (store->capacity == 0)
-			capacity = 16;
+			capacity = HEREDOC_STORE_CAPACITY;
 		else
 			capacity = store->capacity * 2;
 		entries = ft_calloc(capacity, sizeof(t_heredoc_entry));

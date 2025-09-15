@@ -52,6 +52,7 @@ int main(int argc, char **argv, char **envp)
 		free(line);
 		line = NULL;
 	}
+	heredoc_store_clear(shell.heredoc_store);
 	env_destroy(&shell.env_store);
 	return (0);
 }

@@ -28,7 +28,9 @@ t_parser_status	msh_parse(const char *str, t_shell *shell)
 		lex_destroy_token_list(&token_list);
 		return (PARSE_UNEXPECTED_TOKEN);
 	}
+	// TODO: create pipline
 	lex_destroy_token_list(&token_list);
+	heredoc_store_clear(shell->heredoc_store);
 	return (PARSE_OK);
 }
 
@@ -98,5 +100,11 @@ static t_parser_status	msh_pre_parse(t_token_list *token_list, t_shell *shell)
 	status = msh_pre_heredocs(token_list);
 	if (status != PARSE_OK)
 		return (status);
-	return (msh_prepare_heredocs(token_list, shell));
+	status = msh_prepare_heredocs(token_list, shell);
+	if (status != PARSE_OK)
+	{
+		heredoc_store_clear(shell->heredoc_store);
+		return (status);
+	}
+	return (status);
 }
