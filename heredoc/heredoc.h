@@ -3,6 +3,7 @@
 
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <sys/errno.h>
 # include "libft.h"
 # include "shell.h"
 # include "../expansion/expansion.h"

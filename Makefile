@@ -27,6 +27,10 @@ ENV_SRC := \
 	environment/env_pairs.c \
 	environment/env_key.c
 
+HEREDOC_SRC := \
+	heredoc/heredoc.c \
+	heredoc/heredoc_write.c
+
 PARSE_SRC := \
 	parser/lexer/lexer.c \
 	parser/lexer/lexer_lifecycle.c \
