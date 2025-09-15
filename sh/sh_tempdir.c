@@ -2,6 +2,8 @@
 
 static int	sh_cpy_tmpdir(char *dst, const char *src, size_t max_name_size);
 
+static int	sh_build_tmp_path(char *dst, const char *tempdir, const char *prefix, const char *suffix);
+
 int sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size)
 {
 	const char	*temp_dirs[5];
@@ -27,6 +29,41 @@ int sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size)
     return (-1);
 }
 
+int sh_mktmpfd(const t_env_store *env, char *path, const char *prefix)
+{
+	char			tempdir[SH_TMPDIR_MAX];
+	unsigned int	n;
+	char			*suff;
+	int				fd;
+
+	if (sh_get_tmpdir(env, tempdir, SH_TMPDIR_MAX) != 0)
+		return (-1);
+	n = 0;
+	while (n < 10000)
+	{
+		suff = ft_utoa(n);
+		if (!suff)
+		{
+			errno = ENOMEM;
+			return -1;
+		}
+		if (sh_build_tmp_path(path, tempdir, prefix, suff) != 0)
+		{
+			free(suff);
+			return (-1);
+		}		
+		free(suff);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY | SH_O_CLOEXEC, S_IRUSR | S_IWUSR);;
+        if (fd >= 0)
+			return fd;
+        if (errno != EEXIST && errno != EINTR)
+			return -1;
+		n++;
+	}
+	errno = EEXIST;
+    return (-1);
+}
+
 static int	sh_cpy_tmpdir(char *dst, const char *src, size_t max_name_size)
 {
 	size_t len;
@@ -41,4 +78,27 @@ static int	sh_cpy_tmpdir(char *dst, const char *src, size_t max_name_size)
     ft_memcpy(dst, src, len);
     dst[len] = '\0';
     return (0);
+}
+
+static int	sh_build_tmp_path(char *dst, const char *tempdir, const char *prefix, const char *suffix)
+{
+	const size_t	tempdir_len = ft_strlen(tempdir);
+	const size_t	prefix_len = ft_strlen(prefix);
+	const size_t	suffix_len = ft_strlen(suffix);
+	size_t			counter;
+
+	if (tempdir_len + 1 + prefix_len + 1 + suffix_len + 1 > SH_TMPPATH_MAX)
+	{
+		errno = ENAMETOOLONG;
+		return (-1); 
+	}
+	ft_memcpy(dst, tempdir, tempdir_len);
+	counter = tempdir_len;
+	dst[counter++] = '/';
+	ft_memcpy(dst + counter, prefix, prefix_len);
+	counter += prefix_len;
+	dst[counter++] = '_';
+	ft_memcpy(dst + counter, suffix, suffix_len);
+	dst[counter++] = '\0';
+	return (0);
 }

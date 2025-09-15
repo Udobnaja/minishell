@@ -19,4 +19,5 @@ typedef enum e_heredoc_status {
     HEREDOC_WRITE_ERROR
 }	t_heredoc_status;
 
+
 #endif

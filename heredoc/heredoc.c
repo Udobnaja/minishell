@@ -61,7 +61,7 @@ char *heredoc_create_env_key(const char *str)
 	return (key);
 }
 
-t_heredoc_status heredoc_write_expansion(const char *str, int fd, t_shell *sh, size_t *consumed)
+static t_heredoc_status heredoc_write_expansion(const char *str, int fd, t_shell *sh, size_t *consumed)
 {
 	char	*key;
 	char	*expanded;
@@ -89,7 +89,7 @@ t_heredoc_status heredoc_write_expansion(const char *str, int fd, t_shell *sh, s
 	return (HEREDOC_OK);
 }
 
-t_heredoc_status heredoc_write_line_expanded(int fd, const char *document, t_shell *sh)
+static t_heredoc_status heredoc_write_line_expanded(int fd, const char *document, t_shell *sh)
 {
 	size_t i;
 	t_heredoc_status status;
@@ -112,7 +112,7 @@ t_heredoc_status heredoc_write_line_expanded(int fd, const char *document, t_she
 	return (HEREDOC_OK);	
 }
 
-t_heredoc_status heredoc_write_line_raw(int fd, const char *document)
+static t_heredoc_status heredoc_write_line_raw(int fd, const char *document)
 {
 	if (heredoc_write(fd, document, ft_strlen(document)) != 0)
 		return (HEREDOC_WRITE_ERROR);
@@ -152,4 +152,48 @@ t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_shell *sh
 			return (status);	
 	}
 	return (HEREDOC_OK);
+}
+
+int	heredoc_write_to_tmpfile(t_shell *sh, char *eof, int has_expansion)
+{
+
+	int					fd;
+	int					fd2;
+	char				path[SH_TMPPATH_MAX];
+	t_heredoc_status	status;
+	int					r;
+	
+	fd = sh_mktmpfd(sh->env_store, path, "msh-thd");
+	if (fd < 0)
+		return (-1);
+	status = heredoc_to_fd(eof, fd, has_expansion, sh);
+	if (status != HEREDOC_OK)
+	{
+		close(fd);
+		if (status == HEREDOC_ALLOC_ERROR)
+			errno = ENOMEM;
+		else
+			errno = EIO;
+		unlink(path);
+		return (-1);
+	}	
+	fd2 = open(path, O_RDONLY | SH_O_CLOEXEC);
+	if (fd2 < 0)
+    {
+      r = errno;
+      unlink(path);
+      close (fd);
+      errno = r;
+      return (-1);
+    }
+	close(fd);
+	if (unlink (path) < 0)
+    {
+      r = errno;
+      close (fd2);
+      errno = r;
+      return (-1);
+    }
+
+	return (fd2);
 }
