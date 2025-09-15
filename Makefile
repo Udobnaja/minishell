@@ -14,7 +14,8 @@ SH_SRC := \
 	sh/sh_parse.c
 
 UTILS_SRC := \
-	utils/u_getcwd.c
+	utils/u_getcwd.c \
+	utils/u_file.c
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
@@ -29,7 +30,8 @@ ENV_SRC := \
 
 HEREDOC_SRC := \
 	heredoc/heredoc.c \
-	heredoc/heredoc_write.c
+	heredoc/heredoc_write.c \
+	heredoc/temp_file.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
