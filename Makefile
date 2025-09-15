@@ -32,7 +32,8 @@ ENV_SRC := \
 HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
-	heredoc/tempfile.c
+	heredoc/heredoc_write_line.c \
+	heredoc/heredoc_env_key.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
