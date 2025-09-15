@@ -1,4 +1,4 @@
-#include "heredoc.h"
+#include "heredoc_internal.h"
 
 static t_heredoc_result	heredoc_ok(int fd);
 static t_heredoc_result	heredoc_err(int errno_val);

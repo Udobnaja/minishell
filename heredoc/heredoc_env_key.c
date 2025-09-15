@@ -1,4 +1,4 @@
-#include "heredoc.h"
+#include "heredoc_internal.h"
 
 static int heredoc_end_of_key(const char c) {
     if (ft_isspace(c) || c == '\'' || c == '"' || c == '$')

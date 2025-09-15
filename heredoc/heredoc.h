@@ -1,12 +1,7 @@
 #ifndef HEREDOC_H
 # define HEREDOC_H
 
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <sys/errno.h>
-# include "libft.h"
 # include "shell.h"
-# include "../expansion/expansion.h"
 
 # define HEREDOC_MAX 16 // MB transfer it to sh 
 
@@ -27,13 +22,6 @@ typedef struct s_heredoc_result
 	int                 fd;
 }	t_heredoc_result;
 
-// TODO: internal _header ?
-
-t_heredoc_status	heredoc_write_line(int fd, const char *document, int has_expansion, t_shell *sh);
-int					heredoc_write(int fd, const char *buf, size_t len);
-char				*heredoc_create_env_key(const char *str);
-
-// TODO: public API
 t_heredoc_result	heredoc_write_to_tmpfile(t_shell *sh, char *eof, int has_expansion);
 
 #endif

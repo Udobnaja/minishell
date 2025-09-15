@@ -1,4 +1,4 @@
-#include "heredoc.h"
+#include "heredoc_internal.h"
 
 int heredoc_write(int fd, const char *buf, size_t len)
 {

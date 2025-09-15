@@ -1,5 +1,5 @@
 
-#include "heredoc.h"
+#include "heredoc_internal.h"
 
 static t_heredoc_status heredoc_write_line_expanded(int fd, const char *document, t_shell *sh);
 static t_heredoc_status heredoc_write_line_raw(int fd, const char *document);
