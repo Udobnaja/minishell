@@ -31,7 +31,8 @@ HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
 	heredoc/heredoc_write_line.c \
-	heredoc/heredoc_env_key.c
+	heredoc/heredoc_env_key.c \
+	heredoc/heredoc_store.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \

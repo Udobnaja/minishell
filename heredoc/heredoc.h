@@ -21,5 +21,6 @@ typedef struct s_heredoc_result
 }	t_heredoc_result;
 
 t_heredoc_result	heredoc_write_to_tmpfile(t_shell *sh, char *eof, int has_expansion);
+int					heredoc_store_add(t_heredoc_store *store, int fd);
 
 #endif

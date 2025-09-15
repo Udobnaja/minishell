@@ -1,44 +1,57 @@
 #include "minishell.h"
 
-static int	msh_heredoc_has_expansion(t_token_node *node);
-static char *msh_heredoc_cpy_pieces(char *delimetr, t_token_node *node);
-static char *msh_heredoc_make_delimetr(t_token_node *node);
+static int				msh_heredoc_has_expansion(t_token_node *node);
+static char				*msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node);
+static char				*msh_heredoc_make_delimeter(t_token_node *node);
+static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result);
 
 t_parser_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
 {
 	t_token_node		*cur;
+	t_parser_status		status;
 	t_heredoc_result	result;
-	int					has_expansion;
-	char				*delimetr;
-	t_err_payload	payload;
 
-	payload = (t_err_payload){0};
 	cur = token_list->head;
 	while (cur)
 	{
 		if (cur->token->type == T_HEREDOC)
 		{
-			has_expansion = msh_heredoc_has_expansion(cur->next);
-			delimetr = msh_heredoc_make_delimetr(cur->next);
-			if (!delimetr)
+			status = msh_process_heredoc(cur, sh, &result);
+			if (status != PARSE_OK)
+				return (status);
+			if (heredoc_store_add(sh->heredoc_store, result.fd) != 0)
 			{
-				err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, payload);
+				close(result.fd);
+				err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, (t_err_payload){0});
 				return (PARSE_ALLOC_ERROR);
 			}
-				
-			result = heredoc_write_to_tmpfile(sh, delimetr, has_expansion);
-			if (result.status != HEREDOC_OK)
-			{
-				free(delimetr);
-				payload.errno_val = result.errno_val;
-				err_print(ERR_HEREDOC, result.status, payload);
-				return (PARSE_HEREDOC_ERROR);
-			}
-			free(delimetr);
-			// TODO: write fd
 		}
 		cur = cur->next;
 	}    
+	return (PARSE_OK);
+}
+
+static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result)
+{
+	const int			has_expansion = msh_heredoc_has_expansion(heredoc_node->next);
+	char				*delimeter;
+	t_err_payload		payload;
+
+	delimeter = msh_heredoc_make_delimeter(heredoc_node->next);
+	payload = (t_err_payload){0};
+	if (!delimeter)
+	{
+		err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, payload);
+		return (PARSE_ALLOC_ERROR);
+	}	
+	*result = heredoc_write_to_tmpfile(sh, delimeter, has_expansion);
+	free(delimeter);
+	if (result->status != HEREDOC_OK)
+	{
+		payload.errno_val = result->errno_val;
+		err_print(ERR_HEREDOC, result->status, payload);
+		return (PARSE_HEREDOC_ERROR);
+	}
 	return (PARSE_OK);
 }
 
@@ -56,7 +69,7 @@ static int msh_heredoc_has_expansion(t_token_node *node)
 	return (1);
 }
 
-static char *msh_heredoc_cpy_pieces(char *delimetr, t_token_node *node)
+static char *msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node)
 {
 	size_t	len;
 	size_t	counter;
@@ -68,19 +81,19 @@ static char *msh_heredoc_cpy_pieces(char *delimetr, t_token_node *node)
 	while (i < node->token->word.count)
 	{
 		len = ft_strlen(node->token->word.pieces[i].text);
-		ft_memcpy(delimetr + counter, node->token->word.pieces[i].text, len);
+		ft_memcpy(delimeter + counter, node->token->word.pieces[i].text, len);
 		counter += len;
 		i++;
 	}
-	delimetr[counter] = '\0';
-	return (delimetr);
+	delimeter[counter] = '\0';
+	return (delimeter);
 }
 
-static char *msh_heredoc_make_delimetr(t_token_node *node)
+static char *msh_heredoc_make_delimeter(t_token_node *node)
 {
 	size_t	i;
 	size_t	len;
-	char	*delimetr;
+	char	*delimeter;
 
 	i = 0;
 	len = 0;
@@ -89,8 +102,8 @@ static char *msh_heredoc_make_delimetr(t_token_node *node)
 		len += ft_strlen(node->token->word.pieces[i].text);
 		i++;
 	}
-	delimetr = malloc(len + 1);
-	if (!delimetr)
+	delimeter = malloc(len + 1);
+	if (!delimeter)
 		return (NULL);
-	return (msh_heredoc_cpy_pieces(delimetr, node));
+	return (msh_heredoc_cpy_pieces(delimeter, node));
 }

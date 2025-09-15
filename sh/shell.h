@@ -17,11 +17,24 @@
 #  define SH_O_CLOEXEC 0
 # endif
 
+typedef struct s_heredoc_entry
+{
+    int	fd;
+}	t_heredoc_entry;
+
+typedef struct s_heredoc_store
+{
+    t_heredoc_entry *entries;
+    size_t          count;
+	size_t			capacity;
+}	t_heredoc_store;
+
 typedef struct s_shell
 {
-	t_env_store	*env_store;
-	int			last_status;
-	char		*history_path;
+	t_env_store		*env_store;
+	int				last_status;
+	char			*history_path;
+	t_heredoc_store *heredoc_store;
 }	t_shell;
 
 int				sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
