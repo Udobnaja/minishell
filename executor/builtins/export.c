@@ -131,7 +131,7 @@ bool exec_is_status_fatal(t_exec_status status)
     return(status == EXEC_ALLOC_ERR);
 }
 
-t_exec_status export(t_shell *sh, const t_cmd cmd)
+t_exec_status export_process_argv(t_env_store *store, char **av)
 {
     size_t i;
     t_exec_status tmp_status;
@@ -139,25 +139,17 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     t_err_payload payload;
 
     payload = (t_err_payload){0};
-    if (!cmd.argv[1])
-        return export_if_no_av(sh->env_store);
-    i = 1;
-    if (exec_is_invalid_option(cmd.argv[1]))
-    {
-        status = EXEC_ERR_INVALID_OPTION;
-        err_print(ERR_EXEC, status, payload);
-        return status;
-    }
     status = EXEC_OK;
-    while(cmd.argv[i])
+    i = 0;
+    while(av[i])
     {
-        tmp_status = export_apply(sh->env_store, cmd.argv[i]);
+        tmp_status = export_apply(store, av[i]);
         if (exec_is_status_fatal(tmp_status))
             return (tmp_status);
         else if (tmp_status != EXEC_OK)
         {
             status = tmp_status;
-            payload.identifier = cmd.argv[i];
+            payload.identifier = av[i];
             err_print(ERR_EXEC, status, payload);
         }
         i++;
@@ -165,3 +157,21 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     return status;
 }
 
+t_exec_status export(t_shell *sh, const t_cmd cmd)
+{
+    t_err_payload payload;
+    t_exec_status status;
+
+    payload = (t_err_payload){0};
+    if (!cmd.argv[1])
+        return export_if_no_av(sh->env_store);
+    
+    if (exec_is_invalid_option(cmd.argv[1]))
+    {
+        status = EXEC_ERR_INVALID_OPTION;
+        err_print(ERR_EXEC, status, payload);
+        return status;
+    }
+    return export_process_argv(sh->env_store, &cmd.argv[1]);
+   
+}
