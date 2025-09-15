@@ -1,7 +1,7 @@
 
 #include "heredoc.h"
 
-static int heredoc_end_of_key(char c) {
+static int heredoc_end_of_key(const char c) {
     if (ft_isspace(c) || c == '\'' || c == '"' || c == '$')
         return (1);
     return !(ft_isalnum(c) || c == '_');
@@ -15,7 +15,7 @@ static int heredoc_write(int fd, const char *buf, size_t len)
 
 	nw = write(fd, buf, len);
 	e = errno;
-	if (nw != len)
+	if (nw != (ssize_t)len)
 	{
 		if (e == 0)
 			e = ENOSPC;
@@ -24,7 +24,7 @@ static int heredoc_write(int fd, const char *buf, size_t len)
 	return (0);
 }
 
-static t_heredoc_status heredoc_write_until_expansion(char *str, int fd, size_t *consumed)
+static t_heredoc_status heredoc_write_until_expansion(const char *str, int fd, size_t *consumed)
 {
 	size_t i;
 	int e;
@@ -39,7 +39,7 @@ static t_heredoc_status heredoc_write_until_expansion(char *str, int fd, size_t 
 	return (HEREDOC_OK);
 }
 
-char *heredoc_create_env_key(char *str)
+char *heredoc_create_env_key(const char *str)
 {
 	size_t	i;
 	char	*key;
@@ -61,7 +61,7 @@ char *heredoc_create_env_key(char *str)
 	return (key);
 }
 
-t_heredoc_status heredoc_write_expansion(char *str, int fd, t_shell *sh, size_t *consumed)
+t_heredoc_status heredoc_write_expansion(const char *str, int fd, t_shell *sh, size_t *consumed)
 {
 	char	*key;
 	char	*expanded;
@@ -89,7 +89,7 @@ t_heredoc_status heredoc_write_expansion(char *str, int fd, t_shell *sh, size_t 
 	return (HEREDOC_OK);
 }
 
-t_heredoc_status heredoc_expand(char *document, int fd, t_shell *sh)
+t_heredoc_status heredoc_write_line_expanded(int fd, const char *document, t_shell *sh)
 {
 	size_t i;
 	t_heredoc_status status;
@@ -112,6 +112,24 @@ t_heredoc_status heredoc_expand(char *document, int fd, t_shell *sh)
 	return (HEREDOC_OK);	
 }
 
+t_heredoc_status heredoc_write_line_raw(int fd, const char *document)
+{
+	if (heredoc_write(fd, document, ft_strlen(document)) != 0)
+		return (HEREDOC_WRITE_ERROR);
+	if (heredoc_write(fd, "\n", 1) != 0)
+		return (HEREDOC_WRITE_ERROR);
+	return (HEREDOC_OK);
+}
+
+t_heredoc_status heredoc_write_line(int fd, const char *document, int has_expansion, t_shell *sh)
+{
+
+	if (!has_expansion)
+		return (heredoc_write_line_raw(fd, document));
+	else
+		return (heredoc_write_line_expanded(fd, document, sh));
+}
+
 
 t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_shell *sh)
 {
@@ -128,30 +146,10 @@ t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_shell *sh
 			free(line);
 			return (HEREDOC_OK);
 		}
-		if (!has_expansion)
-		{
-			if (heredoc_write(fd, line, ft_strlen(line)) != 0)
-			{
-				free(line);
-				return (HEREDOC_WRITE_ERROR);
-			}
-			if (heredoc_write(fd, "\n", 1) != 0)
-			{
-				free(line);
-				return (HEREDOC_WRITE_ERROR);
-			}	
-		}
-		else
-		{
-			status = heredoc_expand(line, fd, sh);
-			if (status != HEREDOC_OK)
-			{
-				free(line);
-				return (status);
-			}
-		}		
+		status = heredoc_write_line(fd, line, has_expansion, sh);
 		free(line);
-		line = NULL;
+		if (status != HEREDOC_OK)
+			return (status);	
 	}
 	return (HEREDOC_OK);
 }
