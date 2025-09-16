@@ -2,6 +2,14 @@
 
 static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_store);
 
+t_heredoc_store *heredoc_store_create(void)
+{
+	t_heredoc_store *s;
+
+	s = ft_calloc(1, sizeof *s);
+	return s;
+}
+
 void heredoc_store_clear(t_heredoc_store *store)
 {
     size_t i;
@@ -56,4 +64,12 @@ static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_sto
 		entries[i] = src_store->entries[i];
 		i++;
 	}
+}
+
+void heredoc_store_destroy(t_heredoc_store **store)
+{
+	if (!store || !*store) return;
+	heredoc_store_clear(*store);
+	free(*store);
+	*store = NULL;
 }

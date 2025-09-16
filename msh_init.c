@@ -1,6 +1,24 @@
 #include "minishell.h"
 
-t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name)
+static int msh_env_status_is_fatal(t_env_status status);
+static t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name);
+
+int msh_init(t_shell *shell, char **envp, const char *sh_name)
+{
+	if (msh_env_status_is_fatal(msh_env_init(shell, envp, sh_name)))
+		return (1);
+
+	shell->heredoc_store = heredoc_store_create();
+	if (!shell->heredoc_store)
+	{
+		env_destroy(&shell->env_store);
+		err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, (t_err_payload){0});
+    	return (1);
+	}
+	return (0);
+}
+
+static t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name)
 {
 	t_env_status	status;
 
@@ -21,7 +39,7 @@ t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name)
 	return (status);
 }
 
-int msh_env_status_is_fatal(t_env_status status)
+static int msh_env_status_is_fatal(t_env_status status)
 {
 	return (status == ENV_ALLOC_ERROR);
 }
