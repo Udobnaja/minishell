@@ -99,6 +99,6 @@ static int	sh_build_tmp_path(char *dst, const char *tempdir, const char *prefix,
 	counter += prefix_len;
 	dst[counter++] = '_';
 	ft_memcpy(dst + counter, suffix, suffix_len);
-	dst[counter++] = '\0';
+	dst[counter + suffix_len] = '\0';
 	return (0);
 }
