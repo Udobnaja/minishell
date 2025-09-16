@@ -32,8 +32,7 @@ int main(int argc, char **argv, char **envp)
 	else
 		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
-	if (msh_env_status_is_fatal(
-		msh_env_init(&shell, envp, sh_name)))
+	if (msh_init(&shell, envp, sh_name))
 		return (1);
 	
 	char *line;
@@ -52,7 +51,7 @@ int main(int argc, char **argv, char **envp)
 		free(line);
 		line = NULL;
 	}
-	heredoc_store_clear(shell.heredoc_store);
+	heredoc_store_destroy(&shell.heredoc_store);
 	env_destroy(&shell.env_store);
 	return (0);
 }
