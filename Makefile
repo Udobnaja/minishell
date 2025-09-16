@@ -7,14 +7,14 @@ LIBFT := $(LIBFT_DIR)/libft.a
 LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 
 CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
-	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils
+	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils -I./expansion -I./heredoc
 
 SH_SRC := \
-	sh/sh_init.c \
-	sh/sh_parse.c
+	sh/sh_tempdir.c
 
 UTILS_SRC := \
-	utils/u_getcwd.c
+	utils/u_getcwd.c \
+	utils/u_file.c
 
 ENV_SRC := \
 	environment/env_lifecycle.c \
@@ -26,6 +26,13 @@ ENV_SRC := \
 	environment/env_envp.c \
 	environment/env_pairs.c \
 	environment/env_key.c
+
+HEREDOC_SRC := \
+	heredoc/heredoc.c \
+	heredoc/heredoc_write.c \
+	heredoc/heredoc_write_line.c \
+	heredoc/heredoc_env_key.c \
+	heredoc/heredoc_store.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
@@ -60,12 +67,18 @@ ERRORS_SRC := \
 
 SRC := \
 	main.c \
+	msh_init.c \
+	msh_parse.c \
+	msh_pre_heredoc.c \
+	msh_heredoc.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
-	$(PARSE_SRC)
+	$(PARSE_SRC) \
+	$(HEREDOC_SRC) \
+	$(EXPANSION_SRC)
 
 OBJ := $(SRC:.c=.o)
 

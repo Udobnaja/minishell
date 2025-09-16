@@ -3,7 +3,7 @@
 const char *err_env_msg(int code) 
 {
 	static const char *map[] = {
-    	[ENV_ALLOC_ERROR] = "allocation failed"
+    	[ENV_ALLOC_ERROR] = "Cannot allocate memory"
 	};
 	const int size = sizeof(map) / sizeof(*map);
 

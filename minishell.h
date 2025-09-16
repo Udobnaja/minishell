@@ -4,10 +4,19 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# include "sh/shell.h"
-# include "pipeline/pipeline.h"
+# include "shell.h"
+# include "pipeline.h"
 # include "executor.h"
+# include "heredoc.h"
+# include "errors.h"
 
 # define SHELL_NAME "minishell"
+# define HEREDOC_MAX 16
+
+t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_name);
+t_parser_status	msh_parse(const char *str, t_shell *shell);
+int				msh_env_status_is_fatal(t_env_status status);
+t_parser_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh);
+t_parser_status msh_pre_heredocs(t_token_list *token_list);
 
 #endif

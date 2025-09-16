@@ -16,11 +16,17 @@ typedef enum e_redirect_type
 	REDIR_HEREDOC
 }	t_redirect_type;
 
+typedef union u_redirect_target
+{
+	char	*path; 
+    int		fd;
+}	t_redirect_target;
+
 typedef struct s_redirect
 {
 	t_io_stream			stream;
 	t_redirect_type		type;
-	char				*target;
+	t_redirect_target	target;
 	struct s_redirect	*next;
 }	t_redirect;
 

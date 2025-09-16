@@ -10,10 +10,10 @@ void	err_print(t_err_domain domain, int code, t_err_payload payload)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	if (err_has_payload(&error))
 	{
-		if (error.domain == ERR_LEXER && error.payload.token)
+		if ((error.domain == ERR_LEXER || error.domain == ERR_PARSER) && error.payload.token)
 			ft_eprintf(error.msg, error.payload.token);
-		else if (error.domain == ERR_PARSER && error.payload.token)  
-			ft_eprintf(error.msg, error.payload.token);
+		else if (error.domain == ERR_HEREDOC && error.payload.errno_val)
+       		ft_eprintf(error.msg, strerror(error.payload.errno_val));	
 		else if (error.domain == ERR_EXEC && error.payload.identifier)
 			ft_eprintf(error.msg, error.payload.identifier);
 		else

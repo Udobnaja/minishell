@@ -8,7 +8,8 @@ typedef enum e_parser_status {
 	PARSE_OK = 0,
 	PARSE_UNEXPECTED_TOKEN,
 	PARSE_ALLOC_ERROR,
-	PARSE_LEX_ERROR // TODO: Upper level
+	PARSE_LEX_ERROR, // TODO: Upper level
+	PARSE_HEREDOC_ERROR // TODO: Upper level
 }	t_parser_status;
 
 typedef struct s_pre_parse_result
