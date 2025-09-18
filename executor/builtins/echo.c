@@ -2,17 +2,23 @@
 
 static int	exec_echo_is_newline(const char *str)
 {
-	return (str && str[0] == '-' && str[1] == 'n' && str[2] == '\0');
+	int i;
+	
+	if(!str|| str[0] != '-' || str[1] != 'n')
+		return 0;
+	i = 2;
+	while(str[i] == 'n')
+		i++;
+	return(str[i] == '\0');
 }
-t_exec_status	echo(t_shell *sh, const t_cmd cmd)
+t_exec_status	echo(const t_cmd cmd)
 {
 	int i;
 	int new_line;
 
-	(void)sh;
 	i = 1;
 	new_line = 1;
-	if (cmd.argv[i] && exec_echo_is_newline(cmd.argv[i]))
+	while (cmd.argv[i] && exec_echo_is_newline(cmd.argv[i]))
 	{
 		new_line = 0;
 		i++;
