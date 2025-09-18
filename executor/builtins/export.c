@@ -109,7 +109,7 @@ t_exec_status export_apply(t_env_store *store, char *av)
     
 }
 
-t_exec_status export_if_no_av(t_env_store *store)
+t_exec_status export_if_no_argv(t_env_store *store)
 {
     size_t size;
     t_env_pair *pairs;
@@ -164,7 +164,7 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
 
     payload = (t_err_payload){0};
     if (!cmd.argv[1])
-        return export_if_no_av(sh->env_store);
+        return export_if_no_argv(sh->env_store);
     
     if (exec_is_invalid_option(cmd.argv[1]))
     {
