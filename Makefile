@@ -54,7 +54,8 @@ EXECUTOR_SRC := \
 	executor/builtins/env.c \
 	executor/builtins/unset.c \
 	executor/builtins/export.c \
-	executor/builtins/pwd.c
+	executor/builtins/pwd.c \
+	executor/builtins/echo.c
 
 ERRORS_SRC := \
 	errors/errors_reporter.c \
