@@ -15,11 +15,21 @@ t_exec_status cd_go_path(t_shell *sh, const char *target)
         return EXEC_ERR_GEN;
     }
     newpwd = u_getcwd();
-    if(newpwd)
+    if(!newpwd)
     {
-        if(oldpwd)
-            env_set(sh->env_store, "OLDPWD", oldpwd);
-        env_set(sh->env_store, "PWD", newpwd);
+        payload.errno_val = errno;
+        err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+        return EXEC_ERR_GEN;
+    }
+    if(oldpwd && env_set(sh->env_store, "OLDPWD", oldpwd) != ENV_OK)
+    {
+        err_print(ERR_EXEC, EXEC_ERR_GEN, (t_err_payload){0});
+        return EXEC_ERR_GEN;
+    }
+    if(env_set(sh->env_store, "PWD", newpwd) != ENV_OK)
+    {
+        err_print(ERR_EXEC, EXEC_ERR_GEN, (t_err_payload){0});
+        return EXEC_ERR_GEN;
     }
     return EXEC_OK;
 }
@@ -31,8 +41,8 @@ t_exec_status cd_go_home(t_shell *sh)
     home = env_get_value(sh->env_store, "HOME");
     if(!home)
     {
-        ft_putendl_fd("minishell: cd: HOME is not set", STDERR_FILENO);
-        return EXEC_ERR_GEN;
+        err_print(ERR_EXEC, EXEC_ERR_CD, (t_err_payload){0});
+        return EXEC_ERR_CD;
     }
     return cd_go_path(sh, home);
 }

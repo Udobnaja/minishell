@@ -8,7 +8,8 @@ const char *err_exec_msg(int code)
 		[EXEC_ALLOC_ERR] = "export: allocation error",
 		[EXEC_ERR_INVALID_OPTION] = "export: options are not supported",
 		[EXEC_INVALID_IDENTIFIER] = "export: `%s': not a valid identifier",
-		[EXEC_ERR_GEN] = "pwd: options are not supported"
+		[EXEC_ERR_GEN] = "options are not supported",
+		[EXEC_ERR_CD] = "cd: HOME is not set"
 	};
 	const int size = sizeof(map) / sizeof(*map);
 
