@@ -3,6 +3,7 @@
 
 # include <stdlib.h>
 
+# include "libft.h"
 # include "pipeline.h"
 
 # endif

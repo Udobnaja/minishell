@@ -59,5 +59,6 @@ typedef struct s_pipeline
 }	t_pipeline;
 
 void	pipline_destroy(t_pipeline *pipeline);
+int		pipline_init(const size_t cmds_count, t_pipeline *pipeline);
 
 #endif

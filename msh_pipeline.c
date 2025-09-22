@@ -20,26 +20,9 @@ static size_t msh_pipline_count_cmds(const t_token_list *token_list)
 t_parser_status	msh_pipline_init(t_token_list *token_list, t_pipeline *pipeline)
 {
 	const size_t	cmds_count = msh_pipline_count_cmds(token_list);
-	size_t			i;
-
-	i = 0;
-	pipeline->cmds = ft_calloc((size_t)cmds_count, sizeof *pipeline->cmds);
-	if (!pipeline->cmds)
-		return (PARSE_ALLOC_ERROR);
-	pipeline->count = cmds_count;
-	while (i < cmds_count)
-	{
-		pipeline->cmds[i] = ft_calloc(1, sizeof *pipeline->cmds[i]);
-		if (!pipeline->cmds[i])
-		{
-			while (i--)
-				free(pipeline->cmds[i]);
-			pipline_destroy(pipeline);	
-			pipeline->cmds = NULL;
-			return (PARSE_ALLOC_ERROR);
-		}
-		i++;
-	}		
+	
+	if (!pipline_init(cmds_count, pipeline))
+		return (PARSE_ALLOC_ERROR);		
 	return (PARSE_OK);
 }
 
