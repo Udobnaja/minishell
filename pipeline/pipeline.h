@@ -1,6 +1,8 @@
 #ifndef PIPELINE_H
 # define PIPELINE_H
 
+# include <stddef.h>
+
 typedef enum e_io_stream
 {
 	IO_STDIN = 0,
@@ -53,7 +55,7 @@ typedef struct s_cmd
 typedef struct s_pipeline
 {
 	t_cmd	**cmds;
-	int		count;
+	size_t	count;
 }	t_pipeline;
 
 #endif

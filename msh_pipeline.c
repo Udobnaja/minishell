@@ -1,5 +1,63 @@
 #include "minishell.h"
 
+static void msh_pipline_free_redirects(t_redirect *redirect)
+{
+	t_redirect *next;
+
+	while (redirect)
+	{
+		next = redirect->next;
+		// TODO: Think about FD!
+		if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT || redirect->type == REDIR_APPEND || redirect->type == REDIR_HEREDOC)
+			&& redirect->target.path)
+			free(redirect->target.path);
+		free(redirect);
+		redirect = next;
+	}
+}
+
+static void	msh_pipline_argv(char **argv)
+{
+	size_t	i;
+
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}	
+	free(argv);
+}
+
+static void	msh_pipline_free_cmd(t_cmd *cmd)
+{
+	free(cmd->name);
+	if (cmd->argv)
+		msh_pipline_argv(cmd->argv);
+	if (cmd->redirect_list)
+		msh_pipline_free_redirects(cmd->redirect_list);
+	free(cmd);
+}
+
+void	msh_pipline_destroy(t_pipeline *pipeline)
+{
+	size_t	i;
+
+	if (!pipeline || !pipeline->cmds)
+		return;
+	i = 0;
+	while (i < pipeline->count)
+	{
+		if (pipeline->cmds[i])
+			msh_pipline_free_cmd(pipeline->cmds[i]);
+		i++;
+	}
+	free(pipeline->cmds);
+	pipeline->cmds = NULL;
+	pipeline->count = 0;
+}
+
+
 static size_t msh_pipline_count_cmds(const t_token_list *token_list)
 {
 	size_t			count;
@@ -25,19 +83,19 @@ t_parser_status	msh_pipline_init(t_token_list *token_list, t_pipeline *pipeline)
 	pipeline->cmds = ft_calloc((size_t)cmds_count, sizeof *pipeline->cmds);
 	if (!pipeline->cmds)
 		return (PARSE_ALLOC_ERROR);
+	pipeline->count = cmds_count;
 	while (i < cmds_count)
 	{
 		pipeline->cmds[i] = ft_calloc(1, sizeof *pipeline->cmds[i]);
 		if (!pipeline->cmds[i]) {
 			while (i--)
 				free(pipeline->cmds[i]);
-			free(pipeline->cmds);
+			msh_pipline_destroy(pipeline);	
 			pipeline->cmds = NULL;
 			return (PARSE_ALLOC_ERROR);
 		}
 		i++;
 	}		
-	pipeline->count = cmds_count;
 	return (PARSE_OK);
 }
 
@@ -301,4 +359,3 @@ t_parser_status	msh_pipline(t_token_list *token_list, t_shell *shell, t_pipeline
 	return (PARSE_OK);
 }
 
-// TODO: clenup / destroy pipeline
