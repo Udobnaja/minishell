@@ -31,7 +31,6 @@ HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
 	heredoc/heredoc_write_line.c \
-	heredoc/heredoc_env_key.c \
 	heredoc/heredoc_store.c
 
 PARSE_SRC := \
@@ -48,7 +47,8 @@ PARSE_SRC := \
 	parser/parser.c 
 
 EXPANSION_SRC := \
-	expansion/expansion.c
+	expansion/expansion.c \
+	expansion/expansion_key.c
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c \
@@ -74,6 +74,7 @@ SRC := \
 	msh_parse.c \
 	msh_pre_heredoc.c \
 	msh_heredoc.c \
+	msh_pipeline.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(ENV_SRC) \

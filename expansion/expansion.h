@@ -10,5 +10,6 @@ typedef enum e_expansion_status {
 }	t_expansion_status;
 
 char	*expn_expand(char *str, const t_env_store *store, int last_status);
+char	*expn_dup_env_key(const char *str);
 
 #endif

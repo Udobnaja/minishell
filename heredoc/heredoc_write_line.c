@@ -53,7 +53,7 @@ static t_heredoc_status heredoc_write_expansion(const char *str, int fd, t_shell
 	char	*expanded;
 	int		e;
 
-	key = heredoc_create_env_key(str);
+	key = expn_dup_env_key(str);
 	if (!key)
 		return (HEREDOC_ALLOC_ERROR);	
 	expanded = expn_expand(key, sh->env_store, sh->last_status);
