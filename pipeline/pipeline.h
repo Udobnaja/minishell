@@ -58,4 +58,6 @@ typedef struct s_pipeline
 	size_t	count;
 }	t_pipeline;
 
+void	pipline_destroy(t_pipeline *pipeline);
+
 #endif

@@ -33,6 +33,10 @@ HEREDOC_SRC := \
 	heredoc/heredoc_write_line.c \
 	heredoc/heredoc_store.c
 
+PIPELINE_SRC := \
+	pipeline/pipeline_destroy.c \
+	pipeline/pipeline_init.c
+
 PARSE_SRC := \
 	parser/lexer/lexer.c \
 	parser/lexer/lexer_lifecycle.c \
@@ -77,6 +81,7 @@ SRC := \
 	msh_pipeline.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
+	$(PIPELINE_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \
