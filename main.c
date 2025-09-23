@@ -33,8 +33,7 @@ int main(int argc, char **argv, char **envp)
 			ft_bzero(&pipeline, sizeof pipeline); 
 			if (msh_parse(line, &shell, &pipeline) == PARSE_OK)
 				mock_exec(&shell, &pipeline);
-			// TODO: clear heredoc? or executor clear it
-			// clear pipeline afte sucss exec
+			pipline_destroy(&pipeline);
 		}		
 		free(line);
 		line = NULL;

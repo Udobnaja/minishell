@@ -3,42 +3,55 @@
 static t_parser_status	prs_append_expandable(const char *str, t_shell *sh, char **new_word);
 static t_parser_status	prs_append_expanded_key(const char *str, t_shell *sh, size_t *consumed, char **new_word);
 static void				prs_append_until_expansion(const char *str, size_t *consumed, char **new_word);
+static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char **new_word);
 
 t_parser_status	prs_join_word(const t_word *word, t_shell *sh, char **new_word)
 {
-	size_t			i;
 	size_t			total;
 	char			*nw_p;
-	size_t			len;
 	t_parser_status	status;
 	
-	if (prs_count_word_len(word, sh, &total) != PARSE_OK)
-		return (PARSE_ALLOC_ERROR);
+	status = prs_count_word_len(word, sh, &total);
+	if (status != PARSE_OK)
+		return (status);
 	*new_word = malloc(total + 1);
 	if (!*new_word)
 		return (PARSE_ALLOC_ERROR);
-	nw_p = *new_word;	
-	i = 0;	
+	nw_p = *new_word;
+	status = prs_append_pieces(word, sh, &nw_p);
+	if (status != PARSE_OK)
+	{
+		free(*new_word);
+		*new_word = NULL;
+		return (status);
+	}
+	return (PARSE_OK);
+}
+
+static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char **new_word)
+{
+	size_t			i;
+	size_t			len;
+	t_parser_status	status;
+
+	i = 0;
 	while (i < word->count)
 	{
 		if (word->pieces[i].quote == SGL)
 		{
 			len = ft_strlen(word->pieces[i].text);
-			ft_memcpy(nw_p, word->pieces[i].text, len);
-			nw_p += len;
+			ft_memcpy(*new_word, word->pieces[i].text, len);
+			*new_word += len;
 		}
 		else
 		{
-			status = prs_append_expandable(word->pieces[i].text, sh, &nw_p);
-			if (status != PARSE_OK) {
-				free(*new_word);
-				*new_word = NULL;
+			status = prs_append_expandable(word->pieces[i].text, sh, new_word);
+			if (status != PARSE_OK)
 				return (status);
-			}
 		}
 		i++;
 	}
-	*nw_p = '\0';
+	**new_word = '\0';
 	return (PARSE_OK);
 }
 
