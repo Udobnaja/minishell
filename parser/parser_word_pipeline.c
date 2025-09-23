@@ -12,13 +12,17 @@ t_parser_status prs_word_to_argv(
 	status = prs_join_word(word, sh, &arg);
 	if (status != PARSE_OK)
 		return (status);
-	if (prev && prs_is_redirect(prev->token->type))
+	if (prev && prs_is_simple_redirect(prev->token->type))
     {
-        if (prs_arg_is_ambiguous(arg))
+        if (prs_arg_is_ambiguous(arg)) // TODO: wrong
         {
             free(arg);
             return (PARSE_AMBIGUOUS_REDIRECT);
         }      
+    }
+    else if (prev && prev->token->type == T_HEREDOC)
+    {
+        // TO smth else
     }
 	if (!pipeline_push_cmd_argv(cmd, arg))
 		return (PARSE_ALLOC_ERROR);

@@ -26,8 +26,7 @@ t_parser_status	msh_pipeline_init(t_token_list *token_list, t_pipeline *pipeline
 }
 
 
-// parse part
-static t_builtin msh_pipeline_to_builtin(const char *name)
+static t_builtin prs_cmd_to_builtin(const char *name)
 {
 	if (!ft_strcmp(name, "echo"))
 		return (BUILTIN_ECHO);
@@ -44,6 +43,18 @@ static t_builtin msh_pipeline_to_builtin(const char *name)
 	if (!ft_strcmp(name, "exit"))
 		return (BUILTIN_EXIT);
 	return (BUILTIN_NONE);
+}
+
+t_parser_status prs_finish_cmd(t_cmd *cmd)
+{
+	if (!cmd->argv)
+		if (!pipeline_push_cmd_argv(cmd, ""))
+			return (PARSE_ALLOC_ERROR);
+	cmd->name = ft_strdup(cmd->argv[0]);
+	if (!cmd->name)
+		return (PARSE_ALLOC_ERROR);
+	cmd->builtin_kind = prs_cmd_to_builtin(cmd->name);	
+	return (PARSE_OK);
 }
 
 
@@ -72,7 +83,9 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 		}
 		else if (cur->token->type == T_PIPE)
 		{
-			// cmd[i] - detect builtin and name
+			status = prs_finish_cmd(pipeline->cmds[i]);
+			if (status != PARSE_OK)
+				return (status);
 			i++;
 		} else
 		{
@@ -80,11 +93,7 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 		}
 		prev = cur;
 		cur = cur->next;
-	}
-
-	// TODO: name
-	pipeline->cmds[i]->builtin_kind = msh_pipeline_to_builtin(pipeline->cmds[i]->argv[0]);
-		
-	return (PARSE_OK);
+	}	
+	return (prs_finish_cmd(pipeline->cmds[i]));
 }
 

@@ -9,6 +9,7 @@
 # include "executor.h"
 # include "heredoc.h"
 # include "errors.h"
+# include "parser.h"
 
 # define SHELL_NAME "minishell"
 # define HEREDOC_MAX 16
