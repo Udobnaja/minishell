@@ -9,7 +9,8 @@ const char *err_exec_msg(int code)
 		[EXEC_ERR_INVALID_OPTION] = "export: options are not supported",
 		[EXEC_INVALID_IDENTIFIER] = "export: `%s': not a valid identifier",
 		[EXEC_ERR_GEN] = "command_name: %s", // TODO: impl %s for command
-		[EXEC_ERR_CD] = "cd: HOME is not set"
+		[EXEC_ERR_CD] = "cd: HOME is not set",
+		[EXEC_ERR_NUMERIC_ARG] = "exit: numeric argument required"
 	};
 	const int size = sizeof(map) / sizeof(*map);
 
