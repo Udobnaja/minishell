@@ -52,7 +52,8 @@ PARSE_SRC := \
 	parser/parser.c \
 	parser/parser_utils.c \
 	parser/parser_count_word.c \
-	parser/parser_join_word.c
+	parser/parser_join_word.c \
+	parser/parser_word_pipeline.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \
@@ -71,7 +72,6 @@ ERRORS_SRC := \
 	errors/errors_reporter.c \
 	errors/errors_env_msgs.c \
 	errors/errors_parser_msgs.c \
-	errors/errors_expansion_msg.c \
 	errors/err_exec_msg.c \
 	errors/errors_heredoc_msg.c \
 	errors/errors_factory.c 

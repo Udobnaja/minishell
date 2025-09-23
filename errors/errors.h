@@ -9,7 +9,6 @@ typedef enum e_err_domain
 	ERR_ENV,
 	ERR_LEXER,
 	ERR_PARSER,
-	ERR_EXPANSION,
 	ERR_HEREDOC,
 	ERR_EXEC
 }	t_err_domain;

@@ -46,7 +46,6 @@ static t_builtin msh_pipeline_to_builtin(const char *name)
 	return (BUILTIN_NONE);
 }
 
-// TODO: too long
 
 
 // write errros here
@@ -55,7 +54,6 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 	size_t			i;
 	t_token_node	*cur;
 	t_token_node	*prev;
-	char			*arg;
 	t_parser_status	status;
 
 	status = msh_pipeline_init(token_list, pipeline);
@@ -66,26 +64,16 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 	prev = NULL;
 	while (cur)
 	{
-		arg = NULL;
 		if (cur->token->type == T_WORD)
 		{
-			status = prs_join_word(&cur->token->word, shell, &arg);
+			status = prs_word_to_argv(&cur->token->word, prev, shell, pipeline->cmds[i]);
 			if (status != PARSE_OK)
-			{
 				return (status);
-			}
-			(void)(prev);
-			//if (prev && prev->token->type prs_is_redirect && arg && !arg[0] or split count > 1
-			// ambigiouse redirect
-			if (!pipeline_push_cmd_argv(pipeline->cmds[i], arg))
-			{
-				return (PARSE_ALLOC_ERROR);
-			}
 		}
 		else if (cur->token->type == T_PIPE)
 		{
 			// cmd[i] - detect builtin and name
-			// i + 1
+			i++;
 		} else
 		{
 			// setup redirects
