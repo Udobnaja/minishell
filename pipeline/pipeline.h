@@ -63,5 +63,6 @@ typedef struct s_pipeline
 void	pipeline_destroy(t_pipeline *pipeline);
 int		pipeline_init(const size_t cmds_count, t_pipeline *pipeline);
 int		pipeline_push_cmd_argv(t_cmd *cmd, char *arg);
+void	pipeline_push_redirect(t_cmd *cmd, t_redirect *node);
 
 #endif

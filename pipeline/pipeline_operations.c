@@ -27,6 +27,22 @@ int pipeline_push_cmd_argv(t_cmd *cmd, char *arg)
 	return (1);
 }
 
+void pipeline_push_redirect(t_cmd *cmd, t_redirect *node)
+{
+	t_redirect	*cur;
+
+	node->next = NULL;
+	if (!cmd->redirect_list)
+	{
+		cmd->redirect_list = node;
+		return ;
+	}
+	cur = cmd->redirect_list;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = node;
+}
+
 static int pipeline_init_capacity(t_cmd *cmd)
 {
 	cmd->capacity = PIPELINE_ARGV_CAPACITY;

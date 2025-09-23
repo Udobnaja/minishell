@@ -50,9 +50,19 @@ static t_builtin prs_cmd_to_builtin(const char *name)
 
 t_parser_status prs_finish_cmd(t_cmd *cmd)
 {
+	char *default_name;
+
 	if (!cmd->argv)
-		if (!pipeline_push_cmd_argv(cmd, ""))
+	{
+		default_name = ft_strdup("");
+		if (!default_name)
 			return (PARSE_ALLOC_ERROR);
+		if (!pipeline_push_cmd_argv(cmd, default_name))
+		{
+            free(default_name);
+            return (PARSE_ALLOC_ERROR);
+        }
+	}
 	cmd->name = ft_strdup(cmd->argv[0]);
 	if (!cmd->name)
 		return (PARSE_ALLOC_ERROR);
@@ -68,7 +78,6 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 {
 	size_t			i;
 	t_token_node	*cur;
-	t_token_node	*prev;
 	t_parser_status	status;
 
 	status = msh_pipeline_init(token_list, pipeline);
@@ -76,12 +85,11 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 		return (status);
 	i = 0;
 	cur = token_list->head;
-	prev = NULL;
 	while (cur)
 	{
 		if (cur->token->type == T_WORD)
 		{
-			status = prs_word_to_argv(&cur->token->word, prev, shell, pipeline->cmds[i]);
+			status = prs_word_to_argv(&cur->token->word, shell, pipeline->cmds[i]);
 			if (status != PARSE_OK)
 			{
 				err_print(ERR_PARSER, status, (t_err_payload){0});
@@ -100,9 +108,15 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 			i++;
 		} else
 		{
-			// setup redirects
+			status = prs_redirect_to_pipe(cur, shell, pipeline->cmds[i]);
+			if (status != PARSE_OK)
+			{
+				err_print(ERR_PARSER, status, (t_err_payload){0});
+				return (status);
+			}
+			cur = cur->next->next;
+			continue;
 		}
-		prev = cur;
 		cur = cur->next;
 	}	
 	status = prs_finish_cmd(pipeline->cmds[i]);
