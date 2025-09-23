@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 static size_t msh_pipline_count_cmds(const t_token_list *token_list)
 {
 	size_t			count;
@@ -26,89 +25,25 @@ t_parser_status	msh_pipline_init(t_token_list *token_list, t_pipeline *pipeline)
 	return (PARSE_OK);
 }
 
+
+// parse part
 static t_builtin msh_pipeline_to_builtin(const char *name)
 {
 	if (!ft_strcmp(name, "echo"))
-		return BUILTIN_ECHO;
+		return (BUILTIN_ECHO);
 	if (!ft_strcmp(name, "cd"))
-		return BUILTIN_CD;
+		return (BUILTIN_CD);
 	if (!ft_strcmp(name, "pwd"))
-		return BUILTIN_PWD;
+		return (BUILTIN_PWD);
 	if (!ft_strcmp(name, "export"))
-		return BUILTIN_EXPORT;
+		return (BUILTIN_EXPORT);
 	if (!ft_strcmp(name, "unset"))
-		return BUILTIN_UNSET;
+		return (BUILTIN_UNSET);
 	if (!ft_strcmp(name, "env"))
-		return BUILTIN_ENV;
+		return (BUILTIN_ENV);
 	if (!ft_strcmp(name, "exit"))
-		return BUILTIN_EXIT;
-	return BUILTIN_NONE;
-}
-
-t_parser_status	msh_pipline_count_expanded(const char *str, t_shell *sh, size_t *consumed, size_t *total)
-{
-	char	*key;
-	char 	*expanded;
-
-	key = expn_dup_env_key(str);
-	if (!key)
-		return (PARSE_ALLOC_ERROR);
-	expanded = expn_expand(key, sh->env_store, sh->last_status);
-	if (!expanded)
-	{
-		free(key);
-		return (PARSE_ALLOC_ERROR);
-	}
-	*total += ft_strlen(expanded);
-	*consumed += ft_strlen(key);
-	free(key);
-	free(expanded);
-	return (PARSE_OK);
-}
-
-t_parser_status msh_pipline_count_with_expansion(const char *str, t_shell *sh, size_t *total)
-{
-	size_t	j;
-	t_parser_status status;
-
-	j = 0;
-	while (str[j])
-	{
-		if (str[j] == '$')
-		{
-			status = msh_pipline_count_expanded(str + j, sh, &j, total);
-			if (status != PARSE_OK)
-				return (status);
-		}
-		else
-		{
-			j++;
-			*total += 1;
-		}	
-	}
-	return (PARSE_OK);
-}
-
-t_parser_status	msh_pipline_count_total(const t_word *word, t_shell *sh, size_t *total)
-{
-	size_t			i;
-	t_parser_status status;
-
-	*total = 0;
-	i = 0;
-	while (i < word->count)
-	{
-		if (word->pieces[i].quote == SGL)
-			*total += ft_strlen(word->pieces[i].text);
-		else
-		{
-			status = msh_pipline_count_with_expansion(word->pieces[i].text, sh, total);
-			if (status != PARSE_OK)
-				return (status);
-		}
-		i++;
-	}
-	return (PARSE_OK);
+		return (BUILTIN_EXIT);
+	return (BUILTIN_NONE);
 }
 
 void msh_pipline_join_until_expansion(const char *str, size_t *consumed, char **new_word)
@@ -174,7 +109,7 @@ t_parser_status	msh_pipline_join_word(const t_word *word, t_shell *sh, char **ne
 	size_t			len;
 	t_parser_status	status;
 	
-	if (msh_pipline_count_total(word, sh, &total) != PARSE_OK)
+	if (prs_count_word_len(word, sh, &total) != PARSE_OK)
 		return (PARSE_ALLOC_ERROR);
 	*new_word = malloc(total + 1);
 	if (!*new_word)
@@ -245,8 +180,9 @@ t_parser_status	msh_pipline(t_token_list *token_list, t_shell *shell, t_pipeline
 	char			*arg;
 	t_parser_status	status;
 
-	if (msh_pipline_init(token_list, pipeline) != PARSE_OK)
-		return (PARSE_ALLOC_ERROR);
+	status = msh_pipline_init(token_list, pipeline);
+	if (status != PARSE_OK)
+		return (status);
 	i = 0;
 	cur = token_list->head;
 	prev = NULL;

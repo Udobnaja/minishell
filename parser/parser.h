@@ -1,7 +1,6 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include "pipeline.h"
 # include "./lexer/lexer.h"
 
 typedef enum e_parser_status {
@@ -19,5 +18,7 @@ typedef struct s_pre_parse_result
 }	t_pre_parse_result;
 
 t_pre_parse_result	prs_pre_parse(t_token_list	*token_list);
+typedef struct s_shell t_shell;
+t_parser_status		prs_count_word_len(const t_word *word, t_shell *sh, size_t *total); // TODO: internal
 
 #endif

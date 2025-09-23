@@ -1,12 +1,18 @@
-#include "parser.h"
+#include "parser_internal.h"
 
-static int prs_is_redirect(t_token_type type)
+static t_token_node			*prs_validate_pipe(t_token_node *pipe);
+static t_token_node			*prs_validate_tokens_order(t_token_list	*token_list);
+static t_pre_parse_result	prs_ok(void);
+static t_pre_parse_result	prs_err(t_parser_status e, t_token_node *node);
+
+t_pre_parse_result prs_pre_parse(t_token_list	*token_list)
 {
-	return (
-		type == T_HEREDOC
-		|| type == T_REDIR_APP
-		|| type == T_REDIR_IN
-		|| type == T_REDIR_OUT);
+	t_token_node *invalid_node; 
+
+	invalid_node = prs_validate_tokens_order(token_list);
+	if (invalid_node)
+		return (prs_err(PARSE_UNEXPECTED_TOKEN, invalid_node));
+	return (prs_ok());
 }
 
 static t_token_node *prs_validate_pipe(t_token_node *pipe)
@@ -70,15 +76,4 @@ static t_pre_parse_result	prs_err(t_parser_status e, t_token_node *node)
 	result.status = e;
 	result.invalid = node;
 	return (result);
-}
-
-
-t_pre_parse_result prs_pre_parse(t_token_list	*token_list)
-{
-	t_token_node *invalid_node; 
-
-	invalid_node = prs_validate_tokens_order(token_list);
-	if (invalid_node)
-		return (prs_err(PARSE_UNEXPECTED_TOKEN, invalid_node));
-	return (prs_ok());
 }
