@@ -3,6 +3,8 @@
 
 # include "./lexer/lexer.h"
 
+typedef struct s_shell t_shell;
+
 typedef enum e_parser_status {
 	PARSE_OK = 0,
 	PARSE_UNEXPECTED_TOKEN,
@@ -18,7 +20,7 @@ typedef struct s_pre_parse_result
 }	t_pre_parse_result;
 
 t_pre_parse_result	prs_pre_parse(t_token_list	*token_list);
-typedef struct s_shell t_shell;
-t_parser_status		prs_count_word_len(const t_word *word, t_shell *sh, size_t *total); // TODO: internal
+
+t_parser_status		prs_join_word(const t_word *word, t_shell *sh, char **new_word);
 
 #endif

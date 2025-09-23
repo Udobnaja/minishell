@@ -50,7 +50,8 @@ PARSE_SRC := \
 	parser/lexer/lexer_parse_operator.c \
 	parser/parser.c \
 	parser/parser_utils.c \
-	parser/parser_count_word.c
+	parser/parser_count_word.c \
+	parser/parser_join_word.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \

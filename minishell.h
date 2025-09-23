@@ -9,7 +9,6 @@
 # include "executor.h"
 # include "heredoc.h"
 # include "errors.h"
-# include "expansion.h" // TODO: delete
 
 # define SHELL_NAME "minishell"
 # define HEREDOC_MAX 16

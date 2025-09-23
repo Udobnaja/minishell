@@ -46,99 +46,6 @@ static t_builtin msh_pipeline_to_builtin(const char *name)
 	return (BUILTIN_NONE);
 }
 
-void msh_pipline_join_until_expansion(const char *str, size_t *consumed, char **new_word)
-{
-	size_t i;
-
-	i = 0;
-	while (str[i] && str[i] != '$')
-		i++;
-	ft_memcpy(*new_word, str, i);
-	*new_word += i; 
-	*consumed += i;
-}
-
-static t_parser_status msh_pipline_join_expansion(const char *str, t_shell *sh, size_t *consumed, char **new_word)
-{
-	char	*key;
-	char	*expanded;
-	size_t	len;
-
-	key = expn_dup_env_key(str);
-	if (!key)
-		return (PARSE_ALLOC_ERROR);	
-	expanded = expn_expand(key, sh->env_store, sh->last_status);
-	if (!expanded)
-	{
-		free(key);
-		return (PARSE_ALLOC_ERROR);
-	}
-	len = ft_strlen(expanded);
-	ft_memcpy(*new_word, expanded, len);
-	*new_word += len; 	
-	*consumed += (ft_strlen(key));	
-	free(key);
-	free(expanded);
-	return (PARSE_OK);
-}
-
-t_parser_status	msh_pipline_join_expn(const char *str, t_shell *sh, char **new_word)
-{
-	size_t	j;
-	t_parser_status status;
-
-	j = 0;
-	while (str[j])
-	{
-		msh_pipline_join_until_expansion(str + j, &j, new_word);
-		if (str[j] == '$')
-		{
-			status = msh_pipline_join_expansion(str + j, sh, &j, new_word);
-			if (status != PARSE_OK)
-				return (status);
-		}
-	}
-	return (PARSE_OK);
-}
-
-t_parser_status	msh_pipline_join_word(const t_word *word, t_shell *sh, char **new_word)
-{
-	size_t			i;
-	size_t			total;
-	char			*nw_p;
-	size_t			len;
-	t_parser_status	status;
-	
-	if (prs_count_word_len(word, sh, &total) != PARSE_OK)
-		return (PARSE_ALLOC_ERROR);
-	*new_word = malloc(total + 1);
-	if (!*new_word)
-		return (PARSE_ALLOC_ERROR);
-	nw_p = *new_word;	
-	i = 0;	
-	while (i < word->count)
-	{
-		if (word->pieces[i].quote == SGL)
-		{
-			len = ft_strlen(word->pieces[i].text);
-			ft_memcpy(nw_p, word->pieces[i].text, len);
-			nw_p += len;
-		}
-		else
-		{
-			status = msh_pipline_join_expn(word->pieces[i].text, sh, &nw_p);
-			if (status != PARSE_OK) {
-				free(*new_word);
-				*new_word = NULL;
-				return (status);
-			}
-		}
-		i++;
-	}
-	*nw_p = '\0';
-	return (PARSE_OK);
-}
-
 // TODO: too long
 static int msh_pipeline_push_cmd_argv(t_cmd *cmd, char *arg)
 {
@@ -191,7 +98,7 @@ t_parser_status	msh_pipline(t_token_list *token_list, t_shell *shell, t_pipeline
 	{
 		if (cur->token->type == T_WORD)
 		{
-			status = msh_pipline_join_word(&cur->token->word, shell, &arg);
+			status = prs_join_word(&cur->token->word, shell, &arg);
 			if (status != PARSE_OK)
 			{
 				return (status);
