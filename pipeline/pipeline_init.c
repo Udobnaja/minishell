@@ -1,6 +1,6 @@
 #include "pipeline_internal.h"
 
-int	pipline_init(const size_t cmds_count, t_pipeline *pipeline)
+int	pipeline_init(const size_t cmds_count, t_pipeline *pipeline)
 {
 	size_t	i;
 
@@ -16,7 +16,7 @@ int	pipline_init(const size_t cmds_count, t_pipeline *pipeline)
 		{
 			while (i--)
 				free(pipeline->cmds[i]);
-			pipline_destroy(pipeline);	
+			pipeline_destroy(pipeline);	
 			pipeline->cmds = NULL;
 			return (0);
 		}

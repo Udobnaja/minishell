@@ -28,7 +28,7 @@ t_parser_status	msh_parse(const char *str, t_shell *shell, t_pipeline *pipeline)
 		lex_destroy_token_list(&token_list);
 		return (PARSE_UNEXPECTED_TOKEN); // TODO: status
 	}
-	if (msh_pipline(token_list, shell, pipeline) != PARSE_OK)
+	if (msh_pipeline(token_list, shell, pipeline) != PARSE_OK)
 	{
 		lex_destroy_token_list(&token_list);
 		heredoc_store_clear(shell->heredoc_store);

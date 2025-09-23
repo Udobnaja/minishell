@@ -6,4 +6,6 @@
 # include "libft.h"
 # include "pipeline.h"
 
+# define PIPELINE_ARGV_CAPACITY 4
+
 # endif

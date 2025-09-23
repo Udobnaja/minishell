@@ -35,7 +35,8 @@ HEREDOC_SRC := \
 
 PIPELINE_SRC := \
 	pipeline/pipeline_destroy.c \
-	pipeline/pipeline_init.c
+	pipeline/pipeline_init.c \
+	pipeline/pipeline_operations.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \

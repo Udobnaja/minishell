@@ -50,6 +50,8 @@ typedef struct s_cmd
 	char		**argv;
 	t_redirect	*redirect_list;
 	t_builtin	builtin_kind;
+	size_t		argc;
+    size_t		capacity;
 }	t_cmd;
 
 typedef struct s_pipeline
@@ -58,7 +60,8 @@ typedef struct s_pipeline
 	size_t	count;
 }	t_pipeline;
 
-void	pipline_destroy(t_pipeline *pipeline);
-int		pipline_init(const size_t cmds_count, t_pipeline *pipeline);
+void	pipeline_destroy(t_pipeline *pipeline);
+int		pipeline_init(const size_t cmds_count, t_pipeline *pipeline);
+int		pipeline_push_cmd_argv(t_cmd *cmd, char *arg);
 
 #endif
