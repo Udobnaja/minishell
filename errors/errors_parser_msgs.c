@@ -22,7 +22,7 @@ const char *err_parser_msg(int code)
 		[PARSE_ALLOC_ERROR] = "Cannot allocate memory",
 		[PARSE_LEX_ERROR] = "Lexer inner error",
 		[PARSE_HEREDOC_ERROR] = "Heredoc inner error",
-		[PARSE_AMBIGUOUS_REDIRECT] = "Ambiguous redirect"
+		[PARSE_AMBIGUOUS_REDIRECT] = "ambiguous redirect"
 	};
 	const int size = sizeof(map) / sizeof(*map);
 

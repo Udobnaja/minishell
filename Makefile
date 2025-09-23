@@ -53,7 +53,9 @@ PARSE_SRC := \
 	parser/parser_utils.c \
 	parser/parser_count_word.c \
 	parser/parser_join_word.c \
-	parser/parser_word_pipeline.c
+	parser/parser_word_pipeline.c \
+	parser/parser_ambiguous.c \
+	parser/parser_ambiguous_utils.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \

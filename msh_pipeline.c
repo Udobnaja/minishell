@@ -21,7 +21,10 @@ t_parser_status	msh_pipeline_init(t_token_list *token_list, t_pipeline *pipeline
 	const size_t	cmds_count = msh_pipeline_count_cmds(token_list);
 	
 	if (!pipeline_init(cmds_count, pipeline))
-		return (PARSE_ALLOC_ERROR);		
+	{
+		err_print(ERR_PARSER, PARSE_ALLOC_ERROR, (t_err_payload){0});
+		return (PARSE_ALLOC_ERROR);
+	}		
 	return (PARSE_OK);
 }
 
@@ -59,7 +62,8 @@ t_parser_status prs_finish_cmd(t_cmd *cmd)
 
 
 
-// write errros here
+// write errros here 
+// separate logic to parser
 t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
 {
 	size_t			i;
@@ -79,13 +83,20 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 		{
 			status = prs_word_to_argv(&cur->token->word, prev, shell, pipeline->cmds[i]);
 			if (status != PARSE_OK)
+			{
+				err_print(ERR_PARSER, status, (t_err_payload){0});
 				return (status);
+			}
+				
 		}
 		else if (cur->token->type == T_PIPE)
 		{
 			status = prs_finish_cmd(pipeline->cmds[i]);
 			if (status != PARSE_OK)
+			{
+				err_print(ERR_PARSER, status, (t_err_payload){0});
 				return (status);
+			}
 			i++;
 		} else
 		{
@@ -94,6 +105,10 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 		prev = cur;
 		cur = cur->next;
 	}	
-	return (prs_finish_cmd(pipeline->cmds[i]));
+	status = prs_finish_cmd(pipeline->cmds[i]);
+	if (status != PARSE_OK)
+		err_print(ERR_PARSER, status, (t_err_payload){0});
+
+	return (status);
 }
 
