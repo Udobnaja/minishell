@@ -36,7 +36,7 @@ typedef struct s_shell
 	t_heredoc_store *heredoc_store;
 }	t_shell;
 
-int				sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
-int				sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
+int	sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
+int	sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
 
 #endif

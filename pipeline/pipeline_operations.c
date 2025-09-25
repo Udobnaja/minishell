@@ -66,7 +66,7 @@ static int pipeline_increase_capacity(t_cmd *cmd)
 	new_argv = ft_calloc(new_capacity + 1, sizeof *new_argv);
 	if (!new_argv)
 		return (0);
-	ft_memcpy(new_argv, cmd->argv, cmd->argc * (sizeof *new_argv));
+	ft_memcpy(new_argv, cmd->argv, cmd->argc * (sizeof(char *)));
 	free(cmd->argv);
 	cmd->argv = new_argv;
 	cmd->capacity = new_capacity;
