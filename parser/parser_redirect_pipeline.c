@@ -61,14 +61,16 @@ static t_parser_status	prs_heredoc_redirect_to_pipe(
 {
 	t_redirect	*node;
 
+	if (*cur_heredoc >= sh->heredoc_store->count)
+		return (PARSE_HEREDOC_ERROR);
 	node = ft_calloc(1, sizeof *node);
 	if (!node)
 		return (PARSE_ALLOC_ERROR);
 	node->type = REDIR_HEREDOC;
 	node->stream = IO_STDIN;
-	// TODO: check in any case that index is in range
 	node->target.fd = sh->heredoc_store->entries[*cur_heredoc].fd;
 	pipeline_push_redirect(cmd, node);
+	sh->heredoc_store->entries[*cur_heredoc].fd = -1;
 	*cur_heredoc += 1;
 	return (PARSE_OK);
 }

@@ -29,7 +29,12 @@ static void pipeline_free_redirects(t_redirect *redirect)
 	while (redirect)
 	{
 		next = redirect->next;
-		if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT
+		if (redirect->type == REDIR_HEREDOC)
+		{
+            if (redirect->target.fd >= 0)
+                close(redirect->target.fd);
+		}
+		else if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT
 			|| redirect->type == REDIR_APPEND) && redirect->target.path)
 			free(redirect->target.path);
 		free(redirect);

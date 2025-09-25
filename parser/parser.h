@@ -11,7 +11,7 @@ typedef enum e_parser_status {
 	PARSE_UNEXPECTED_TOKEN,
 	PARSE_ALLOC_ERROR,
 	PARSE_LEX_ERROR, // TODO: Upper level
-	PARSE_HEREDOC_ERROR, // TODO: Upper level
+	PARSE_HEREDOC_ERROR,
 	PARSE_AMBIGUOUS_REDIRECT
 }	t_parser_status;
 

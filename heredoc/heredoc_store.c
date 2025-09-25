@@ -23,7 +23,6 @@ void heredoc_store_clear(t_heredoc_store *store)
             close(store->entries[i].fd);
         i++;
     }
-    
     free(store->entries);
     store->entries = NULL;
     store->count = 0;
