@@ -16,6 +16,7 @@ t_exec_status	env(t_shell *sh, const t_cmd cmd);
 t_exec_status	export(t_shell *sh, const t_cmd cmd);
 t_exec_status	pwd(t_shell *sh, t_cmd cmd);
 t_exec_status	echo(const t_cmd cmd);
-t_exec_status   cd(t_shell *sh, const t_cmd cmd);
+t_exec_status	cd(t_shell *sh, const t_cmd cmd);
+t_exec_status	builtin_exit(t_shell *sh, t_cmd cmd);
 
 #endif
