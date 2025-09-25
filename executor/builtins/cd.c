@@ -23,22 +23,21 @@ t_exec_status cd_go_path(t_shell *sh, const char *target)
     }
     if(oldpwd && env_set(sh->env_store, "OLDPWD", oldpwd) != ENV_OK)
     {
-        err_print(ERR_EXEC, EXEC_ERR_GEN, (t_err_payload){0});
-        return EXEC_ERR_GEN;
+        err_print(ERR_EXEC, EXEC_ALLOC_ERR, (t_err_payload){0});
+        return EXEC_ALLOC_ERR;
     }
     if(env_set(sh->env_store, "PWD", newpwd) != ENV_OK)
     {
-        err_print(ERR_EXEC, EXEC_ERR_GEN, (t_err_payload){0});
-        return EXEC_ERR_GEN;
+        err_print(ERR_EXEC, EXEC_ALLOC_ERR, (t_err_payload){0});
+        return EXEC_ALLOC_ERR;
     }
     return EXEC_OK;
 }
 
 t_exec_status cd_go_home(t_shell *sh)
 {
-    const char *home;
-
-    home = env_get_value(sh->env_store, "HOME");
+    const char *home = env_get_value(sh->env_store, "HOME");
+    
     if(!home)
     {
         err_print(ERR_EXEC, EXEC_ERR_CD, (t_err_payload){0});
