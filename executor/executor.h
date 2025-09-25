@@ -28,6 +28,6 @@ typedef enum e_exec_status
 	EXEC_ERR_WAIT
 }				t_exec_status;
 
-t_exec_status	mock_exec(t_shell *sh, t_pipeline *pipeline);
+t_exec_status execute(t_shell *sh, t_pipeline *pipeline);
 
 #endif

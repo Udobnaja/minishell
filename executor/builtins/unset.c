@@ -1,38 +1,5 @@
 #include "executor_internal.h"
 
-t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
-{
-    t_cmd cmd = *pipeline->cmds[0];
-
-    if (cmd.builtin_kind == BUILTIN_ENV)
-    {
-       return env(sh, cmd);
-    } else if (cmd.builtin_kind == BUILTIN_UNSET)
-    {
-        return unset(sh, cmd);
-    } 
-    else if (cmd.builtin_kind == BUILTIN_EXPORT)
-    {
-        return export(sh, cmd);
-    } 
-    else if (cmd.builtin_kind == BUILTIN_PWD)
-    {
-        return pwd(sh, cmd);
-    }
-    else if (cmd.builtin_kind == BUILTIN_ECHO)
-    {
-        return echo(cmd);
-    }
-    else if (cmd.builtin_kind == BUILTIN_CD)
-    {
-        return cd(sh, cmd);
-    }
-    else if (cmd.builtin_kind == BUILTIN_EXIT)
-    {
-        return builtin_exit(sh, cmd);
-    }
-    return (EXEC_OK);
-}
 bool exec_is_invalid_option(const char *str)
 {
     if(!str)
