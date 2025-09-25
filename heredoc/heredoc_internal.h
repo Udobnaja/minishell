@@ -4,6 +4,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/errno.h>
+# include <stdint.h>
+
 # include "libft.h"
 # include "../expansion/expansion.h"
 
