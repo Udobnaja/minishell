@@ -79,11 +79,13 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 	size_t			i;
 	t_token_node	*cur;
 	t_parser_status	status;
+	size_t			cur_heredoc;
 
 	status = msh_pipeline_init(token_list, pipeline);
 	if (status != PARSE_OK)
 		return (status);
 	i = 0;
+	cur_heredoc = 0;
 	cur = token_list->head;
 	while (cur)
 	{
@@ -108,7 +110,7 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 			i++;
 		} else
 		{
-			status = prs_redirect_to_pipe(cur, shell, pipeline->cmds[i]);
+			status = prs_redirect_to_pipe(cur, shell, pipeline->cmds[i], &cur_heredoc);
 			if (status != PARSE_OK)
 			{
 				err_print(ERR_PARSER, status, (t_err_payload){0});

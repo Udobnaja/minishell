@@ -6,11 +6,12 @@ static t_parser_status	prs_smpl_redirect_to_pipe(
 							const t_token_type type,
 							const t_word *word,
 							t_shell *sh, t_cmd *cmd);
-static t_parser_status	prs_heredoc_redirect_to_pipe(t_cmd *cmd);
+static t_parser_status	prs_heredoc_redirect_to_pipe(t_cmd *cmd, t_shell *sh, size_t *cur_heredoc);
 
 t_parser_status prs_redirect_to_pipe(
 					t_token_node *token_node,
-					t_shell *sh, t_cmd *cmd)
+					t_shell *sh, t_cmd *cmd,
+					size_t *cur_heredoc)
 {
 	if (prs_is_simple_redirect(token_node->token->type))
 		return (prs_smpl_redirect_to_pipe(
@@ -20,7 +21,7 @@ t_parser_status prs_redirect_to_pipe(
 			cmd
 		));
 	return (
-		prs_heredoc_redirect_to_pipe(cmd)
+		prs_heredoc_redirect_to_pipe(cmd, sh, cur_heredoc)
 	);
 }
 
@@ -54,17 +55,21 @@ static t_parser_status	prs_smpl_redirect_to_pipe(
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_heredoc_redirect_to_pipe(t_cmd *cmd)
+static t_parser_status	prs_heredoc_redirect_to_pipe(
+							t_cmd *cmd,
+							t_shell *sh, size_t *cur_heredoc)
 {
-	t_redirect      *node;
+	t_redirect	*node;
 
 	node = ft_calloc(1, sizeof *node);
 	if (!node)
 		return (PARSE_ALLOC_ERROR);
 	node->type = REDIR_HEREDOC;
 	node->stream = IO_STDIN;
-	node->target.fd = 0; // TODO chnage
+	// TODO: check in any case that index is in range
+	node->target.fd = sh->heredoc_store->entries[*cur_heredoc].fd;
 	pipeline_push_redirect(cmd, node);
+	*cur_heredoc += 1;
 	return (PARSE_OK);
 }
 

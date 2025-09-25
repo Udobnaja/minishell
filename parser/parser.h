@@ -30,7 +30,7 @@ t_parser_status		prs_word_to_argv(
 
 t_parser_status prs_redirect_to_pipe(
 	t_token_node *token_node,
-	t_shell *sh, t_cmd *cmd
+	t_shell *sh, t_cmd *cmd, size_t *cur_heredoc
 );
 
 #endif
