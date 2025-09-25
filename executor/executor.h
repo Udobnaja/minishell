@@ -1,8 +1,6 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include <string.h>
-# include <stdio.h>
 # include "pipeline.h"
 # include "shell.h"
 
