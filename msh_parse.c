@@ -4,7 +4,7 @@ static t_lex_status		msh_lex(const char *str, t_token_list *token_list);
 static t_parser_status	msh_pre_parse(t_token_list *token_list,  t_shell *shell);
 static const char		*msh_token_to_char(t_token_type type);
 
-t_parser_status	msh_parse(const char *str, t_shell *shell)
+t_parser_status	msh_parse(const char *str, t_shell *shell, t_pipeline *pipeline)
 {
 	t_token_list	*token_list;
 	t_parser_status	status;
@@ -26,11 +26,15 @@ t_parser_status	msh_parse(const char *str, t_shell *shell)
 	if (msh_pre_parse(token_list, shell) != PARSE_OK)
 	{
 		lex_destroy_token_list(&token_list);
-		return (PARSE_UNEXPECTED_TOKEN);
+		return (PARSE_UNEXPECTED_TOKEN); // TODO: status
 	}
-	// TODO: create pipline
+	if (msh_pipeline(token_list, shell, pipeline) != PARSE_OK)
+	{
+		lex_destroy_token_list(&token_list);
+		heredoc_store_clear(shell->heredoc_store);
+		return (PARSE_ALLOC_ERROR); // TODO: status
+	}
 	lex_destroy_token_list(&token_list);
-	heredoc_store_clear(shell->heredoc_store);
 	return (PARSE_OK);
 }
 

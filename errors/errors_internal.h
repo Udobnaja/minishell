@@ -3,6 +3,7 @@
 
 # include <stdio.h>
 # include <string.h>
+
 # include "libft.h"
 # include "env.h"
 # include "parser.h"
@@ -22,7 +23,6 @@ typedef struct s_error
 const char  *err_env_msg(int code);
 const char  *err_lexer_msg(int code);
 const char  *err_parser_msg(int code);
-const char  *err_expansion_msg(int code);
 const char  *err_heredoc_msg(int code);
 t_error     err_create(t_err_domain domain, int code, t_err_payload payload);
 const char 	*err_exec_msg(int code);

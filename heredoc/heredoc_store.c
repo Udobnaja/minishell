@@ -23,7 +23,6 @@ void heredoc_store_clear(t_heredoc_store *store)
             close(store->entries[i].fd);
         i++;
     }
-    
     free(store->entries);
     store->entries = NULL;
     store->count = 0;
@@ -40,7 +39,11 @@ int	heredoc_store_add(t_heredoc_store *store, int fd)
 		if (store->capacity == 0)
 			capacity = HEREDOC_STORE_CAPACITY;
 		else
+		{
+			if (store->capacity > SIZE_MAX / 2)
+        		return (-1);
 			capacity = store->capacity * 2;
+		}			
 		entries = ft_calloc(capacity, sizeof(t_heredoc_entry));
 		if (!entries)
 			return (-1);

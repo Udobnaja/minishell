@@ -1,16 +1,6 @@
 #ifndef ERRORS_H
 # define ERRORS_H
 
-# include <stdio.h>
-# include <string.h>
-
-# include "libft.h"
-# include "env.h"
-# include "parser.h"
-# include "expansion/expansion.h"
-# include "heredoc/heredoc.h"
-# include "executor.h"
-
 typedef struct s_error t_error;
 
 typedef enum e_err_domain
@@ -19,7 +9,6 @@ typedef enum e_err_domain
 	ERR_ENV,
 	ERR_LEXER,
 	ERR_PARSER,
-	ERR_EXPANSION,
 	ERR_HEREDOC,
 	ERR_EXEC
 }	t_err_domain;
@@ -28,9 +17,9 @@ typedef union u_err_payload
 {
 	int			errno_val;
 	const char	*token;
-	char		*path;
+	const char	*path;
 	const char	*identifier;
-	char		*command;
+	const char	*command;
 }	t_err_payload;
 
 

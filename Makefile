@@ -31,8 +31,12 @@ HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
 	heredoc/heredoc_write_line.c \
-	heredoc/heredoc_env_key.c \
 	heredoc/heredoc_store.c
+
+PIPELINE_SRC := \
+	pipeline/pipeline_destroy.c \
+	pipeline/pipeline_init.c \
+	pipeline/pipeline_operations.c
 
 PARSE_SRC := \
 	parser/lexer/lexer.c \
@@ -45,10 +49,18 @@ PARSE_SRC := \
 	parser/lexer/lexer_parse_utils.c \
 	parser/lexer/lexer_parse_word.c \
 	parser/lexer/lexer_parse_operator.c \
-	parser/parser.c 
+	parser/parser.c \
+	parser/parser_utils.c \
+	parser/parser_count_word.c \
+	parser/parser_join_word.c \
+	parser/parser_word_pipeline.c \
+	parser/parser_ambiguous.c \
+	parser/parser_ambiguous_utils.c \
+	parser/parser_redirect_pipeline.c
 
 EXPANSION_SRC := \
-	expansion/expansion.c
+	expansion/expansion.c \
+	expansion/expansion_key.c
 
 EXECUTOR_SRC := \
 	executor/builtins/env.c \
@@ -63,7 +75,6 @@ ERRORS_SRC := \
 	errors/errors_reporter.c \
 	errors/errors_env_msgs.c \
 	errors/errors_parser_msgs.c \
-	errors/errors_expansion_msg.c \
 	errors/err_exec_msg.c \
 	errors/errors_heredoc_msg.c \
 	errors/errors_factory.c 
@@ -74,8 +85,10 @@ SRC := \
 	msh_parse.c \
 	msh_pre_heredoc.c \
 	msh_heredoc.c \
+	msh_pipeline.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
+	$(PIPELINE_SRC) \
 	$(ENV_SRC) \
 	$(ERRORS_SRC) \
 	$(EXECUTOR_SRC) \

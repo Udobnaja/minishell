@@ -1,6 +1,8 @@
 #ifndef PIPELINE_H
 # define PIPELINE_H
 
+# include <stddef.h>
+
 typedef enum e_io_stream
 {
 	IO_STDIN = 0,
@@ -48,12 +50,19 @@ typedef struct s_cmd
 	char		**argv;
 	t_redirect	*redirect_list;
 	t_builtin	builtin_kind;
+	size_t		argc;
+    size_t		capacity;
 }	t_cmd;
 
 typedef struct s_pipeline
 {
 	t_cmd	**cmds;
-	int		count;
+	size_t	count;
 }	t_pipeline;
+
+void	pipeline_destroy(t_pipeline *pipeline);
+int		pipeline_init(const size_t cmds_count, t_pipeline *pipeline);
+int		pipeline_push_cmd_argv(t_cmd *cmd, char *arg);
+void	pipeline_push_redirect(t_cmd *cmd, t_redirect *node);
 
 #endif

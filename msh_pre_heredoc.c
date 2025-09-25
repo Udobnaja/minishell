@@ -18,7 +18,7 @@ t_parser_status msh_pre_heredocs(t_token_list *token_list)
 		if (h_count > HEREDOC_MAX)
 		{
 			err_print(ERR_HEREDOC, HEREDOC_EXCEED_LIMIT, payload);
-			return PARSE_HEREDOC_ERROR;
+			return (PARSE_HEREDOC_ERROR);
 		}
 		cur = cur->next;
 	}
