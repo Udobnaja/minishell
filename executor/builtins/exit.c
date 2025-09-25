@@ -13,7 +13,7 @@ void exit_destroy_minishell(t_shell *sh, int status)
             free(sh->history_path);
             sh->history_path = NULL;
         } 
-        rl_clear_history();      
+        //rl_clear_history();      
     }
     exit(status);
 }

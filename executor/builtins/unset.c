@@ -21,15 +21,15 @@ t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
     }
     else if (cmd.builtin_kind == BUILTIN_ECHO)
     {
-        return pwd(sh, cmd);
+        return echo(cmd);
     }
     else if (cmd.builtin_kind == BUILTIN_CD)
     {
-        return pwd(sh, cmd);
+        return cd(sh, cmd);
     }
     else if (cmd.builtin_kind == BUILTIN_EXIT)
     {
-        return pwd(sh, cmd);
+        return builtin_exit(sh, cmd);
     }
     return (EXEC_OK);
 }
