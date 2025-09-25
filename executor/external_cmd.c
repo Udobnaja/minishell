@@ -1,27 +1,5 @@
 #include "executor_internal.h"
 
-static t_exec_status run_builtin(t_shell *sh, const t_cmd cmd)
-{
-    const char *str;
-
-    if(cmd.argv == NULL)
-        return EXEC_NOT_BUILTIN;
-    if(cmd.argv[0] == NULL)
-        return EXEC_NOT_BUILTIN;
-    str = cmd.argv[0];
-    if(ft_strcmp(str, "pwd") == 0)
-        return pwd(sh, cmd);
-    if(ft_strcmp(str, "echo") == 0)
-        return echo(cmd);
-    if(ft_strcmp(str, "export") == 0)
-        return export(sh, cmd);
-    if(ft_strcmp(str, "unset") == 0)
-        return unset(sh, cmd);
-    if(ft_strcmp(str, "env") == 0) //добавить остальные билдины
-        return env(sh, cmd);
-    return EXEC_NOT_BUILTIN;
-}
-
 static int check_candidate(const char *dir, size_t len, const char *name, char out[PATH_MAX])
 {
     if(dir == NULL || name == NULL || out == NULL)
@@ -43,7 +21,7 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
     size_t start;
     size_t len;
 
-    if(path == NULL || start == NULL||len == NULL)
+    if (path == NULL || name == NULL)
         return 0;
     i = 0;
     start = 0;
@@ -128,12 +106,13 @@ static int preliminary_check(const char *path, const char *argv)
                       (t_err_payload){ .identifier = (char*)argv});
                 return X_NOEXEC;
         }
-        return 0;
+
     }
+    return 0;
 
 }
 
-static t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
+t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
 {
     char full[PATH_MAX];
     pid_t pid;
@@ -153,7 +132,7 @@ static t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     temp_err_msg = preliminary_check (full, cmd.argv[0]);
     if(temp_err_msg != 0)
     {
-        sh->last_status = temp_err_msg;
+        sh->last_status = temp_err_msg; // будет отдельный сервис для ласт статус
         return EXEC_OK;
     }
     pid = fork();
@@ -166,7 +145,7 @@ static t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     {
         envp = env_to_envp(sh->env_store);
         if(envp == NULL)
-            _exit(1);
+            _exit(1); // лики! и почему и можно ли использовать
         execve(full, cmd.argv, envp);
         _exit(1);
     }
@@ -180,14 +159,4 @@ static t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     else if(WIFSIGNALED(status))
         sh->last_status = 128 + WTERMSIG(status);
     return EXEC_OK;
-}
-
-t_exec_status exec_external_cmd(t_shell *sh, const t_cmd cmd)
-{
-    t_exec_status status;
-
-    status = run_builtin(sh, cmd);
-    if(status != EXEC_NOT_BUILTIN)
-        return status;
-    return run_external_cmd(sh, cmd);
 }
