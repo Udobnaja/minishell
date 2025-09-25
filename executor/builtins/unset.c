@@ -44,13 +44,16 @@ bool exec_is_invalid_option(const char *str)
 t_exec_status unset(t_shell *sh, const t_cmd cmd)
 {
     size_t i;
+    t_err_payload payload;
 
+	payload = (t_err_payload){0};
     i = 1;
     if (!cmd.argv[1])
         return EXEC_OK;
     if (exec_is_invalid_option(cmd.argv[1]))
     {
-        err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, (t_err_payload){0});
+        payload.command = "unset";
+        err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, payload);
         return EXEC_ERR_INVALID_OPTION;
     }
     while(cmd.argv[i] != NULL)

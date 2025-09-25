@@ -1,7 +1,8 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-# include "minishell.h"
+# include <string.h>
+# include <stdio.h>
 # include "pipeline.h"
 # include "shell.h"
 

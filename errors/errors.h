@@ -13,7 +13,7 @@ typedef enum e_err_domain
 	ERR_EXEC
 }	t_err_domain;
 
-typedef union u_err_payload
+typedef struct s_err_payload
 {
 	int			errno_val;
 	const char	*token;

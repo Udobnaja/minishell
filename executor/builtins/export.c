@@ -149,6 +149,7 @@ t_exec_status export_process_argv(t_env_store *store, char **av)
         else if (tmp_status != EXEC_OK)
         {
             status = tmp_status;
+            payload.command = "export";
             payload.identifier = av[i];
             err_print(ERR_EXEC, status, payload);
         }
@@ -169,6 +170,7 @@ t_exec_status export(t_shell *sh, const t_cmd cmd)
     if (exec_is_invalid_option(cmd.argv[1]))
     {
         status = EXEC_ERR_INVALID_OPTION;
+        payload.command = "export";
         err_print(ERR_EXEC, status, payload);
         return status;
     }

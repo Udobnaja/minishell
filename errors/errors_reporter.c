@@ -14,10 +14,12 @@ void	err_print(t_err_domain domain, int code, t_err_payload payload)
 			ft_eprintf(error.msg, error.payload.token);
 		else if (error.domain == ERR_HEREDOC && error.payload.errno_val)
        		ft_eprintf(error.msg, strerror(error.payload.errno_val));	
-		else if (error.domain == ERR_EXEC && error.payload.identifier)
-			ft_eprintf(error.msg, error.payload.identifier);
-		else if (error.domain == ERR_EXEC && error.payload.errno_val)
-			ft_eprintf(error.msg, strerror(error.payload.errno_val));
+		else if (error.domain == ERR_EXEC && error.payload.command && error.payload.identifier)
+			ft_eprintf(error.msg, error.payload.command, error.payload.identifier);
+		else if (error.domain == ERR_EXEC && error.payload.command && error.payload.errno_val)
+			ft_eprintf(error.msg, error.payload.command, strerror(error.payload.errno_val));
+		else if (error.domain == ERR_EXEC && error.payload.command)
+			ft_eprintf(error.msg, error.payload.command);
 		else
 			ft_putstr_fd(error.msg, STDERR_FILENO);
 		ft_putstr_fd("\n", STDERR_FILENO);	
@@ -28,7 +30,9 @@ void	err_print(t_err_domain domain, int code, t_err_payload payload)
 
 static int err_has_payload(const t_error *error)
 {
-	return (error->payload.token != NULL
+	return (
+		error->payload.token != NULL
+		|| error->payload.identifier != NULL
 		|| error->payload.path != NULL
 		|| error->payload.command != NULL
 		|| error->payload.errno_val != 0);
