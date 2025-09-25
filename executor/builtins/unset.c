@@ -18,11 +18,19 @@ t_exec_status mock_exec(t_shell *sh, t_pipeline *pipeline)
     else if (cmd.builtin_kind == BUILTIN_PWD)
     {
         return pwd(sh, cmd);
-    } 
-    else if (cmd.builtin_kind == BUILTIN_PWD)
+    }
+    else if (cmd.builtin_kind == BUILTIN_ECHO)
     {
-        return cd(sh, cmd);
-    } 
+        return pwd(sh, cmd);
+    }
+    else if (cmd.builtin_kind == BUILTIN_CD)
+    {
+        return pwd(sh, cmd);
+    }
+    else if (cmd.builtin_kind == BUILTIN_EXIT)
+    {
+        return pwd(sh, cmd);
+    }
     return (EXEC_OK);
 }
 bool exec_is_invalid_option(const char *str)
