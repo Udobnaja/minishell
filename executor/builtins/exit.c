@@ -2,19 +2,20 @@
 
 void exit_destroy_minishell(t_shell *sh, int status)
 {
-    if(sh)
-    {
-        if(sh->env_store)
-            env_destroy(&sh->env_store);
-        if(sh->heredoc_store)
-            heredoc_store_destroy(&sh->heredoc_store);
-        if(sh->history_path)
-        {
-            free(sh->history_path);
-            sh->history_path = NULL;
-        } 
-        //rl_clear_history();      
-    }
+    (void) (sh);
+    // if(sh)
+    // {
+    //     if(sh->env_store)
+    //         env_destroy(&sh->env_store);
+    //     if(sh->heredoc_store)
+    //         heredoc_store_destroy(&sh->heredoc_store);
+    //     if(sh->history_path)
+    //     {
+    //         free(sh->history_path);
+    //         sh->history_path = NULL;
+    //     } 
+    //     //rl_clear_history();      
+    // }
     exit(status);
 }
 static int exec_is_number(const char *str)
@@ -41,19 +42,23 @@ t_exec_status builtin_exit(t_shell *sh, t_cmd cmd)
 {
     long long code;
     int				error;
-    
+    t_err_payload payload;
+	
+	payload = (t_err_payload){0}; 
     error = 0;
     ft_putendl_fd("exit", STDERR_FILENO);
     if(!cmd.argv[1])
         exit_destroy_minishell(sh, (int)(unsigned char)sh->last_status);
     if(!exec_is_number(cmd.argv[1]))
     {
-        err_print(ERR_EXEC, EXEC_ERR_NUMERIC_ARG, (t_err_payload){0});
+        payload.command = "exit";
+        err_print(ERR_EXEC, EXEC_ERR_NUMERIC_ARG, payload);
         exit_destroy_minishell(sh, 2);
     }
     if(cmd.argv[2])
     {
-        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, (t_err_payload){0});
+        payload.command = "exit";
+        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload);
         return EXEC_TOO_MANY_ARGS;
     }
     code = ft_satoi(cmd.argv[1], &error); //TODO добавить обработку оверфлоу для лонг лонг мах, далее код выхода должен быть 2

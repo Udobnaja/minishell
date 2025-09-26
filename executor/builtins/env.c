@@ -4,15 +4,19 @@ t_exec_status env(t_shell *sh, const t_cmd cmd)
 {
     char **envp;
     size_t i;
+    t_err_payload payload;
+	
+	payload = (t_err_payload){0};
     if(cmd.argv[1] != NULL) 
     {
-        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, (t_err_payload){0}); // TODO: move lvl up
+        payload.command = "env";
+        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload); // TODO: move lvl up
         return EXEC_TOO_MANY_ARGS;
     }
     envp = env_to_envp(sh->env_store);
     if(!envp)
     {
-        err_print(ERR_EXEC, EXEC_ALLOC_ERR, (t_err_payload){0}); // TODO: move lvl up
+        err_print(ERR_EXEC, EXEC_ALLOC_ERR, payload); // TODO: move lvl up
         return EXEC_ALLOC_ERR;
     }
     i = 0;

@@ -9,6 +9,7 @@ t_exec_status pwd(t_shell *sh, t_cmd cmd)
 	payload = (t_err_payload){0};
 	if(exec_is_invalid_option(cmd.argv[1]))
 	{
+		payload.command = "pwd";
 		err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, payload);
 		return EXEC_ERR_INVALID_OPTION;
 	}
@@ -26,6 +27,7 @@ t_exec_status pwd(t_shell *sh, t_cmd cmd)
 		return EXEC_OK;
 		
 	}
+	payload.command = "pwd";
 	payload.errno_val = errno;
 	err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
 	return EXEC_ERR_GEN;
