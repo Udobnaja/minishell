@@ -1,8 +1,8 @@
 #include "parser_internal.h"
 
-static t_parser_status	prs_append_expandable(const char *str, t_shell *sh, char **new_word);
+static t_parser_status	prs_append_expandable(const t_piece *piece, t_shell *sh, t_trim_state *st, char **new_word);
 static t_parser_status	prs_append_expanded_key(const char *str, t_shell *sh, size_t *consumed, char **new_word);
-static void				prs_append_until_expansion(const char *str, size_t *consumed, char **new_word);
+static void				prs_append_until_expansion(const char *str, size_t *consumed, t_trim_state *st, char **new_word);
 static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char **new_word);
 
 t_parser_status	prs_join_word(const t_word *word, t_shell *sh, char **new_word)
@@ -31,21 +31,18 @@ t_parser_status	prs_join_word(const t_word *word, t_shell *sh, char **new_word)
 static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char **new_word)
 {
 	size_t			i;
-	size_t			len;
 	t_parser_status	status;
+	t_trim_state	trim_state;
 
 	i = 0;
+	trim_state = LEADING;
 	while (i < word->count)
 	{
 		if (word->pieces[i].quote == SGL)
-		{
-			len = ft_strlen(word->pieces[i].text);
-			ft_memcpy(*new_word, word->pieces[i].text, len);
-			*new_word += len;
-		}
+			prs_append_sngl_quoted(word->pieces[i].text, &trim_state, new_word);
 		else
 		{
-			status = prs_append_expandable(word->pieces[i].text, sh, new_word);
+			status = prs_append_expandable(&word->pieces[i], sh, &trim_state, new_word);
 			if (status != PARSE_OK)
 				return (status);
 		}
@@ -55,20 +52,23 @@ static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char *
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_append_expandable(const char *str, t_shell *sh, char **new_word)
+static t_parser_status	prs_append_expandable(const t_piece *piece, t_shell *sh, t_trim_state *st, char **new_word)
 {
-	size_t	j;
+	size_t			j;
 	t_parser_status status;
+	char            *start;
 
 	j = 0;
-	while (str[j])
+	while (piece->text[j])
 	{
-		prs_append_until_expansion(str + j, &j, new_word);
-		if (str[j] == '$')
+		prs_append_until_expansion(piece->text + j, &j, st, new_word);
+		if (piece->text[j] == '$')
 		{
-			status = prs_append_expanded_key(str + j, sh, &j, new_word);
+			start = *new_word;
+			status = prs_append_expanded_key(piece->text + j, sh, &j, new_word);
 			if (status != PARSE_OK)
 				return (status);
+			prs_trim_expansion(start, st, piece->quote != NONE, new_word);
 		}
 	}
 	return (PARSE_OK);
@@ -90,22 +90,29 @@ static t_parser_status	prs_append_expanded_key(const char *str, t_shell *sh, siz
 		return (PARSE_ALLOC_ERROR);
 	}
 	len = ft_strlen(expanded);
-	ft_memcpy(*new_word, expanded, len);
-	*new_word += len; 	
+	if (len > 0)
+	{
+		ft_memcpy(*new_word, expanded, len);
+		*new_word += len; 
+	}	
 	*consumed += (ft_strlen(key));	
 	free(key);
 	free(expanded);
 	return (PARSE_OK);
 }
 
-static void	prs_append_until_expansion(const char *str, size_t *consumed, char **new_word)
+static void	prs_append_until_expansion(const char *str, size_t *consumed,  t_trim_state *st, char **new_word)
 {
 	size_t i;
 
 	i = 0;
 	while (str[i] && str[i] != '$')
 		i++;
+	if (i == 0)
+        return ;  
 	ft_memcpy(*new_word, str, i);
 	*new_word += i; 
 	*consumed += i;
+	if (*st != MIDDLE)
+        *st = MIDDLE;
 }
