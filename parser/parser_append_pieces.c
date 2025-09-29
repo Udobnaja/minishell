@@ -1,7 +1,7 @@
 #include "parser_internal.h"
 
 static size_t	prs_count_leading_spaces(char *start, const char *set, const size_t	len);
-static void prs_define_trailing_state(const char *start, const char *end, const char *set, t_trim_state *st);
+static void		prs_define_trailing_state(const char *start, const char *end, const char *set, t_trim_state *st);
 
 void	prs_append_sngl_quoted(const char *str, t_trim_state *st, char **new_word)
 {
@@ -40,6 +40,16 @@ void	prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_w
 		*new_word = start + (len - leading_skip);
 	}
 	prs_define_trailing_state(start, *new_word, set, st);
+}
+
+void prs_trim_ending(char *start, char **new_word, const char *set)
+{
+	char	*end;
+	
+	end = *new_word;
+	while (end > start && ft_strchr(set, (unsigned char)end[-1]))
+		end--;
+	*new_word = end;
 }
 
 static size_t	prs_count_leading_spaces(char *start, const char *set, const size_t	len)

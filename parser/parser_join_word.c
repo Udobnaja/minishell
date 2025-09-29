@@ -33,9 +33,11 @@ static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char *
 	size_t			i;
 	t_parser_status	status;
 	t_trim_state	trim_state;
+	char           *start; 
 
 	i = 0;
 	trim_state = LEADING;
+	start = *new_word;  
 	while (i < word->count)
 	{
 		if (word->pieces[i].quote == SGL)
@@ -48,6 +50,8 @@ static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char *
 		}
 		i++;
 	}
+	if (trim_state == TRAILING)
+		prs_trim_ending(start, new_word, " \t\n");
 	**new_word = '\0';
 	return (PARSE_OK);
 }

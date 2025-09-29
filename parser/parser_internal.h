@@ -30,5 +30,6 @@ t_parser_status	prs_is_word_ambiguous(const t_word *word, t_shell *sh);
 t_parser_status	prs_count_piece_len(const t_piece	*piece, t_shell *sh, size_t *total);
 void			prs_append_sngl_quoted(const char *str, t_trim_state *st, char **new_word);
 void			prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_word);
+void			prs_trim_ending(char *start, char **new_word, const char *set);
 
 #endif
