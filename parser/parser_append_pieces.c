@@ -17,7 +17,6 @@ void	prs_append_sngl_quoted(const char *str, t_trim_state *st, char **new_word)
 void	prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_word)
 {
 	const size_t	len = (size_t)(*new_word - start);
-	const char		*set = " \t\n";
 	size_t			leading_skip;
 
 	if (len == 0)
@@ -29,7 +28,7 @@ void	prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_w
 	}
 	if (*st == LEADING)
 	{
-		leading_skip = prs_count_leading_spaces(start, set, len);
+		leading_skip = prs_count_leading_spaces(start, IFS, len);
 		if (leading_skip == len)
 		{
 			*new_word = start;
@@ -39,7 +38,7 @@ void	prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_w
 			ft_memmove(start, start + leading_skip, len - leading_skip);
 		*new_word = start + (len - leading_skip);
 	}
-	prs_define_trailing_state(start, *new_word, set, st);
+	prs_define_trailing_state(start, *new_word, IFS, st);
 }
 
 void prs_trim_ending(char *start, char **new_word, const char *set)

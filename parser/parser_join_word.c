@@ -51,7 +51,7 @@ static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char *
 		i++;
 	}
 	if (trim_state == TRAILING)
-		prs_trim_ending(start, new_word, " \t\n");
+		prs_trim_ending(start, new_word, IFS);
 	**new_word = '\0';
 	return (PARSE_OK);
 }

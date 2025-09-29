@@ -7,6 +7,8 @@
 # include "shell.h"
 # include "expansion/expansion.h"
 
+# define IFS " \t\n"
+
 typedef struct s_ambiguous_state {
 	size_t	in_word;
 	size_t	leading_sp;

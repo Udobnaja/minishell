@@ -90,7 +90,6 @@ static t_parser_status	prs_is_expandble_ambiguous(
 	char			*key;
 	char			*expanded;
 	t_parser_status	status;
-	const char		*set = " \t\n";
 
 	key = expn_dup_env_key(str);
 	if (!key)
@@ -101,7 +100,7 @@ static t_parser_status	prs_is_expandble_ambiguous(
 		free(key);
 		return (PARSE_ALLOC_ERROR);
 	}
-	status = prs_is_expanded_ambiguous(expanded, set, amb_state);
+	status = prs_is_expanded_ambiguous(expanded, IFS, amb_state);
 	if (status != PARSE_OK)
 		return (free(key), free(expanded), status);
 	*consumed += ft_strlen(key);
