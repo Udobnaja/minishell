@@ -18,6 +18,12 @@ static t_parser_status	prs_is_unquoted_ambiguous(
     t_ambiguous_state *amb_state
 );
 
+static t_parser_status prs_process_quoted_ambiguous(
+	const t_piece *piece,
+	t_shell *sh,
+	t_ambiguous_state *st
+);
+
 t_parser_status prs_is_word_ambiguous(const t_word *word, t_shell *sh)
 {
 	size_t				i;
@@ -30,9 +36,9 @@ t_parser_status prs_is_word_ambiguous(const t_word *word, t_shell *sh)
 	{
 		if (word->pieces[i].quote != NONE)
 		{
-			amb_state.in_word = 1;
-			if (amb_state.trailing_sp)
-				return (PARSE_AMBIGUOUS_REDIRECT);
+			status = prs_process_quoted_ambiguous(&word->pieces[i], sh, &amb_state);
+			if (status != PARSE_OK)
+				return (status);
 			i++;
 			continue;
 		}
@@ -124,5 +130,26 @@ static t_parser_status	prs_is_unquoted_ambiguous(const char *str, t_shell *sh, t
 				return (status);
 		}
 	}
+	return (PARSE_OK);
+}
+
+static t_parser_status prs_process_quoted_ambiguous(
+	const t_piece *piece,
+	t_shell *sh,
+	t_ambiguous_state *st
+)
+{
+	size_t			piece_len;
+	t_parser_status	status;
+	
+	piece_len = 0;
+	status = prs_count_piece_len(piece, sh, &piece_len);
+	if (status != PARSE_OK)
+		return (status);
+	if (piece_len == 0)
+		return (PARSE_OK);
+	if (st->trailing_sp)
+		return (PARSE_AMBIGUOUS_REDIRECT);
+	st->in_word = 1;
 	return (PARSE_OK);
 }
