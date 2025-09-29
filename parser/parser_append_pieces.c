@@ -1,7 +1,7 @@
 #include "parser_internal.h"
 
 static size_t	prs_count_leading_spaces(char *start, const char *set, const size_t	len);
-static void		prs_define_trailing_state(char last_char, const char *set, t_trim_state *st);
+static void prs_define_trailing_state(const char *start, const char *end, const char *set, t_trim_state *st);
 
 void	prs_append_sngl_quoted(const char *str, t_trim_state *st, char **new_word)
 {
@@ -9,8 +9,7 @@ void	prs_append_sngl_quoted(const char *str, t_trim_state *st, char **new_word)
 
 	if (len == 0)
 		return ;  
-	if (*st != MIDDLE)
-		*st = MIDDLE;
+	*st = MIDDLE;
 	ft_memcpy(*new_word, str, len);
 	*new_word += len;
 }
@@ -40,7 +39,7 @@ void	prs_trim_expansion(char *start, t_trim_state *st,  int quoted, char **new_w
 			ft_memmove(start, start + leading_skip, len - leading_skip);
 		*new_word = start + (len - leading_skip);
 	}
-	prs_define_trailing_state(start[len - 1], set, st);
+	prs_define_trailing_state(start, *new_word, set, st);
 }
 
 static size_t	prs_count_leading_spaces(char *start, const char *set, const size_t	len)
@@ -52,9 +51,13 @@ static size_t	prs_count_leading_spaces(char *start, const char *set, const size_
 	return (i);
 }
 
-static void prs_define_trailing_state(char last_char, const char *set, t_trim_state *st)
+static void prs_define_trailing_state(const char *start, const char *end, const char *set, t_trim_state *st)
 {
-	if (ft_strchr(set, (unsigned char)last_char))
+	const size_t len = (size_t)(end - start);
+
+	if (len == 0)
+        return ;
+	if (ft_strchr(set, (unsigned char)start[len - 1]))
 		*st = TRAILING;
 	else
 		*st = MIDDLE;
