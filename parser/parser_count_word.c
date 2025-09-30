@@ -28,8 +28,6 @@ t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh, size_t *tota
 	while (i < word->count)
 	{
 		status = prs_count_piece_len(&word->pieces[i], sh, total);
-		if (word->pieces[i].quote == SGL)
-			*total += ft_strlen(word->pieces[i].text);
 		if (status != PARSE_OK)
 			return (status);
 		i++;
