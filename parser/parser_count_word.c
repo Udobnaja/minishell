@@ -3,6 +3,21 @@
 static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh, size_t *consumed, size_t *total);
 static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh, size_t *total);
 
+t_parser_status	prs_count_piece_len(const t_piece	*piece, t_shell *sh, size_t *total)
+{
+	t_parser_status status;
+
+	if (piece->quote == SGL)
+		*total += ft_strlen(piece->text);
+	else
+	{
+		status = prs_count_expandable_len(piece->text, sh, total);
+		if (status != PARSE_OK)
+			return (status);
+	}
+	return (PARSE_OK);
+}
+
 t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh, size_t *total)
 {
 	size_t			i;
@@ -12,14 +27,9 @@ t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh, size_t *tota
 	i = 0;
 	while (i < word->count)
 	{
-		if (word->pieces[i].quote == SGL)
-			*total += ft_strlen(word->pieces[i].text);
-		else
-		{
-			status = prs_count_expandable_len(word->pieces[i].text, sh, total);
-			if (status != PARSE_OK)
-				return (status);
-		}
+		status = prs_count_piece_len(&word->pieces[i], sh, total);
+		if (status != PARSE_OK)
+			return (status);
 		i++;
 	}
 	return (PARSE_OK);
