@@ -145,9 +145,14 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     {
         envp = env_to_envp(sh->env_store);
         if(envp == NULL)
-            _exit(1); // лики! и почему и можно ли использовать
+            exit(1); // проверить на лики
         execve(full, cmd.argv, envp);
-        _exit(1);
+        if(errno == ENOEXEC)
+        {
+            err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, (t_err_payload){0});
+            return EXEC_ERR_NOT_EXEC; // проверить, что именно надо вернуть 
+        }
+        exit(1);
     }
     if(waitpid(pid, &status, 0) == -1)
     {

@@ -25,7 +25,8 @@ typedef enum e_exec_status
 	EXEC_CMD_NOT_FOUND,
 	EXEC_ERR_PERMISSION,
 	EXEC_ERR_FORK,
-	EXEC_ERR_WAIT
+	EXEC_ERR_WAIT,
+	EXEC_ERR_NOT_EXEC
 }				t_exec_status;
 
 t_exec_status execute(t_shell *sh, t_pipeline *pipeline);
