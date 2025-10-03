@@ -19,9 +19,8 @@ int msh_parse_result_to_exit_status(t_msh_parse_result result)
 	}
 	if (result.domain == MPR_HEREDOC)
 	{
-		// CTRL+D - warning 0
 		if (result.code.heredoc == HEREDOC_ABORTED)
-			return (130);  // TODO: 128 + signal N
+			return sh_status_from_signal(SIGINT);
 		if (result.code.heredoc == HEREDOC_EXCEED_LIMIT)
 			return (SH_MISUSE);
 		return (SH_GENERAL_ERROR);

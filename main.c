@@ -11,6 +11,7 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	const char *sh_name;
 	t_pipeline pipeline;
+	g_last_signal = 0;
 
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
@@ -34,7 +35,7 @@ int main(int argc, char **argv, char **envp)
 			free(line);
 			continue;
 		}
-		add_history(line);
+		add_history(line); // TODO: line is from spaces
 		ft_bzero(&pipeline, sizeof pipeline);
 		parse_result = msh_parse(line, &shell, &pipeline);
 		if (parse_result.domain == MPR_OK)
