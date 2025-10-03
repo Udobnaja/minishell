@@ -10,7 +10,8 @@ CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
 	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils -I./expansion -I./heredoc
 
 SH_SRC := \
-	sh/sh_tempdir.c
+	sh/sh_tempdir.c \
+	sh/sh_status.c
 
 UTILS_SRC := \
 	utils/u_getcwd.c \

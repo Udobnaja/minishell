@@ -16,6 +16,8 @@
 #  define SH_O_CLOEXEC 0
 # endif
 
+static volatile sig_atomic_t g_last_signal;
+
 typedef struct s_heredoc_entry
 {
     int	fd;
@@ -45,5 +47,8 @@ typedef enum e_sh_status {
 
 int	sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
 int	sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
+int sh_status_from_signal(int sig);
+int	sh_status_from_errno_exec(int err);
+int	sh_status_from_wait(int wst);
 
 #endif
