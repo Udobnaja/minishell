@@ -91,6 +91,7 @@ SRC := \
 	msh_pre_heredoc.c \
 	msh_heredoc.c \
 	msh_pipeline.c \
+	msh_parse_to_exit_status.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(PIPELINE_SRC) \

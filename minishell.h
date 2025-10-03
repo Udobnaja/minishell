@@ -38,5 +38,6 @@ t_msh_parse_result	msh_parse(const char *str, t_shell *shell, t_pipeline *pipeli
 t_heredoc_status	msh_prepare_heredocs(t_token_list *token_list, t_shell *sh);
 t_heredoc_status	msh_pre_heredocs(t_token_list *token_list);
 t_parser_status		msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline);
+int					msh_parse_result_to_exit_status(t_msh_parse_result result);
 
 #endif

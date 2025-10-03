@@ -22,25 +22,32 @@ int main(int argc, char **argv, char **envp)
 	
 	char *line;
 	t_msh_parse_result parse_result;
+	int exit_status;
+
 	while(1)
 	{
 		line = readline(get_prompt(argv[0]));
-		if (!line)
+		if (!line)    //TODO: EOF / Ctrl-D
 			break;
-		if (*line)
+		if (*line == '\0')
 		{
-			add_history(line);
-			ft_bzero(&pipeline, sizeof pipeline);
-			parse_result = msh_parse(line, &shell, &pipeline);
-			if (parse_result.domain == MPR_OK)
-				execute(&shell, &pipeline);
-			pipeline_destroy(&pipeline);
-		}		
+			free(line);
+			continue;
+		}
+
+		add_history(line);
+		ft_bzero(&pipeline, sizeof pipeline);
+		parse_result = msh_parse(line, &shell, &pipeline);
+		if (parse_result.domain == MPR_OK)
+			execute(&shell, &pipeline);
+		else 
+			shell.last_status = msh_parse_result_to_exit_status(parse_result);
+		pipeline_destroy(&pipeline);
 		free(line);
-		line = NULL;
 	}
+	exit_status = shell.last_status;
 	heredoc_store_destroy(&shell.heredoc_store);
 	env_destroy(&shell.env_store);
 
-	return (0);
+	return (exit_status);
 }

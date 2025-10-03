@@ -38,7 +38,7 @@ typedef struct s_shell
 typedef enum e_sh_status {
     SH_OK = 0,
     SH_GENERAL_ERROR = 1,
-    SH_MISUSE_BUILTIN = 2,
+    SH_MISUSE = 2,
     SH_NOT_EXECUTABLE = 126,
     SH_NOT_FOUND = 127
 }	t_sh_status;
