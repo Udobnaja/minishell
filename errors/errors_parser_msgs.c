@@ -20,8 +20,7 @@ const char *err_parser_msg(int code)
 	static const char *map[] = {
     	[PARSE_UNEXPECTED_TOKEN] = "syntax error near unexpected token `%s'",
 		[PARSE_ALLOC_ERROR] = "Cannot allocate memory",
-		[PARSE_LEX_ERROR] = "Lexer inner error",
-		[PARSE_HEREDOC_ERROR] = "Heredoc inner error",
+		[PARSE_HEREDOC_INNER_ERROR] = "Heredoc inner error",
 		[PARSE_AMBIGUOUS_REDIRECT] = "ambiguous redirect"
 	};
 	const int size = sizeof(map) / sizeof(*map);

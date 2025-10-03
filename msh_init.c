@@ -25,15 +25,14 @@ static t_env_status	msh_env_init(t_shell *shell, char **envp, const char *sh_nam
 	shell->env_store = env_store_create();
 	if (!shell->env_store)
 	{
-		status = ENV_ALLOC_ERROR;
-		err_print(ERR_ENV, status, (t_err_payload){0});
-    	return (status);
+		err_print(ERR_ENV, ENV_ALLOC_ERROR, (t_err_payload){0});
+    	return (ENV_ALLOC_ERROR);
 	}
 	status = env_init(shell->env_store, envp, sh_name);
 	if (msh_env_status_is_fatal(status))
 	{
-		env_destroy(&shell->env_store);
 		err_print(ERR_ENV, status, (t_err_payload){0});
+		env_destroy(&shell->env_store);
 		return (status);
 	}
 	return (status);

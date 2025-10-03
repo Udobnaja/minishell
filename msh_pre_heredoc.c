@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_parser_status msh_pre_heredocs(t_token_list *token_list)
+t_heredoc_status msh_pre_heredocs(t_token_list *token_list)
 {
 	t_token_node	*cur;
 	size_t			h_count;
@@ -18,10 +18,10 @@ t_parser_status msh_pre_heredocs(t_token_list *token_list)
 		if (h_count > HEREDOC_MAX)
 		{
 			err_print(ERR_HEREDOC, HEREDOC_EXCEED_LIMIT, payload);
-			return (PARSE_HEREDOC_ERROR);
+			return (HEREDOC_EXCEED_LIMIT);
 		}
 		cur = cur->next;
 	}
-	return (PARSE_OK);
+	return (HEREDOC_OK);
 }
 
