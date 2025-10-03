@@ -62,7 +62,7 @@ static t_parser_status	prs_heredoc_redirect_to_pipe(
 	t_redirect	*node;
 
 	if (*cur_heredoc >= sh->heredoc_store->count)
-		return (PARSE_HEREDOC_ERROR);
+		return (PARSE_HEREDOC_INNER_ERROR);
 	node = ft_calloc(1, sizeof *node);
 	if (!node)
 		return (PARSE_ALLOC_ERROR);

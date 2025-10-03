@@ -70,10 +70,6 @@ t_parser_status prs_finish_cmd(t_cmd *cmd)
 	return (PARSE_OK);
 }
 
-
-
-// write errros here 
-// separate logic to parser
 t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
 {
 	size_t			i;

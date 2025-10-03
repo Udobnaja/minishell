@@ -9,7 +9,6 @@ t_parser_status prs_word_to_argv(
 	t_parser_status	status;
 
 	arg = NULL;
-	// TODO: TRIM leading spaces for NONE Q if first, TRIM trailing spaces for NONEQ if last
 	status = prs_join_word(word, sh, &arg);
 	if (status != PARSE_OK)
 		return (status);
