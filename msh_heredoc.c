@@ -3,12 +3,12 @@
 static int				msh_heredoc_has_expansion(t_token_node *node);
 static char				*msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node);
 static char				*msh_heredoc_make_delimeter(t_token_node *node);
-static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result);
+static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result);
 
-t_parser_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
+t_heredoc_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
 {
 	t_token_node		*cur;
-	t_parser_status		status;
+	t_heredoc_status	status;
 	t_heredoc_result	result;
 
 	cur = token_list->head;
@@ -17,21 +17,21 @@ t_parser_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
 		if (cur->token->type == T_HEREDOC)
 		{
 			status = msh_process_heredoc(cur, sh, &result);
-			if (status != PARSE_OK)
+			if (status != HEREDOC_OK)
 				return (status);
 			if (heredoc_store_add(sh->heredoc_store, result.fd) != 0)
 			{
 				close(result.fd);
 				err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, (t_err_payload){0});
-				return (PARSE_ALLOC_ERROR);
+				return (HEREDOC_ALLOC_ERROR);
 			}
 		}
 		cur = cur->next;
 	}    
-	return (PARSE_OK);
+	return (HEREDOC_OK);
 }
 
-static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result)
+static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result)
 {
 	const int			has_expansion = msh_heredoc_has_expansion(heredoc_node->next);
 	char				*delimeter;
@@ -42,7 +42,7 @@ static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *
 	if (!delimeter)
 	{
 		err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, payload);
-		return (PARSE_ALLOC_ERROR);
+		return (HEREDOC_ALLOC_ERROR);
 	}	
 	*result = heredoc_write_to_tmpfile(sh, delimeter, has_expansion);
 	free(delimeter);
@@ -50,9 +50,9 @@ static t_parser_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *
 	{
 		payload.errno_val = result->errno_val;
 		err_print(ERR_HEREDOC, result->status, payload);
-		return (PARSE_HEREDOC_ERROR);
+		return (result->status);
 	}
-	return (PARSE_OK);
+	return (HEREDOC_OK);
 }
 
 static int msh_heredoc_has_expansion(t_token_node *node)

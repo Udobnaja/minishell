@@ -32,9 +32,16 @@ typedef struct s_shell
 {
 	t_env_store		*env_store;
 	int				last_status;
-	char			*history_path;
 	t_heredoc_store *heredoc_store;
 }	t_shell;
+
+typedef enum e_sh_status {
+    SH_OK = 0,
+    SH_GENERAL_ERROR = 1,
+    SH_MISUSE_BUILTIN = 2,
+    SH_NOT_EXECUTABLE = 126,
+    SH_NOT_FOUND = 127
+}	t_sh_status;
 
 int	sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
 int	sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);

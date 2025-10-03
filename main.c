@@ -17,11 +17,11 @@ int main(int argc, char **argv, char **envp)
 	else
 		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
-	if (msh_init(&shell, envp, sh_name))
-		return (1);
+	if (msh_init(&shell, envp, sh_name) != 0)
+		return (SH_GENERAL_ERROR);
 	
 	char *line;
-
+	t_msh_parse_result parse_result;
 	while(1)
 	{
 		line = readline(get_prompt(argv[0]));
@@ -30,9 +30,10 @@ int main(int argc, char **argv, char **envp)
 		if (*line)
 		{
 			add_history(line);
-			ft_bzero(&pipeline, sizeof pipeline); 
-			if (msh_parse(line, &shell, &pipeline) == PARSE_OK)
-					execute(&shell, &pipeline);
+			ft_bzero(&pipeline, sizeof pipeline);
+			parse_result = msh_parse(line, &shell, &pipeline);
+			if (parse_result.domain == MPR_OK)
+				execute(&shell, &pipeline);
 			pipeline_destroy(&pipeline);
 		}		
 		free(line);
@@ -40,5 +41,6 @@ int main(int argc, char **argv, char **envp)
 	}
 	heredoc_store_destroy(&shell.heredoc_store);
 	env_destroy(&shell.env_store);
+
 	return (0);
 }
