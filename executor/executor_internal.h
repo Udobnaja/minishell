@@ -9,6 +9,11 @@
 # include <errno.h>
 # include <stdbool.h>
 
+#ifndef FD_READ
+# define FD_READ 0
+# define FD_WRITE 1
+#endif
+
 // builtins
 bool			exec_is_invalid_option(const char *str);
 t_exec_status	unset(t_shell *sh, const t_cmd cmd);

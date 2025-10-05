@@ -11,11 +11,16 @@ const char *err_exec_msg(int code)
 		[EXEC_ERR_GEN] = "%s: %s",
 		[EXEC_ERR_CD] = "cd: HOME is not set",
 		[EXEC_ERR_NUMERIC_ARG] = "%s: numeric argument required",
-		[EXEC_ERR_NOT_EXEC] = "cannot execute binary file",
-		[EXEC_NO_SUCH_FILE] = "%s: No such file or directory",
 		[EXEC_NOT_BUILTIN] = "",
-		[EXEC_ERR_FORK] = "fork: Resource temporarily unavailable",
-		[EXEC_ERR_WAIT] = "waitpid failed"
+		[EXEC_ERR_WAIT] = "waitpid failed",
+		[EXEC_ERR_DUP] = "dup2: Bad file descriptor",
+		[EXEC_ERR_PIPE] = "fork: Resource temporarily unavailable", // if pipe return -1
+		[EXEC_ERR_FORK] = "fork: Resource temporarily unavailable", // if fork return -1
+		[EXEC_NO_SUCH_FILE] = "%s: No such file or directory", 		// exit code 127
+		[EXEC_CMD_NOT_FOUND] = "%s: command not found", 			// 127
+		[EXEC_PERMISSION_DENIED] = "%s: Permission denied",			// 126
+		[EXEC_IS_DIRECTORY] = "%s: Is a directory",					// 126
+		[EXEC_EXECUTION_ERROR] = "%s: execution error"				// 126
 	};
 	const int size = sizeof(map) / sizeof(*map);
 

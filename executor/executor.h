@@ -26,8 +26,24 @@ typedef enum e_exec_status
 	EXEC_ERR_PERMISSION,
 	EXEC_ERR_FORK,
 	EXEC_ERR_WAIT,
-	EXEC_ERR_NOT_EXEC
+	EXEC_ERR_NOT_EXEC,
+	EXEC_ERR_DUP,
+	EXEC_PERMISSION_DENIED,
+	EXEC_ERR_PIPE,
+	EXEC_IS_DIRECTORY,
+	EXEC_EXECUTION_ERROR
 }				t_exec_status;
+
+
+typedef struct s_pipe
+{
+	t_shell *sh;
+	t_pipeline *pl;
+	pid_t *pids;
+	size_t n;
+	int prev[2];
+	int next[2];
+}t_pipe;
 
 t_exec_status execute(t_shell *sh, t_pipeline *pipeline);
 
