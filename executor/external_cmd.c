@@ -125,7 +125,7 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     full[0] = '\0';
     if(!cmd_path(sh, cmd.argv[0], full))
     {
-        err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, (t_err_payload){.identifier = cmd.argv[0]});
+        err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, (t_err_payload){.command = cmd.argv[0]});
         sh->last_status = 127; // command not found
         return EXEC_OK;
     }
@@ -150,7 +150,7 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
         if(errno == ENOEXEC)
         {
             err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, (t_err_payload){0});
-            return EXEC_ERR_NOT_EXEC; // проверить, что именно надо вернуть 
+            return EXEC_ERR_NOT_EXEC; 
         }
         exit(1);
     }
@@ -161,7 +161,7 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     }
     if(WIFEXITED(status))
         sh->last_status = WEXITSTATUS(status);
-    else if(WIFSIGNALED(status))
-        sh->last_status = 128 + WTERMSIG(status);
+    // else if(WIFSIGNALED(status))
+    //     sh->last_status = 128 + WTERMSIG(status); //для сигналов
     return EXEC_OK;
 }
