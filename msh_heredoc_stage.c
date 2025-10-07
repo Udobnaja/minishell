@@ -9,7 +9,6 @@ int	msh_stage_heredoc(t_shell *shell, t_token_list *token_list, t_msh_parse_resu
 	{
 		status->domain = MPR_HEREDOC;
 		status->code.heredoc = heredoc_status;
-		lex_destroy_token_list(&token_list);
 		return (0);
 	}
 	return (1);

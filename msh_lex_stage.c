@@ -22,7 +22,6 @@ int	msh_stage_tokenize(const char *str, t_token_list *token_list, t_msh_parse_re
 	{
 		status->domain = MPR_LEX;
 		status->code.lex = tokenize_status;
-		lex_destroy_token_list(&token_list);
 		return (0);
 	}
 	return (1);
