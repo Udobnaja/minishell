@@ -31,7 +31,7 @@ typedef enum e_exec_status
 	EXEC_PERMISSION_DENIED,
 	EXEC_ERR_PIPE,
 	EXEC_IS_DIRECTORY,
-	EXEC_EXECUTION_ERROR
+	EXEC_ERR_EXECUTION
 }				t_exec_status;
 
 

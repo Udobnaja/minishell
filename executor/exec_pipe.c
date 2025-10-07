@@ -82,8 +82,10 @@ t_exec_status wait_all(pid_t *pids, size_t n, int *last_status_out)
             st = 0;
             if(waitpid(pids[i], &st, 0) > 0)
             {
-               if (WIFEXITED(st) != 0)
+                if (WIFEXITED(st) != 0)
                 last = WEXITSTATUS(st);
+            // else if (WIFSIGNALED(st) != 0)
+            //     last = 128 + WTERMSIG(st); 
             }
         }
         i++;
@@ -142,7 +144,7 @@ void run_child_process(t_pipe *p, size_t i)
         }
         else
         {
-            err_print(ERR_EXEC, EXEC_EXECUTION_ERROR, pay);
+            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, pay);
             code = 126;
         }
         exit(code);

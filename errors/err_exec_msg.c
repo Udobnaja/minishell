@@ -20,7 +20,7 @@ const char *err_exec_msg(int code)
 		[EXEC_CMD_NOT_FOUND] = "%s: command not found", 			// 127
 		[EXEC_PERMISSION_DENIED] = "%s: Permission denied",			// 126
 		[EXEC_IS_DIRECTORY] = "%s: Is a directory",					// 126
-		[EXEC_EXECUTION_ERROR] = "%s: execution error"				// 126
+		[EXEC_ERR_EXECUTION] = "%s: execution error"				// 126
 	};
 	const int size = sizeof(map) / sizeof(*map);
 
