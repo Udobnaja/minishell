@@ -92,8 +92,7 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 			{
 				err_print(ERR_PARSER, status, (t_err_payload){0});
 				return (status);
-			}
-				
+			}	
 		}
 		else if (cur->token->type == T_PIPE)
 		{

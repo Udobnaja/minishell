@@ -1,9 +1,23 @@
 #include "minishell.h"
 
-const char *get_prompt(char *default_name)
+const char *msh_get_prompt(char *default_name)
 {
 	(void) (default_name);
 	return ("minishell $ ");
+}
+
+int msh_has_only_spaces(char *str)
+{
+	size_t i;
+
+	i = 0;
+	while(str[i])
+	{
+		if (!ft_isspace(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int main(int argc, char **argv, char **envp)
@@ -27,7 +41,7 @@ int main(int argc, char **argv, char **envp)
 
 	while(1)
 	{
-		line = readline(get_prompt(argv[0]));
+		line = readline(msh_get_prompt(argv[0]));
 		if (!line)    //TODO: EOF / Ctrl-D
 			break;
 		if (*line == '\0')
@@ -35,8 +49,12 @@ int main(int argc, char **argv, char **envp)
 			free(line);
 			continue;
 		}
-
 		add_history(line);
+		if (msh_has_only_spaces(line))
+		{
+			free(line);
+			continue;
+		}
 		ft_bzero(&pipeline, sizeof pipeline);
 		parse_result = msh_parse(line, &shell, &pipeline);
 		if (parse_result.domain == MPR_OK)
