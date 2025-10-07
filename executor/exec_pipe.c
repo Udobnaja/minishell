@@ -96,37 +96,43 @@ t_exec_status wait_all(pid_t *pids, size_t n, int *last_status_out)
 
 void run_child_process(t_pipe *p, size_t i)
 {
-    int st;
-    char *path;
-    char **envp;
-    int code;
+    t_cmd  *cmd;
+    int     st;
+    char    full[PATH_MAX];
+    char  **envp;
 
-    if(child_process(p, i) != EXEC_OK)
+    cmd = p->pl->cmds[i];
+    if (child_process(p, i) != EXEC_OK)
     {
         err_print(ERR_EXEC, EXEC_ERR_DUP, (t_err_payload){0});
         exit(1);
     }
-    if (is_builtin(p->pl->cmds[i]))
+    if (cmd == NULL || cmd->argv == NULL || cmd->argv[0] == NULL || cmd->argv[0][0] == '\0')
+        exit(0);
+    if (cmd->builtin_kind != BUILTIN_NONE)
     {
-        st = run_builtin(p->sh, p->pl->cmds[i]);                
+        st = execute_builtin(p->sh, cmd);
         exit(st);
     }
-    path = NULL;
-    if(p->pl->cmds[i]->argv && p->pl->cmds[i]->argv[0])
-    path = cmd_path(p->pl->cmds[i]->argv[0], p->sh->env_store, NULL);
-    if (path == NULL)
+    full[0] = '\0';
+    if (cmd_path(p->sh, cmd->argv[0], full) == 0)
     {
         t_err_payload pay;
-        pay.identifier = p->pl->cmds[i]->argv[0];
+        pay.identifier = cmd->argv[0];
         err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, pay);
         exit(127);
     }
-
     envp = env_to_envp(p->sh->env_store);
-    execve(path, p->pl->cmds[i]->argv, envp);
+    if (envp == NULL)
+        exit(1);
+
+    execve(full, cmd->argv, envp);
     {
         t_err_payload pay;
-        pay.identifier = path;
+        int code;
+
+        pay.identifier = full;
+
         if (errno == ENOENT)
         {
             err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, pay);
@@ -140,6 +146,11 @@ void run_child_process(t_pipe *p, size_t i)
         else if (errno == EISDIR)
         {
             err_print(ERR_EXEC, EXEC_IS_DIRECTORY, pay);
+            code = 126;
+        }
+        else if (errno == ENOEXEC)
+        {
+            err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, pay);
             code = 126;
         }
         else
@@ -188,32 +199,35 @@ t_exec_status execution_run_pipeline(t_pipe *p)
         i++;
     }
     close_fd(&p->prev[FD_READ]);
+    close_fd(&p->prev[FD_WRITE]);
+    close_fd(&p->next[FD_READ]);
+    close_fd(&p->next[FD_WRITE]);
     return EXEC_OK;
 }
 
 t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
 {
     t_pipe         p;
-    int            last;
+    int            last = 0;
     t_exec_status  st;
 
-    if (!pl || pl->count == 0)
+    if (pl == NULL || pl->count == 0)
     {
         sh->last_status = 0;
         return EXEC_OK;
     }
-
-    if (pl->count == 1 && is_builtin(pl->cmds[0]))
+    if (pl->count == 1 && pl->cmds[0] != NULL
+        && pl->cmds[0]->builtin_kind != BUILTIN_NONE)
     {
-        sh->last_status = run_builtin(sh, pl->cmds[0]);
+        sh->last_status = execute_builtin(sh, pl->cmds[0]);
         return EXEC_OK;
     }
 
-    p.sh = sh;
-    p.pl = pl;
-    p.n = pl->count;
-    p.pids = malloc(sizeof(pid_t) * p.n);
-    if (!p.pids)
+    p.sh   = sh;
+    p.pl   = pl;
+    p.n    = pl->count;
+    p.pids = (pid_t *)malloc(sizeof(pid_t) * p.n);
+    if (p.pids == NULL)
     {
         err_print(ERR_EXEC, EXEC_ALLOC_ERR, (t_err_payload){0});
         sh->last_status = 1;
@@ -222,7 +236,10 @@ t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
 
     st = execution_run_pipeline(&p);
     if (st == EXEC_OK)
-        wait_all(p.pids, p.n, &last);
+    {
+        if (wait_all(p.pids, p.n, &last) != EXEC_OK)
+            last = 1;
+    }
     else
         last = 1;
 

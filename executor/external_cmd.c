@@ -44,7 +44,7 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
     return 0;
 }
 
-static int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
+int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 {
     const char *path_env;
     if (name == NULL || out == NULL)

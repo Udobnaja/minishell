@@ -25,6 +25,9 @@ t_exec_status	cd(t_shell *sh, const t_cmd cmd);
 t_exec_status	builtin_exit(t_shell *sh, t_cmd cmd);
 
 t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd);
+t_exec_status execute_builtin(t_shell *sh, t_cmd *cmd);
+t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl);
+int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX]);
 
 
 #endif

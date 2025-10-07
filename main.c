@@ -32,7 +32,12 @@ int main(int argc, char **argv, char **envp)
 			add_history(line);
 			ft_bzero(&pipeline, sizeof pipeline); 
 			if (msh_parse(line, &shell, &pipeline) == PARSE_OK)
-				execute(&shell, &pipeline);
+			{
+				if(pipeline.count > 1)
+					execute_pipeline(&shell, &pipeline);
+				else if (pipeline.count == 1)
+					execute(&shell, &pipeline);
+			}
 			pipeline_destroy(&pipeline);
 		}		
 		free(line);
