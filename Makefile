@@ -98,6 +98,7 @@ SRC := \
 	msh_preparse_stage.c \
 	msh_lex_stage.c \
 	msh_heredoc_stage.c \
+	msh_cleanup.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(PIPELINE_SRC) \

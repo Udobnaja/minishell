@@ -20,6 +20,12 @@ int msh_has_only_spaces(char *str)
 	return (1);
 }
 
+static void msh_clean_and_exit(t_shell *shell,int exit_status)
+{
+	msh_cleanup(shell);
+	exit(exit_status);
+}
+
 int main(int argc, char **argv, char **envp)
 {
 	t_shell shell;
@@ -37,7 +43,6 @@ int main(int argc, char **argv, char **envp)
 	
 	char *line;
 	t_msh_parse_result parse_result;
-	int exit_status;
 
 	while(1)
 	{
@@ -64,9 +69,5 @@ int main(int argc, char **argv, char **envp)
 		pipeline_destroy(&pipeline);
 		free(line);
 	}
-	exit_status = shell.last_status;
-	heredoc_store_destroy(&shell.heredoc_store);
-	env_destroy(&shell.env_store);
-
-	return (exit_status);
+	msh_clean_and_exit(&shell, shell.last_status);
 }
