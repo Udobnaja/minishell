@@ -5,7 +5,7 @@ static t_token_node			*prs_validate_tokens_order(t_token_list	*token_list);
 static t_pre_parse_result	prs_ok(void);
 static t_pre_parse_result	prs_err(t_parser_status e, t_token_node *node);
 
-t_pre_parse_result prs_pre_parse(t_token_list	*token_list)
+t_pre_parse_result prs_preparse(t_token_list	*token_list)
 {
 	t_token_node *invalid_node; 
 

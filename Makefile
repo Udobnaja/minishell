@@ -58,7 +58,8 @@ PARSE_SRC := \
 	parser/parser_ambiguous.c \
 	parser/parser_ambiguous_utils.c \
 	parser/parser_redirect_pipeline.c \
-	parser/parser_append_pieces.c
+	parser/parser_append_pieces.c \
+	parser/parser_cmd.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \
@@ -93,7 +94,7 @@ SRC := \
 	msh_heredoc.c \
 	msh_pipeline.c \
 	msh_parse_to_exit_status.c \
-	msh_parse_stages.c \
+	msh_pipeline_stage.c \
 	msh_preparse_stage.c \
 	msh_lex_stage.c \
 	msh_heredoc_stage.c \

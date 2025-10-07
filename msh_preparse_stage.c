@@ -23,7 +23,7 @@ static t_parser_status	msh_preparse(t_token_list *token_list)
 	t_pre_parse_result	result;
 
 	payload = (t_err_payload){0};
-	result = prs_pre_parse(token_list);
+	result = prs_preparse(token_list);
 	if (result.status != PARSE_OK)
 	{
 		payload.token = msh_err_token_label(result.invalid, token_list->size);
