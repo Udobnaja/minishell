@@ -100,7 +100,6 @@ void exec_handle_error1(const char *path)
     int code;
 
     pay.identifier = (char *)path;
-
     if (errno == ENOENT)
     {
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, pay);
@@ -191,10 +190,11 @@ void run_child_process(t_pipe *p, size_t i)
     envp = env_to_envp(p->sh->env_store);
     if (envp == NULL)
         exit(1);
-
     execve(path, cmd->argv, envp);
-    exec_handle_error1(path);
-    exec_handle_error2(path);
+    if(errno == ENOEXEC)
+        exec_handle_error2(path);
+    else 
+        exec_handle_error1(path);
 }
 
 t_exec_status exec_make_pipe(t_pipe *p)
@@ -240,9 +240,6 @@ t_exec_status execution_run_pipeline(t_pipe *p)
         }
         if (exec_fork_child(p, i) != EXEC_OK)
             return EXEC_ERR_FORK;
-        if (p->pids[i] == 0)
-            run_child_process(p, i);
-
         pipe_parent_rotate(p);
         i++;
     }
