@@ -1,11 +1,17 @@
 #ifndef SHELL_H
 # define SHELL_H
 
+# include <stdio.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <sys/errno.h>
+# include <fcntl.h>
+# include <signal.h>
+# include <termios.h>
+
 # include "env.h"
 # include "libft.h"
 # include "utils.h"
-# include <sys/errno.h>
-# include <fcntl.h>
 
 # define SH_TMPDIR_MAX   256
 # define SH_TMPPATH_MAX  512
@@ -45,10 +51,16 @@ typedef enum e_sh_status {
     SH_NOT_FOUND = 127
 }	t_sh_status;
 
-int	sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
-int	sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
-int sh_status_from_signal(int sig);
-int	sh_status_from_errno_exec(int err);
-int	sh_status_from_wait(int wst);
+int		sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
+int		sh_mktmpfd(const t_env_store *env, char *path, const char *prefix);
+int 	sh_status_from_signal(int sig);
+int		sh_status_from_errno_exec(int err);
+int		sh_status_from_wait(int wst);
+int		sh_termios_apply(void);
+void	sh_termios_restore(void);
+void	sh_echoctl_off(struct termios *t);
+void	sh_echoctl_on(struct termios *t);
+
+void	sh_shell_signals(void);
 
 #endif

@@ -31,7 +31,8 @@ int main(int argc, char **argv, char **envp)
 	t_shell shell;
 	const char *sh_name;
 	t_pipeline pipeline;
-	g_last_signal = 0;
+
+	sh_termios_apply();
 
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
@@ -39,16 +40,18 @@ int main(int argc, char **argv, char **envp)
 		sh_name = SHELL_NAME;
 	ft_bzero(&shell, sizeof(t_shell));
 	if (msh_init(&shell, envp, sh_name) != 0)
-		return (SH_GENERAL_ERROR);
-	
+		return (SH_GENERAL_ERROR); 
 	char *line;
 	t_msh_parse_result parse_result;
-
 	while(1)
 	{
+		sh_shell_signals();
 		line = readline(msh_get_prompt(argv[0]));
-		if (!line)    //TODO: EOF / Ctrl-D
+		if (!line)
+		{
+			write(STDOUT_FILENO, "exit\n", 5);
 			break;
+		}
 		if (*line == '\0')
 		{
 			free(line);
@@ -69,5 +72,6 @@ int main(int argc, char **argv, char **envp)
 		pipeline_destroy(&pipeline);
 		free(line);
 	}
+	sh_termios_restore();
 	msh_clean_and_exit(&shell, shell.last_status);
 }

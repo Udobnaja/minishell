@@ -37,7 +37,8 @@ static t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_sh
 {
 	char *line;
 	t_heredoc_status status;
-
+	// g_last_signal = 0;
+	// set up signals for heredoc;
 	while(1)
 	{
 		line = readline("> ");
@@ -53,6 +54,7 @@ static t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_sh
 		if (status != HEREDOC_OK)
 			return (status);	
 	}
+	// restore signal for usual
 	return (HEREDOC_OK);
 }
 
