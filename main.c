@@ -24,13 +24,19 @@ int msh_has_only_spaces(char *str)
 
 static int	msh_rl_event_hook(void)
 {
-	if (g_last_signal == SIGINT)
+	if (g_last_signal == SIGINT && sh_job(SH_JOB_GET) == SH_INTERACTIVE)
 	{
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 		g_last_signal = 0;
+	} else if (g_last_signal == SIGINT && sh_job(SH_JOB_GET) == SH_HEREDOC)
+	{
+		sh_job(SH_HEREDOC_ABORTED);
+		rl_done = 1;
+		g_last_signal = 0;
 	}
+
 	return 0;
 }
 
@@ -62,8 +68,10 @@ int main(int argc, char **argv, char **envp)
 	char *line;
 	t_msh_parse_result parse_result;
 
+	rl_catch_signals = 0;
 	msh_rl_install_event_hook();
 	sh_shell_signals();
+	sh_job(SH_INTERACTIVE);
 	while(1)
 	{
 		line = readline(msh_get_prompt(argv[0]));

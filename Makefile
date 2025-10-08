@@ -33,7 +33,8 @@ SH_SRC := \
 	sh/sh_status.c \
 	sh/sh_termios.c \
 	sh/sh_termios_utils.c \
-	sh/sh_signals.c
+	sh/sh_signals.c \
+	sh/sh_job.c
 
 UTILS_SRC := \
 	utils/u_getcwd.c \
