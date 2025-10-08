@@ -48,6 +48,8 @@ static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell 
 	free(delimeter);
 	if (result->status != HEREDOC_OK)
 	{
+		if (result->status == HEREDOC_ABORTED)
+			return (result->status);
 		payload.errno_val = result->errno_val;
 		err_print(ERR_HEREDOC, result->status, payload);
 		return (result->status);

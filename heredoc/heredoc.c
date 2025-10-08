@@ -78,8 +78,17 @@ static t_heredoc_result	heredoc_ok(int fd)
 
 static t_heredoc_result	heredoc_write_err(t_heredoc_status status)
 {
+	t_heredoc_result	result;
+
 	if (status == HEREDOC_ALLOC_ERROR)
 		return (heredoc_err(ENOMEM));
+	else if (status == HEREDOC_ABORTED)
+	{
+		result.status = status;
+		result.errno_val = 0;
+		result.fd = 0;
+		return (result);
+	}
 	else
 		return (heredoc_err(EIO));
 }
