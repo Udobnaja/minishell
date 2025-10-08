@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+volatile sig_atomic_t g_last_signal = 0;
+
 const char *msh_get_prompt(char *default_name)
 {
 	(void) (default_name);
@@ -20,6 +22,23 @@ int msh_has_only_spaces(char *str)
 	return (1);
 }
 
+static int	msh_rl_event_hook(void)
+{
+	if (g_last_signal == SIGINT)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		g_last_signal = 0;
+	}
+	return 0;
+}
+
+void	msh_rl_install_event_hook(void)
+{
+	rl_event_hook = msh_rl_event_hook;
+}
+
 static void msh_clean_and_exit(t_shell *shell,int exit_status)
 {
 	msh_cleanup(shell);
@@ -33,7 +52,6 @@ int main(int argc, char **argv, char **envp)
 	t_pipeline pipeline;
 
 	sh_termios_apply();
-
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
 	else
@@ -44,6 +62,7 @@ int main(int argc, char **argv, char **envp)
 	char *line;
 	t_msh_parse_result parse_result;
 
+	msh_rl_install_event_hook();
 	sh_shell_signals();
 	while(1)
 	{
@@ -53,6 +72,11 @@ int main(int argc, char **argv, char **envp)
 			write(STDOUT_FILENO, "exit\n", 5);
 			break;
 		}
+		// if (g_last_signal == SIGINT)
+		// {
+		// 	rl_done = 1;
+		// 	g_last_signal = 0;
+		// }
 		if (*line == '\0')
 		{
 			free(line);

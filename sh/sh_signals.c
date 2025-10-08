@@ -4,9 +4,6 @@ static void sh_sigint_sighandler(int signo)
 {
     g_last_signal = signo;
     write(STDOUT_FILENO, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
 }
 
 static void sh_set_signal_handler(int sig, void (*handler)(int))
@@ -31,10 +28,12 @@ void sh_shell_signals(void)
 
 void sh_heredoc_signals(void)
 {
-
+    sh_set_signal_handler(SIGQUIT, SIG_IGN);
+	sh_set_signal_handler(SIGINT, sh_sigint_sighandler);
 }
 
 void sh_childprocess_signals(void)
 {
-
+    sh_set_signal_handler(SIGINT, SIG_DFL);
+    sh_set_signal_handler(SIGQUIT, SIG_DFL);
 }

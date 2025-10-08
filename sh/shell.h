@@ -22,7 +22,7 @@
 #  define SH_O_CLOEXEC 0
 # endif
 
-static volatile sig_atomic_t g_last_signal;
+extern volatile sig_atomic_t g_last_signal;
 
 typedef struct s_heredoc_entry
 {
@@ -62,5 +62,6 @@ void	sh_echoctl_off(struct termios *t);
 void	sh_echoctl_on(struct termios *t);
 
 void	sh_shell_signals(void);
+void	sh_heredoc_signals(void);
 
 #endif

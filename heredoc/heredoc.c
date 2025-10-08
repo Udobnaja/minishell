@@ -37,25 +37,33 @@ static t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_sh
 {
 	char *line;
 	t_heredoc_status status;
-	// g_last_signal = 0;
-	// set up signals for heredoc;
+
+	status = HEREDOC_OK;
+	sh_heredoc_signals();
 	while(1)
 	{
 		line = readline("> ");
 		if (!line)
-			break;
+		{
+			if (g_last_signal == SIGINT)
+			{
+				status = HEREDOC_ABORTED;
+				g_last_signal = 0;
+			}
+			break;;
+		}
 		if (ft_strcmp(line, eof) == 0)
 		{
 			free(line);
-			return (HEREDOC_OK);
+			return (status);
 		}
 		status = heredoc_write_line(fd, line, has_expansion, sh);
 		free(line);
 		if (status != HEREDOC_OK)
 			return (status);	
 	}
-	// restore signal for usual
-	return (HEREDOC_OK);
+	sh_shell_signals();
+	return (status);
 }
 
 static t_heredoc_result	heredoc_ok(int fd)
