@@ -43,9 +43,10 @@ int main(int argc, char **argv, char **envp)
 		return (SH_GENERAL_ERROR); 
 	char *line;
 	t_msh_parse_result parse_result;
+
+	sh_shell_signals();
 	while(1)
 	{
-		sh_shell_signals();
 		line = readline(msh_get_prompt(argv[0]));
 		if (!line)
 		{

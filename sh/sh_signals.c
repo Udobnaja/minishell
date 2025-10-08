@@ -1,6 +1,6 @@
 #include "shell.h"
 
-static void sigint_sighandler(int signo)
+static void sh_sigint_sighandler(int signo)
 {
     g_last_signal = signo;
     write(STDOUT_FILENO, "\n", 1);
@@ -9,7 +9,7 @@ static void sigint_sighandler(int signo)
 	rl_redisplay();
 }
 
-static void set_signal_handler(int sig, void (*handler)(int))
+static void sh_set_signal_handler(int sig, void (*handler)(int))
 {
 	struct sigaction sa;
 
@@ -21,11 +21,11 @@ static void set_signal_handler(int sig, void (*handler)(int))
 
 void sh_shell_signals(void)
 {
-	set_signal_handler(SIGQUIT, SIG_IGN);
+	sh_set_signal_handler(SIGQUIT, SIG_IGN);
 	if (isatty(STDIN_FILENO))
 	{
-		set_signal_handler(SIGINT, sigint_sighandler);
-		set_signal_handler(SIGTERM, SIG_IGN);
+		sh_set_signal_handler(SIGINT, sh_sigint_sighandler);
+		sh_set_signal_handler(SIGTERM, SIG_IGN);
 	}
 }
 
