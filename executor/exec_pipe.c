@@ -173,9 +173,13 @@ void run_child_process(t_pipe *p, size_t i)
     t_cmd  *cmd;
     char    path[PATH_MAX];
     char  **envp;
+    t_exec_status st;
 
     cmd = p->pl->cmds[i];
     child_setup(p, i);
+    st = apply_redirections(cmd);
+    if(st != EXEC_OK)
+        exit (1); //  проверить какой экзит
     if (cmd_is_empty(cmd))
         exit(0);
     exec_run_buildin(p->sh, cmd);
