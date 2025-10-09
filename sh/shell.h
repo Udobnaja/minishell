@@ -52,12 +52,10 @@ typedef enum e_sh_status {
 }	t_sh_status;
 
 typedef enum e_sh_job {
-	SH_JOB_GET = -1,
 	SH_JOB_NONE = 0,
 	SH_HEREDOC = 1,
-	SH_HEREDOC_ABORTED = 2,
-	SH_INTERACTIVE = 3,
-	SH_CHILD_PROC = 4
+	SH_INTERACTIVE = 2,
+	SH_CHILD_PROC = 3
 }	t_sh_job;
 
 int		sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
@@ -73,6 +71,6 @@ void	sh_echoctl_on(struct termios *t);
 void	sh_shell_signals(void);
 void	sh_heredoc_signals(void);
 
-t_sh_job sh_job(t_sh_job action);
+void	sh_setup_rl_hook(t_sh_job job);
 
 #endif

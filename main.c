@@ -22,29 +22,6 @@ int msh_has_only_spaces(char *str)
 	return (1);
 }
 
-static int	msh_rl_event_hook(void)
-{
-	if (g_last_signal == SIGINT && sh_job(SH_JOB_GET) == SH_INTERACTIVE)
-	{
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		g_last_signal = 0;
-	} else if (g_last_signal == SIGINT && sh_job(SH_JOB_GET) == SH_HEREDOC)
-	{
-		sh_job(SH_HEREDOC_ABORTED);
-		rl_done = 1;
-		g_last_signal = 0;
-	}
-
-	return 0;
-}
-
-void	msh_rl_install_event_hook(void)
-{
-	rl_event_hook = msh_rl_event_hook;
-}
-
 static void msh_clean_and_exit(t_shell *shell,int exit_status)
 {
 	msh_cleanup(shell);
@@ -57,7 +34,6 @@ int main(int argc, char **argv, char **envp)
 	const char *sh_name;
 	t_pipeline pipeline;
 
-	sh_termios_apply();
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		sh_name = argv[0];
 	else
@@ -68,23 +44,24 @@ int main(int argc, char **argv, char **envp)
 	char *line;
 	t_msh_parse_result parse_result;
 
+	sh_termios_apply();
 	rl_catch_signals = 0;
-	msh_rl_install_event_hook();
-	sh_shell_signals();
-	sh_job(SH_INTERACTIVE);
+	sh_setup_rl_hook(SH_INTERACTIVE);
 	while(1)
 	{
 		line = readline(msh_get_prompt(argv[0]));
+		if (g_last_signal == SIGINT)
+		{
+			shell.last_status = sh_status_from_signal(SIGINT);
+			g_last_signal = 0;
+			free(line);
+			continue;
+		}
 		if (!line)
 		{
 			write(STDOUT_FILENO, "exit\n", 5);
 			break;
 		}
-		// if (g_last_signal == SIGINT)
-		// {
-		// 	rl_done = 1;
-		// 	g_last_signal = 0;
-		// }
 		if (*line == '\0')
 		{
 			free(line);
@@ -99,7 +76,10 @@ int main(int argc, char **argv, char **envp)
 		ft_bzero(&pipeline, sizeof pipeline);
 		parse_result = msh_parse(line, &shell, &pipeline);
 		if (parse_result.domain == MPR_OK)
+		{
+			shell.last_status = SH_OK;
 			execute(&shell, &pipeline);
+		}
 		else 
 			shell.last_status = msh_parse_result_to_exit_status(parse_result);
 		pipeline_destroy(&pipeline);

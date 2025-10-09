@@ -3,7 +3,7 @@
 static void sh_sigint_sighandler(int signo)
 {
     g_last_signal = signo;
-    write(STDOUT_FILENO, "\n", 1);
+    rl_done = 1;
 }
 
 static void sh_set_signal_handler(int sig, void (*handler)(int))

@@ -39,18 +39,18 @@ static t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_sh
 	t_heredoc_status status;
 
 	status = HEREDOC_OK;
-	sh_job(SH_HEREDOC);
-	sh_heredoc_signals();
+	sh_setup_rl_hook(SH_HEREDOC);
 	while(1)
 	{
 		line = readline("> ");
 		if (!line)
 			break;
-		if (sh_job(SH_JOB_GET) == SH_HEREDOC_ABORTED)
+		if (g_last_signal == SIGINT)
 		{
 			if (line)
 				free(line);
 			status = HEREDOC_ABORTED;
+			g_last_signal = 0;
 			break;
 		}
 		if (ft_strcmp(line, eof) == 0)
@@ -63,8 +63,7 @@ static t_heredoc_status heredoc_to_fd(char *eof, int fd, int has_expansion, t_sh
 		if (status != HEREDOC_OK)
 			break ;	
 	}
-	sh_shell_signals();
-	sh_job(SH_INTERACTIVE);
+	sh_setup_rl_hook(SH_INTERACTIVE);
 	return (status);
 }
 
