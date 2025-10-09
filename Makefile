@@ -72,7 +72,9 @@ EXECUTOR_SRC := \
 	executor/builtins/cd.c \
 	executor/builtins/exit.c \
 	executor/executor.c \
-	executor/external_cmd.c
+	executor/external_cmd.c \
+	executor/exec_pipe.c \
+	executor/exec_redirect.c
 
 ERRORS_SRC := \
 	errors/errors_reporter.c \
