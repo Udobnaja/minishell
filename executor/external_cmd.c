@@ -59,12 +59,12 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
     return 0;
 }
 
-static int preliminary_check(const char *path, const char *argv)
+static int preliminary_check(const char *path, char *argv)
 {
     if(u_file_exists(path))
     {
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, 
-            (t_err_payload){.identifier = (char *)argv});
+            (t_err_payload){.command = argv});
         return X_NOTFOUND;;
     }
     if (u_file_isdir(path))
@@ -72,32 +72,25 @@ static int preliminary_check(const char *path, const char *argv)
         if (ft_strchr(argv, '/') == NULL)
         {
             err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
-                      (t_err_payload){ .command = (char*)argv });
+                      (t_err_payload){ .command = argv });
             return X_NOTFOUND;
         }
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
-                  (t_err_payload){ .command = (char*)argv});
+                  (t_err_payload){ .command = argv});
         return X_NOEXEC;
     }
-
     if (access(path, X_OK) == -1)
     {
+        t_err_payload payload;
+        payload.errno_val = EACCES;
+        payload.command = argv;
         if (errno == EACCES)
-        {
-            err_print(ERR_EXEC, EXEC_ERR_PERMISSION,
-                      (t_err_payload){ .command = (char*)argv});
-                return X_NOEXEC;
-        }
+            err_print(ERR_EXEC, EXEC_ERR_PERMISSION, payload);
         else
-        {
-            err_print(ERR_EXEC, EXEC_ERR_GEN,
-                      (t_err_payload){ .command = (char*)argv});
-                return X_NOEXEC;
-        }
-
+            err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+        return X_NOEXEC;
     }
     return 0;
-
 }
 
 t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
@@ -105,8 +98,12 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     char full[PATH_MAX];
     pid_t pid;
     int status;
-    int temp_err_msg;
+    int check_status;
     char **envp;
+    t_err_payload payload = {0};
+
+    payload.errno_val = errno;
+    payload.command = cmd.argv[0];
 
     if(cmd.argv == NULL || cmd.argv[0] == NULL || cmd.argv[0][0] == '\0')
         return EXEC_OK;
@@ -117,10 +114,10 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
         sh->last_status = 127;
         return EXEC_CMD_NOT_FOUND;
     }
-    temp_err_msg = preliminary_check (full, cmd.argv[0]);
-    if(temp_err_msg != 0)
+    check_status = preliminary_check (full, cmd.argv[0]);
+    if(check_status != 0)
     {
-        sh->last_status = temp_err_msg; // будет отдельный сервис для ласт статус
+        sh->last_status = check_status;
         return EXEC_OK;
     }
     pid = fork();
@@ -133,14 +130,21 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     {
         envp = env_to_envp(sh->env_store);
         if(envp == NULL)
-            exit(1); // проверить на лики
+        {
+            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
+            exit(1);
+        }    
         execve(full, cmd.argv, envp);
         if(errno == ENOEXEC)
         {
-            err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, (t_err_payload){0});
-            return EXEC_ERR_NOT_EXEC; 
+            err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, payload);
+            exit(126); 
         }
-        exit(1);
+        else
+        {
+            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
+            exit(1);
+        }
     }
     if(waitpid(pid, &status, 0) == -1)
     {
