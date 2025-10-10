@@ -179,7 +179,7 @@ void run_child_process(t_pipe *p, size_t i)
     child_setup(p, i);
     st = apply_redirections(cmd);
     if(st != EXEC_OK)
-        exit (1); //  проверить какой экзит
+        exit (1);
     if (cmd_is_empty(cmd))
         exit(0);
     exec_run_buildin(p->sh, cmd);
@@ -250,7 +250,7 @@ t_exec_status execution_run_pipeline(t_pipe *p)
     pipe_close(p);
     return EXEC_OK;
 }
-t_exec_status run_full_pipeline(t_shell *sh, t_pipeline *pl)
+t_exec_status full_pipeline(t_shell *sh, t_pipeline *pl)
 {
     t_pipe p;
     int last = 0;
@@ -292,5 +292,5 @@ t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
         sh->last_status = execute_builtin(sh, pl->cmds[0]);
         return EXEC_OK;
     }
-    return run_full_pipeline(sh, pl);
+    return full_pipeline(sh, pl);
 }

@@ -35,9 +35,11 @@ t_exec_status execute(t_shell *sh, t_pipeline *pipeline)
     t_exec_status   status;
 
     i = 0;
-    while (i < pipeline->count)
+    if(pipeline->count > 1)
+        execute_pipeline(sh, pipeline);
+    else if (pipeline->count == 1)
     {
-        if (pipeline->cmds[i]->builtin_kind == BUILTIN_NONE)
+        if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
         {
             status = execute_external(sh, pipeline->cmds[i]);
             if (status != EXEC_OK)
@@ -47,7 +49,6 @@ t_exec_status execute(t_shell *sh, t_pipeline *pipeline)
             if (status != EXEC_OK)
                 return (status);
         }
-        i++;
     }
     return (EXEC_OK);
 }

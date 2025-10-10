@@ -2,8 +2,6 @@
 
 static int check_candidate(const char *dir, size_t len, const char *name, char out[PATH_MAX])
 {
-    if(dir == NULL || name == NULL || out == NULL)
-        return 0;
     if(len + 1 + ft_strlen(name) + 1 >= PATH_MAX)
         return 0;
     if(len > 0)
@@ -21,8 +19,6 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
     size_t start;
     size_t len;
 
-    if (path == NULL || name == NULL)
-        return 0;
     i = 0;
     start = 0;
     while(1)
@@ -36,9 +32,7 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
                 break;
             start = i + 1;
         }
-        if(path[i] == '\0')
-            break;
-        i = i + 1;
+        i++;
     }
     errno = ENOENT;
     return 0;
@@ -55,12 +49,7 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
         return 1;
     }
     path_env = env_get_value(sh->env_store, "PATH");
-    if(path_env == NULL)
-    {
-        errno = ENOENT;
-        return 0;
-    }
-    if(path_env[0] == '\0')
+    if(path_env == NULL || path_env[0] == '\0' )
     {
         errno = ENOENT;
         return 0;
@@ -72,23 +61,22 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 
 static int preliminary_check(const char *path, const char *argv)
 {
-    struct stat st;
-    if(stat(path, &st))
+    if(u_file_exists(path))
     {
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, 
             (t_err_payload){.identifier = (char *)argv});
         return X_NOTFOUND;;
     }
-    if (S_ISDIR(st.st_mode))
+    if (u_file_isdir(path))
     {
         if (ft_strchr(argv, '/') == NULL)
         {
             err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
-                      (t_err_payload){ .identifier = (char*)argv });
+                      (t_err_payload){ .command = (char*)argv });
             return X_NOTFOUND;
         }
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
-                  (t_err_payload){ .identifier = (char*)argv});
+                  (t_err_payload){ .command = (char*)argv});
         return X_NOEXEC;
     }
 
@@ -97,13 +85,13 @@ static int preliminary_check(const char *path, const char *argv)
         if (errno == EACCES)
         {
             err_print(ERR_EXEC, EXEC_ERR_PERMISSION,
-                      (t_err_payload){ .identifier = (char*)argv});
+                      (t_err_payload){ .command = (char*)argv});
                 return X_NOEXEC;
         }
         else
         {
             err_print(ERR_EXEC, EXEC_ERR_GEN,
-                      (t_err_payload){ .identifier = (char*)argv});
+                      (t_err_payload){ .command = (char*)argv});
                 return X_NOEXEC;
         }
 
@@ -126,8 +114,8 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     if(!cmd_path(sh, cmd.argv[0], full))
     {
         err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, (t_err_payload){.command = cmd.argv[0]});
-        sh->last_status = 127; // command not found
-        return EXEC_OK;
+        sh->last_status = 127;
+        return EXEC_CMD_NOT_FOUND;
     }
     temp_err_msg = preliminary_check (full, cmd.argv[0]);
     if(temp_err_msg != 0)

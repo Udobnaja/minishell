@@ -3,7 +3,6 @@
 
 #include <sys/wait.h>
 
-# include "minishell.h"
 # include "pipeline.h"
 # include "shell.h"
 
