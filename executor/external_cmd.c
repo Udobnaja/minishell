@@ -61,33 +61,26 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 
 static int preliminary_check(const char *path, char *argv)
 {
-    if(u_file_exists(path))
+    if(!u_file_exists(path))
     {
         err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, 
             (t_err_payload){.command = argv});
-        return X_NOTFOUND;;
+        return X_NOTFOUND;
     }
     if (u_file_isdir(path))
     {
-        if (ft_strchr(argv, '/') == NULL)
-        {
-            err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
-                      (t_err_payload){ .command = argv });
-            return X_NOTFOUND;
-        }
-        err_print(ERR_EXEC, EXEC_NO_SUCH_FILE,
+        err_print(ERR_EXEC, EXEC_IS_DIRECTORY,
                   (t_err_payload){ .command = argv});
         return X_NOEXEC;
     }
     if (access(path, X_OK) == -1)
     {
         t_err_payload payload;
-        payload.errno_val = EACCES;
-        payload.command = argv;
-        if (errno == EACCES)
-            err_print(ERR_EXEC, EXEC_ERR_PERMISSION, payload);
-        else
+        payload.errno_val = errno;
+        if (errno)
             err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+        else
+            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
         return X_NOEXEC;
     }
     return 0;
@@ -100,19 +93,20 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     int status;
     int check_status;
     char **envp;
-    t_err_payload payload = {0};
-
-    payload.errno_val = errno;
-    payload.command = cmd.argv[0];
-
+    
     if(cmd.argv == NULL || cmd.argv[0] == NULL || cmd.argv[0][0] == '\0')
         return EXEC_OK;
     full[0] = '\0';
     if(!cmd_path(sh, cmd.argv[0], full))
     {
-        err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, (t_err_payload){.command = cmd.argv[0]});
+        if (ft_strchr(cmd.argv[0], '/') == NULL)
+            err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, 
+                        (t_err_payload){ .command = cmd.argv[0] });
+        else
+            err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, 
+                        (t_err_payload){ .command = cmd.argv[0] });
         sh->last_status = 127;
-        return EXEC_CMD_NOT_FOUND;
+        return EXEC_OK;
     }
     check_status = preliminary_check (full, cmd.argv[0]);
     if(check_status != 0)
@@ -131,17 +125,21 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
         envp = env_to_envp(sh->env_store);
         if(envp == NULL)
         {
-            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
+            t_err_payload payload = {0};
+            payload.errno_val = errno;
+            payload.command = cmd.argv[0];
+            err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
             exit(1);
         }    
         execve(full, cmd.argv, envp);
-        if(errno == ENOEXEC)
         {
-            err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, payload);
-            exit(126); 
-        }
-        else
-        {
+            t_err_payload payload = {0};
+            payload.command   = cmd.argv[0];
+            payload.errno_val = errno;
+            if (errno == ENOEXEC) {
+                err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+                exit(126);
+            }
             err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
             exit(1);
         }

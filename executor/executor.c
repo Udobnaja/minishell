@@ -31,21 +31,19 @@ t_exec_status execute_external(t_shell *sh, t_cmd *cmd)
 
 t_exec_status execute(t_shell *sh, t_pipeline *pipeline)
 {
-    size_t          i;
     t_exec_status   status;
 
-    i = 0;
     if(pipeline->count > 1)
         execute_pipeline(sh, pipeline);
     else if (pipeline->count == 1)
     {
         if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
         {
-            status = execute_external(sh, pipeline->cmds[i]);
+            status = execute_external(sh, pipeline->cmds[0]);
             if (status != EXEC_OK)
                 return (status);
         } else {
-            status = execute_builtin(sh, pipeline->cmds[i]);
+            status = execute_builtin(sh, pipeline->cmds[0]);
             if (status != EXEC_OK)
                 return (status);
         }
