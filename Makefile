@@ -70,7 +70,11 @@ EXECUTOR_SRC := \
 	executor/builtins/pwd.c \
 	executor/builtins/echo.c \
 	executor/builtins/cd.c \
-	executor/builtins/exit.c
+	executor/builtins/exit.c \
+	executor/executor.c \
+	executor/external_cmd.c \
+	executor/exec_pipe.c \
+	executor/exec_redirect.c
 
 ERRORS_SRC := \
 	errors/errors_reporter.c \

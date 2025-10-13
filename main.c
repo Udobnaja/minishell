@@ -32,7 +32,7 @@ int main(int argc, char **argv, char **envp)
 			add_history(line);
 			ft_bzero(&pipeline, sizeof pipeline); 
 			if (msh_parse(line, &shell, &pipeline) == PARSE_OK)
-				mock_exec(&shell, &pipeline);
+					execute(&shell, &pipeline);
 			pipeline_destroy(&pipeline);
 		}		
 		free(line);

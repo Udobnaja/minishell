@@ -2,6 +2,7 @@
 # define PIPELINE_INTERNAL_H
 
 # include <stdlib.h>
+# include <stdint.h>
 
 # include "libft.h"
 # include "pipeline.h"
