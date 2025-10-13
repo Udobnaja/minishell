@@ -11,6 +11,7 @@
 
 typedef enum e_exec_status
 {
+	EXEC_EXIT = -1, 
 	EXEC_OK = 0,
 	EXEC_TOO_MANY_ARGS,
 	EXEC_ALLOC_ERR,
@@ -19,7 +20,6 @@ typedef enum e_exec_status
 	EXEC_ERR_GEN,
 	EXEC_ERR_CD,
 	EXEC_ERR_NUMERIC_ARG,
-	EXEC_NOT_BUILTIN,
 	EXEC_NO_SUCH_FILE,
 	EXEC_CMD_NOT_FOUND,
 	EXEC_ERR_PERMISSION,
@@ -31,7 +31,7 @@ typedef enum e_exec_status
 	EXEC_ERR_PIPE,
 	EXEC_IS_DIRECTORY,
 	EXEC_ERR_EXECUTION
-}				t_exec_status;
+}	t_exec_status;
 
 
 typedef struct s_pipe
@@ -48,6 +48,7 @@ typedef struct s_exec_result
 {
 	t_exec_status status;
 	int errno_val;
+	int exit_code;
 } t_exec_result;
 
 t_exec_status execute(t_shell *sh, t_pipeline *pipeline);

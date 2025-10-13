@@ -75,10 +75,12 @@ static int preliminary_check(const char *path, char *argv)
     }
     if (access(path, X_OK) == -1)
     {
-        t_err_payload payload;
-        payload.errno_val = errno;
+        t_err_payload payload = {0};;
         if (errno)
+        {
+            payload.errno_val = errno;
             err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+        }
         else
             err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
         return X_NOEXEC;
@@ -126,20 +128,22 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd *cmd)
         if(envp == NULL)
         {
             t_err_payload payload = {0};
-            payload.errno_val = errno;
-            payload.command = cmd->argv[0];
-            err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
             exit(1);
         }    
         execve(full, cmd->argv, envp);
         {
             t_err_payload payload = {0};
-            payload.command   = cmd->argv[0];
-            payload.errno_val = errno;
-            if (errno == ENOEXEC) 
+            
+            if (errno) 
             {
+                payload.command = cmd->argv[0];
+                payload.errno_val = errno;
                 err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
-                exit(126);
+                if (errno == ENOEXEC)
+                    exit(126);
+                else
+                    exit(1);
             }
             err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
             exit(1);
