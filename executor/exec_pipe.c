@@ -35,24 +35,44 @@ void pipe_close(t_pipe *p)
     close_pair(p->prev);
 }
 
-t_exec_status child_process(t_pipe *p, size_t i)
+t_exec_result child_process(t_pipe *p, size_t i)
 {
+    t_exec_result result;
+    result.status = EXEC_OK;
+    result.errno_val = 0;
+
     if (i > 0)
     {
         if(p->prev[FD_READ] == -1)
-            return EXEC_ERR_DUP;
+        {
+            result.status = EXEC_ERR_DUP;
+            return result;
+        }
         if(dup2(p->prev[FD_READ], STDIN_FILENO) == -1)
-            return EXEC_ERR_DUP;
+        {
+            result.errno_val = errno;
+            result.status = EXEC_ERR_GEN;
+            pipe_child_close(p);
+            return result;
+        }
     }
     if (i + 1 < p->n)
     {
         if(p->next[FD_WRITE] == -1)
-            return EXEC_ERR_DUP;
+        {
+            result.status = EXEC_ERR_DUP;
+            return result;
+        }
         if(dup2(p->next[FD_WRITE], STDOUT_FILENO) == -1)
-            return EXEC_ERR_DUP;
+        {
+            result.errno_val = errno;
+            result.status = EXEC_ERR_GEN;
+            pipe_child_close(p);
+            return result;
+        }
     }
     pipe_child_close(p);
-    return EXEC_OK;
+    return result;
 }
 
 t_exec_status wait_all(pid_t *pids, size_t n, int *last_status_out)
@@ -84,7 +104,7 @@ t_exec_status wait_all(pid_t *pids, size_t n, int *last_status_out)
     return EXEC_OK;
 }
 
-void exec_handle_error1(const char *path)
+void exec_handle_error(const char *path)
 {
     t_err_payload pay;
     int code;
@@ -128,9 +148,20 @@ void exec_handle_error2(const char *path)
 }
 static void child_setup(t_pipe *p, size_t i)
 {
-    if (child_process(p, i) != EXEC_OK)
+    t_exec_result result;
+
+    result = child_process(p, i);
+    if (result.status != EXEC_OK)
     {
-        err_print(ERR_EXEC, EXEC_ERR_DUP, (t_err_payload){0});
+        t_err_payload payload ={0};
+        if(result.errno_val)
+        {
+            payload.errno_val = result.errno_val;
+            payload.command = "dup2";
+            err_print(ERR_EXEC, EXEC_ERR_GEN, payload);    
+        }
+        else 
+            err_print(ERR_EXEC, EXEC_ERR_DUP, (t_err_payload){0});
         exit(1);
     }
 }
@@ -177,7 +208,7 @@ void run_child_process(t_pipe *p, size_t i)
     if (cmd_path(p->sh, cmd->argv[0], path) == 0)
     {
         t_err_payload pay;
-        pay.identifier = cmd->argv[0];
+        pay.command = cmd->argv[0];
         err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, pay);
         exit(127);
     }
@@ -191,35 +222,53 @@ void run_child_process(t_pipe *p, size_t i)
         exec_handle_error1(path);
 }
 
-t_exec_status exec_make_pipe(t_pipe *p)
+t_exec_result exec_make_pipe(t_pipe *p)
 {
+    t_exec_result result;
+    result.status = EXEC_OK;
+    
+    result.errno_val = 0;
     if(pipe(p->next) == -1)
     {
-        err_print(ERR_EXEC, EXEC_ERR_PIPE, (t_err_payload){0});
+        t_err_payload payload ={0};
+        result.errno_val = errno;
+        result.status = EXEC_ERR_GEN;
+        payload.command = "pipe";
+        err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
         pipe_close(p);
-        return EXEC_ERR_PIPE;
+        return result;
     }
-    return EXEC_OK;
+    return result;
 }
-t_exec_status exec_fork_child(t_pipe *p, size_t i)
+t_exec_result exec_fork_child(t_pipe *p, size_t i)
 {
+    t_exec_result result;
+    result.status = EXEC_OK;
+
+    result.errno_val = 0;
     p->pids[i] = fork();
     if(p->pids[i] == -1)
     {
-        err_print(ERR_EXEC, EXEC_ERR_FORK, (t_err_payload){0});
+        t_err_payload payload ={0};
+        result.errno_val = errno;
+        result.status = EXEC_ERR_GEN;
+        payload.command = "fork";
+        err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
         pipe_close(p);
-        return EXEC_ERR_FORK;
+        return result;
     }
     if(p->pids[i] == 0)
         run_child_process(p, i);
-    return EXEC_OK;
+    return result;
 }
 
 t_exec_status execution_run_pipeline(t_pipe *p)
 {
     size_t i;
+    t_exec_result result_fork;
+    t_exec_result result_pipe;
 
-    i = 0;
+    i = 0; 
     p->prev[FD_READ] = -1;
     p->prev[FD_WRITE] = -1;
     while(i < p->n)
@@ -229,10 +278,12 @@ t_exec_status execution_run_pipeline(t_pipe *p)
 
         if (i + 1 < p->n)
         {
-            if (exec_make_pipe(p) != EXEC_OK)
+            result_pipe = exec_make_pipe(p);
+            if (result_pipe.status != EXEC_OK)
                 return EXEC_ERR_PIPE;
         }
-        if (exec_fork_child(p, i) != EXEC_OK)
+        result_fork = exec_fork_child(p, i);
+        if (result_fork.status != EXEC_OK)
             return EXEC_ERR_FORK;
         pipe_parent_rotate(p);
         i++;
@@ -240,6 +291,7 @@ t_exec_status execution_run_pipeline(t_pipe *p)
     pipe_close(p);
     return EXEC_OK;
 }
+
 t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
 {
     t_pipe p;

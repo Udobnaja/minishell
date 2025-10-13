@@ -136,7 +136,8 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
             t_err_payload payload = {0};
             payload.command   = cmd.argv[0];
             payload.errno_val = errno;
-            if (errno == ENOEXEC) {
+            if (errno == ENOEXEC) 
+            {
                 err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
                 exit(126);
             }

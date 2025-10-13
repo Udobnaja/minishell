@@ -44,6 +44,12 @@ typedef struct s_pipe
 	int next[2];
 }t_pipe;
 
+typedef struct s_exec_result 
+{
+	t_exec_status status;
+	int errno_val;
+} t_exec_result;
+
 t_exec_status execute(t_shell *sh, t_pipeline *pipeline);
 t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl);
 t_exec_status apply_redirections(t_cmd *cmd);
