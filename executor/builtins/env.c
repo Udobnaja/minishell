@@ -1,15 +1,15 @@
 #include "executor_internal.h"
 
-t_exec_status env(t_shell *sh, const t_cmd cmd)
+t_exec_status env(t_shell *sh, t_cmd *cmd)
 {
     char **envp;
     size_t i;
     t_err_payload payload;
 	
 	payload = (t_err_payload){0};
-    if(cmd.argv[1] != NULL) 
+    if(cmd->argv[1] != NULL) 
     {
-        payload.command = "env";
+        payload.command = cmd->argv[0];
         err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload); // TODO: move lvl up
         return EXEC_TOO_MANY_ARGS;
     }

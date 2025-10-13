@@ -38,7 +38,7 @@ static int exec_is_number(const char *str)
     return 1;
 }
 
-t_exec_status builtin_exit(t_shell *sh, t_cmd cmd)
+t_exec_status builtin_exit(t_shell *sh, t_cmd *cmd)
 {
     long long code;
     int				error;
@@ -47,21 +47,21 @@ t_exec_status builtin_exit(t_shell *sh, t_cmd cmd)
 	payload = (t_err_payload){0}; 
     error = 0;
     ft_putendl_fd("exit", STDERR_FILENO);
-    if(!cmd.argv[1])
+    if(!cmd->argv[1])
         exit_destroy_minishell(sh, (int)(unsigned char)sh->last_status);
-    if(!exec_is_number(cmd.argv[1]))
+    if(!exec_is_number(cmd->argv[1]))
     {
-        payload.command = "exit";
+        payload.command = cmd->argv[0];
         err_print(ERR_EXEC, EXEC_ERR_NUMERIC_ARG, payload);
         exit_destroy_minishell(sh, 2);
     }
-    if(cmd.argv[2])
+    if(cmd->argv[2])
     {
-        payload.command = "exit";
+        payload.command = cmd->argv[0];
         err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload);
         return EXEC_TOO_MANY_ARGS;
     }
-    code = ft_satoi(cmd.argv[1], &error); //TODO добавить обработку оверфлоу для лонг лонг мах, далее код выхода должен быть 2
+    code = ft_satoi(cmd->argv[1], &error); //TODO добавить обработку оверфлоу для лонг лонг мах, далее код выхода должен быть 2
     exit_destroy_minishell(sh, (int)(unsigned char)code);
     return EXEC_OK;
 }
