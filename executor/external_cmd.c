@@ -227,5 +227,5 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 		sh_setup_rl_hook(SH_CHILD);
 		exec_child(full, cmd, sh);
 	}
-    return wait_one(pid, cmd->argv[0]);			
+    return wait_one(pid, cmd->argv[0]);
 }
