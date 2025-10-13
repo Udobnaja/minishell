@@ -1,15 +1,15 @@
 #include "executor_internal.h"
 
-t_exec_status pwd(t_shell *sh, t_cmd cmd)
+t_exec_status pwd(t_shell *sh, t_cmd *cmd)
 {
 	const char *cwd;
 	const char *pwd;
 	t_err_payload payload;
 
 	payload = (t_err_payload){0};
-	if(exec_is_invalid_option(cmd.argv[1]))
+	if(exec_is_invalid_option(cmd->argv[1]))
 	{
-		payload.command = "pwd";
+		payload.command = cmd->argv[0];
 		err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, payload);
 		return EXEC_ERR_INVALID_OPTION;
 	}
@@ -27,7 +27,7 @@ t_exec_status pwd(t_shell *sh, t_cmd cmd)
 		return EXEC_OK;
 		
 	}
-	payload.command = "pwd";
+	payload.command = cmd->argv[0];
 	payload.errno_val = errno;
 	err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
 	return EXEC_ERR_GEN;

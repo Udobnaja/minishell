@@ -4,26 +4,26 @@ t_exec_status execute_builtin(t_shell *sh, t_cmd *cmd)
 {
 
     if (cmd->builtin_kind == BUILTIN_ENV)
-       return env(sh, *cmd);
+       return env(sh, cmd);
     if (cmd->builtin_kind == BUILTIN_UNSET)
-        return unset(sh, *cmd);
+        return unset(sh, cmd);
     if (cmd->builtin_kind == BUILTIN_EXPORT)
-        return export(sh, *cmd); 
+        return export(sh, cmd); 
     if (cmd->builtin_kind == BUILTIN_PWD)
-        return pwd(sh, *cmd);
+        return pwd(sh, cmd);
     if (cmd->builtin_kind == BUILTIN_ECHO)
-        return echo(*cmd);
+        return echo(cmd);
     if (cmd->builtin_kind == BUILTIN_CD)
-        return cd(sh, *cmd);
+        return cd(sh, cmd);
     if (cmd->builtin_kind == BUILTIN_EXIT)
-        return builtin_exit(sh, *cmd);
+        return builtin_exit(sh, cmd);
     return (EXEC_NOT_BUILTIN);
 }
 
 t_exec_status execute_external(t_shell *sh, t_cmd *cmd)
 {
     return (
-        run_external_cmd(sh, *cmd)
+        run_external_cmd(sh, cmd)
     );
 
 }
