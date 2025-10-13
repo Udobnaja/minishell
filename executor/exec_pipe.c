@@ -103,49 +103,20 @@ t_exec_status wait_all(pid_t *pids, size_t n, int *last_status_out)
     *last_status_out = last;
     return EXEC_OK;
 }
-
-void exec_handle_error(const char *path)
+void exec_handle_error(int errno_val, char *cmd_name)
 {
-    t_err_payload pay;
-    int code;
-
-    pay.identifier = (char *)path;
-    if (errno == ENOENT)
-    {
-        err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, pay);
-        code = 127;
-    }
-    else if (errno == EACCES)
-    {
-        err_print(ERR_EXEC, EXEC_PERMISSION_DENIED, pay);
-        code = 126;
-    }
-    else if (errno == EISDIR)
-    {
-        err_print(ERR_EXEC, EXEC_IS_DIRECTORY, pay);
-        code = 126;
-    }
-    exit(code);
-}
-
-void exec_handle_error2(const char *path)
-{
-    t_err_payload pay;
-    int code;
-
-    pay.identifier = (char *)path;
-    if (errno == ENOEXEC)
-    {
-        err_print(ERR_EXEC, EXEC_ERR_NOT_EXEC, pay);
-        code = 126;
-    }
+    t_err_payload payload = {0};
+    payload.command = cmd_name;
+    payload.errno_val = errno_val;
+    err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
+    if(errno == EACCES || errno == EISDIR || errno == ENOEXEC)
+        exit (126);
+    else if (errno == ENOENT)
+        exit (127);
     else
-    {
-        err_print(ERR_EXEC, EXEC_ERR_EXECUTION, pay);
-        code = 126;
-    }
-    exit(code);
+        exit (1);
 }
+
 static void child_setup(t_pipe *p, size_t i)
 {
     t_exec_result result;
@@ -216,10 +187,7 @@ void run_child_process(t_pipe *p, size_t i)
     if (envp == NULL)
         exit(1);
     execve(path, cmd->argv, envp);
-    if(errno == ENOEXEC)
-        exec_handle_error2(path);
-    else 
-        exec_handle_error1(path);
+    exec_handle_error(errno, path);
 }
 
 t_exec_result exec_make_pipe(t_pipe *p)
@@ -271,11 +239,10 @@ t_exec_status execution_run_pipeline(t_pipe *p)
     i = 0; 
     p->prev[FD_READ] = -1;
     p->prev[FD_WRITE] = -1;
+    p->next[FD_READ]  = -1;
+    p->next[FD_WRITE] = -1;
     while(i < p->n)
     {
-        p->next[FD_READ]  = -1;
-        p->next[FD_WRITE] = -1;
-
         if (i + 1 < p->n)
         {
             result_pipe = exec_make_pipe(p);
