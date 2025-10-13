@@ -1,19 +1,5 @@
 #include "executor_internal.h"
 
-void close_pair(int p[2])
-{
-    if(p[FD_READ] != -1)
-    {
-        close(p[FD_READ]);
-        p[FD_READ] = -1;
-    }
-    if(p[FD_WRITE] != -1)
-    {
-        close(p[FD_WRITE]);
-        p[FD_WRITE] = -1;
-    }
-}
-
 void close_fd(int *fd)
 {
     if(*fd != -1)
@@ -22,7 +8,11 @@ void close_fd(int *fd)
         *fd = -1;
     }
 }
-
+void close_pair(int p[2])
+{
+    close_fd(&p[FD_READ]);
+    close_fd(&p[FD_WRITE]);
+}
 void pipe_child_close(t_pipe *p)
 {
     close_pair(p->prev);
@@ -250,7 +240,7 @@ t_exec_status execution_run_pipeline(t_pipe *p)
     pipe_close(p);
     return EXEC_OK;
 }
-t_exec_status full_pipeline(t_shell *sh, t_pipeline *pl)
+t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
 {
     t_pipe p;
     int last = 0;
@@ -277,20 +267,4 @@ t_exec_status full_pipeline(t_shell *sh, t_pipeline *pl)
     free(p.pids);
     sh->last_status = last;
     return st;
-}
-
-t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl)
-{
-    if(pl == NULL || pl->count == 0)
-    {
-        sh->last_status = 0;
-        return EXEC_OK;
-    }
-    if(pl->count == 1 && pl->cmds[0] != NULL
-        && pl->cmds[0]->builtin_kind != BUILTIN_NONE)
-    {
-        sh->last_status = execute_builtin(sh, pl->cmds[0]);
-        return EXEC_OK;
-    }
-    return full_pipeline(sh, pl);
 }
