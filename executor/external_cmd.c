@@ -70,15 +70,6 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 	return 0;
 }
 
-static int map_exec_errno(int err)
-{
-	if (err == ENOENT)
-		return (SH_NOT_FOUND);
-	if (err == EACCES || err == EISDIR || err == ENOEXEC)
-		return (SH_NOT_EXECUTABLE);
-	return (SH_GENERAL_ERROR);
-}
-
 static t_exec_result    exec_external_error_result(t_exec_status status, char *cmd, int errno_val)
 {
 	t_exec_result	result;
@@ -90,7 +81,7 @@ static t_exec_result    exec_external_error_result(t_exec_status status, char *c
 	else if (status == EXEC_IS_DIRECTORY)
 		result.exit_code = SH_NOT_EXECUTABLE;
 	else if (errno_val) {
-		result.exit_code = map_exec_errno(errno_val);
+		result.exit_code = sh_status_from_errno_exec(errno_val);
 	} else
 		result.exit_code = SH_GENERAL_ERROR;	
 	result.status = status;
@@ -143,7 +134,8 @@ static void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 {
 	char			**envp;
 	t_exec_result	result;
-
+	
+	sh_setup_rl_hook(SH_CHILD);
 	envp = env_to_envp(sh->env_store);
 	if (envp == NULL)
 	{

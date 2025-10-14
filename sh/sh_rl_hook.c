@@ -32,4 +32,9 @@ void sh_setup_rl_hook(t_sh_job job)
         rl_event_hook = sh_rl_heredoc_hook;
         sh_heredoc_signals();
     }
+    else if (job == SH_CHILD)
+    {
+        rl_event_hook = NULL;
+        sh_childprocess_signals();
+    }
 }

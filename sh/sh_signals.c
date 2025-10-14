@@ -34,6 +34,7 @@ void sh_heredoc_signals(void)
 
 void sh_childprocess_signals(void)
 {
+	sh_set_signal_handler(SIGINT,  SIG_DFL); 
     sh_set_signal_handler(SIGINT, SIG_DFL);
     sh_set_signal_handler(SIGQUIT, SIG_DFL);
 }
