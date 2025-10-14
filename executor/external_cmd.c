@@ -158,6 +158,7 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 {
 	char			**envp;
 	t_exec_result	result;
+    t_exec_status   status;
 	
 	envp = env_to_envp(sh->env_store);
 	if (envp == NULL)
@@ -202,6 +203,7 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 	char			full[PATH_MAX];
 	pid_t			pid;
 	t_exec_result	result;
+    t_exec_status   status;
 	
 	if(cmd->argv[0][0] == '\0')
 		return  exec_external_result(EXEC_OK, sh->last_status);
@@ -225,6 +227,12 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 	if(pid == 0)
 	{
 		sh_setup_rl_hook(SH_CHILD);
+        status = apply_redirections(cmd);
+        if(status != EXEC_OK)
+        {
+            result = exec_external_result(status, SH_GENERAL_ERROR);
+            exit(result.exit_code);
+        }
 		exec_child(full, cmd, sh);
 	}
     return wait_one(pid, cmd->argv[0]);

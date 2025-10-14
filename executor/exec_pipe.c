@@ -13,11 +13,6 @@ void close_pair(int p[2])
     close_fd(&p[FD_READ]);
     close_fd(&p[FD_WRITE]);
 }
-void pipe_child_close(t_pipe *p)
-{
-    close_pair(p->prev);
-    close_pair(p->next);
-}
 
 void pipe_parent_rotate(t_pipe *p)
 {
@@ -52,7 +47,7 @@ t_exec_result child_process(t_pipe *p, size_t i)
         if(dup2(p->prev[FD_READ], STDIN_FILENO) == -1)
         {
             result = exec_external_sys_error(EXEC_ERR_GEN, cmd, errno);
-            pipe_child_close(p);
+            pipe_close(p);
             return result;
         }
     }
@@ -68,11 +63,11 @@ t_exec_result child_process(t_pipe *p, size_t i)
         if(dup2(p->next[FD_WRITE], STDOUT_FILENO) == -1)
         {
             result = exec_external_sys_error(EXEC_ERR_GEN, cmd, errno);
-            pipe_child_close(p);
+            pipe_close(p);
             return result;
         }
     }
-    pipe_child_close(p);
+    pipe_close(p);
     return exec_external_result(EXEC_OK, SH_OK);
 }
 
@@ -159,7 +154,7 @@ void run_child_process(t_pipe *p, size_t i)
         result = exec_external_result(EXEC_OK, SH_OK);
         exit(result.exit_code);
     }
-    exec_run_buildin(p->sh, cmd);
+    exec_run_buildin(p->sh, cmd); // TODO: need check status
     path[0] = '\0';
     if (cmd_path(p->sh, cmd->argv[0], path) == 0)
     {
