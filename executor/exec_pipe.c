@@ -163,7 +163,12 @@ void run_child_process(t_pipe *p, size_t i)
     path[0] = '\0';
     if (cmd_path(p->sh, cmd->argv[0], path) == 0)
     {
-        result = exec_external_sys_error(EXEC_CMD_NOT_FOUND, cmd->argv[0], 0);
+        if (ft_strchr(cmd->argv[0], '/') == NULL)
+		    result = exec_external_error_result(
+					EXEC_CMD_NOT_FOUND, cmd->argv[0], 0);
+		else
+		    result = exec_external_error_result(
+					EXEC_NO_SUCH_FILE, cmd->argv[0], 0);
         exit(result.exit_code);
     }
     exec_child(path, cmd, p->sh);
