@@ -128,7 +128,7 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd *cmd)
         if(envp == NULL)
         {
             t_err_payload payload = {0};
-            err_print(ERR_EXEC, EXEC_ERR_EXECUTION, payload);
+            err_print(ERR_EXEC, EXEC_ALLOC_ERR, payload);
             exit(1);
         }    
         execve(full, cmd->argv, envp);

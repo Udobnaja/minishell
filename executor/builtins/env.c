@@ -10,13 +10,13 @@ t_exec_status env(t_shell *sh, t_cmd *cmd)
     if(cmd->argv[1] != NULL) 
     {
         payload.command = cmd->argv[0];
-        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload); // TODO: move lvl up
+        err_print(ERR_EXEC, EXEC_TOO_MANY_ARGS, payload);
         return EXEC_TOO_MANY_ARGS;
     }
     envp = env_to_envp(sh->env_store);
     if(!envp)
     {
-        err_print(ERR_EXEC, EXEC_ALLOC_ERR, payload); // TODO: move lvl up
+        err_print(ERR_EXEC, EXEC_ALLOC_ERR, payload);
         return EXEC_ALLOC_ERR;
     }
     i = 0;
