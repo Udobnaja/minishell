@@ -14,7 +14,12 @@
 
 static int	has_overflow(int sign, long number);
 static int	get_sign(char c);
-static int	set_error(int *error);
+
+int	ft_set_error(int *error)
+{
+	*error = 1;
+	return (0);
+}
 
 int	ft_satoi(const char *nptr, int *error)
 {
@@ -30,16 +35,16 @@ int	ft_satoi(const char *nptr, int *error)
 	if ((nptr[i] == '+' || nptr[i] == '-'))
 		i++;
 	if (nptr[i] == '\0')
-		return (set_error(error));
+		return (ft_set_error(error));
 	while (nptr[i] && ft_isdigit(nptr[i]))
 	{
 		number = (number * 10) + (nptr[i] - '0');
 		if (has_overflow(sign, number))
-			return (set_error(error));
+			return (ft_set_error(error));
 		i++;
 	}
 	if (nptr[i] != '\0')
-		return (set_error(error));
+		return (ft_set_error(error));
 	return ((int)(number * sign));
 }
 
@@ -57,10 +62,4 @@ static int	get_sign(char c)
 	if (c == '-')
 		return (-1);
 	return (1);
-}
-
-static int	set_error(int *error)
-{
-	*error = 1;
-	return (0);
 }

@@ -152,11 +152,11 @@ int cmd_is_empty(const t_cmd *cmd)
 
 void exec_run_buildin(t_shell *sh, t_cmd *cmd)
 {
-    int st;
+    int exit_code;
     if (cmd->builtin_kind != BUILTIN_NONE)
     {
-        st = execute_builtin(sh, cmd);
-        exit(st);
+        exit_code = execute_builtin(sh, cmd).exit_code;
+        exit(exit_code);
     }
 }
 
