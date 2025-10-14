@@ -26,13 +26,13 @@ extern volatile sig_atomic_t g_last_signal;
 
 typedef struct s_heredoc_entry
 {
-    int	fd;
+	int	fd;
 }	t_heredoc_entry;
 
 typedef struct s_heredoc_store
 {
-    t_heredoc_entry *entries;
-    size_t          count;
+	t_heredoc_entry *entries;
+	size_t          count;
 	size_t			capacity;
 }	t_heredoc_store;
 
@@ -44,18 +44,18 @@ typedef struct s_shell
 }	t_shell;
 
 typedef enum e_sh_status {
-    SH_OK = 0,
-    SH_GENERAL_ERROR = 1,
-    SH_MISUSE = 2,
-    SH_NOT_EXECUTABLE = 126,
-    SH_NOT_FOUND = 127
+	SH_OK = 0,
+	SH_GENERAL_ERROR = 1,
+	SH_MISUSE = 2,
+	SH_NOT_EXECUTABLE = 126,
+	SH_NOT_FOUND = 127
 }	t_sh_status;
 
 typedef enum e_sh_job {
 	SH_JOB_NONE = 0,
 	SH_HEREDOC = 1,
 	SH_INTERACTIVE = 2,
-	SH_CHILD_PROC = 3
+	SH_CHILD = 3
 }	t_sh_job;
 
 int		sh_get_tmpdir(const t_env_store *env, char *tmpdir, size_t max_name_size);
@@ -70,6 +70,7 @@ void	sh_echoctl_on(struct termios *t);
 
 void	sh_shell_signals(void);
 void	sh_heredoc_signals(void);
+void	sh_childprocess_signals(void);
 
 void	sh_setup_rl_hook(t_sh_job job);
 

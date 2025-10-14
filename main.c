@@ -76,11 +76,13 @@ int main(int argc, char **argv, char **envp)
 			continue;
 		}
 		ft_bzero(&pipeline, sizeof pipeline);
+		ft_bzero(&exec_result, sizeof exec_result);
 		parse_result = msh_parse(line, &shell, &pipeline);
 		if (parse_result.domain == MPR_OK)
 		{
 			exec_result = execute(&shell, &pipeline);
 			shell.last_status = exec_result.exit_code;
+			heredoc_store_clear(shell.heredoc_store);
 			if (exec_result.flow == FLOW_EXIT)
 			{
 				free(line);
