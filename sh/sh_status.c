@@ -11,7 +11,7 @@ int	sh_status_from_signal(int sig)
 		return (SH_NOT_FOUND);
 	if (err == EACCES || err == EISDIR || err == ENOEXEC)
 		return (SH_NOT_EXECUTABLE);
-	return (SH_GENERAL_ERROR);
+	return (SH_NOT_EXECUTABLE);
 }
 
 int	sh_status_from_wait(int wst)
