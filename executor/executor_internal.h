@@ -24,7 +24,7 @@ t_exec_status	echo(t_cmd *cmd);
 t_exec_status	cd(t_shell *sh, t_cmd *cmd);
 t_exec_result	builtin_exit(t_shell *sh, t_cmd *cmd);
 
-t_exec_status   run_external_cmd(t_shell *sh, t_cmd *cmd);
+t_exec_result   execute_external(t_shell *sh, t_cmd *cmd);
 t_exec_result   execute_builtin(t_shell *sh, t_cmd *cmd);
 t_exec_status   execute_pipeline(t_shell *sh, t_pipeline *pl);
 t_exec_status   execute_pipeline(t_shell *sh, t_pipeline *pl);

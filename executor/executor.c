@@ -41,14 +41,6 @@ t_exec_result execute_builtin(t_shell *sh, t_cmd *cmd)
     );
 }
 
-t_exec_status execute_external(t_shell *sh, t_cmd *cmd)
-{
-    return (
-        run_external_cmd(sh, cmd)
-    );
-
-}
-
 t_exec_result execute(t_shell *sh, t_pipeline *pipeline)
 {
     t_exec_result   result;
@@ -59,7 +51,7 @@ t_exec_result execute(t_shell *sh, t_pipeline *pipeline)
     else if (pipeline->count == 1)
     {
         if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
-            execute_external(sh, pipeline->cmds[0]);
+            result = execute_external(sh, pipeline->cmds[0]);
         else
             result = execute_builtin(sh, pipeline->cmds[0]);
     }
