@@ -49,7 +49,7 @@ t_exec_result execute(t_shell *sh, t_pipeline *pipeline)
     if(pipeline->count > 1)
     {
         sh_setup_rl_hook(SH_JOB_NONE);
-        execute_pipeline(sh, pipeline);
+        result = execute_pipeline(sh, pipeline);
         sh_setup_rl_hook(SH_INTERACTIVE);
     }
     else if (pipeline->count == 1)

@@ -70,7 +70,7 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 	return 0;
 }
 
-static t_exec_result    exec_external_error_result(t_exec_status status, char *cmd, int errno_val)
+t_exec_result    exec_external_sys_error(t_exec_status status, const char *cmd, int errno_val)
 {
 	t_exec_result	result;
 	t_err_payload	payload;
@@ -80,9 +80,7 @@ static t_exec_result    exec_external_error_result(t_exec_status status, char *c
 		result.exit_code = SH_NOT_FOUND;
 	else if (status == EXEC_IS_DIRECTORY)
 		result.exit_code = SH_NOT_EXECUTABLE;
-	else if (errno_val) {
-		result.exit_code = sh_status_from_errno_exec(errno_val);
-	} else
+	else
 		result.exit_code = SH_GENERAL_ERROR;	
 	result.status = status;
 	result.errno_val = errno_val;
@@ -96,7 +94,33 @@ static t_exec_result    exec_external_error_result(t_exec_status status, char *c
 	return (result);
 }
 
-static t_exec_result    exec_external_result(t_exec_status status, int exit_code)
+t_exec_result    exec_external_error_result(t_exec_status status, const char *cmd, int errno_val)
+{
+	t_exec_result	result;
+	t_err_payload	payload;
+
+	result.flow = FLOW_OK;
+	if (status == EXEC_CMD_NOT_FOUND || status == EXEC_NO_SUCH_FILE)
+		result.exit_code = SH_NOT_FOUND;
+	else if (status == EXEC_IS_DIRECTORY)
+		result.exit_code = SH_NOT_EXECUTABLE;
+	else if (errno_val)
+		result.exit_code = sh_status_from_errno_exec(errno_val);
+	else
+		result.exit_code = SH_GENERAL_ERROR;	
+	result.status = status;
+	result.errno_val = errno_val;
+
+	payload = (t_err_payload){0};
+	if (cmd)
+		payload.command = cmd;
+	if (errno_val)
+		payload.errno_val = errno_val;
+	err_print(ERR_EXEC, status, payload);
+	return (result);
+}
+
+t_exec_result    exec_external_result(t_exec_status status, int exit_code)
 {
 	t_exec_result  result;
 
@@ -130,7 +154,7 @@ static t_exec_result preliminary_check(const char *path, char *argv)
 	return exec_external_result(EXEC_OK, 0);
 }
 
-static void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
+void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 {
 	char			**envp;
 	t_exec_result	result;
@@ -156,11 +180,28 @@ static void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 	}
 }
 
+static t_exec_result wait_one(pid_t pid, const char *cmd)
+{
+    int   status;
+    pid_t w_pid;
+
+    status = 0;
+    while (1)
+    {
+        w_pid = waitpid(pid, &status, 0);
+        if (w_pid == -1 && errno == EINTR)
+            continue;
+        break;
+    }
+    if (w_pid == -1)
+        return exec_external_sys_error(EXEC_ERR_GEN, (char *)cmd, errno);
+    return exec_external_result(EXEC_OK, sh_status_from_wait(status));
+}
+
 t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 {
 	char			full[PATH_MAX];
 	pid_t			pid;
-	int				status;
 	t_exec_result	result;
 	
 	if(cmd->argv[0][0] == '\0')
@@ -180,16 +221,9 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 		return (result);
 	pid = fork();
 	if(pid < 0)
-		return (exec_external_error_result(
-					EXEC_ERR_FORK, NULL, 0));
+		return (exec_external_sys_error(
+					EXEC_ERR_GEN, "fork", errno));
 	if(pid == 0)
 		exec_child(full, cmd, sh);
-	if(waitpid(pid, &status, 0) < 0)
-		return (
-			exec_external_error_result(
-						EXEC_ERR_GEN, cmd->argv[0], errno));
-	return exec_external_result(
-		EXEC_OK,
-		sh_status_from_wait(status)
-	);			
+    return wait_one(pid, cmd->argv[0]);			
 }
