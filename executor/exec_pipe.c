@@ -167,6 +167,7 @@ void run_child_process(t_pipe *p, size_t i)
     char  **envp;
     t_exec_status st;
 
+    sh_setup_rl_hook(SH_CHILD);
     cmd = p->pl->cmds[i];
     child_setup(p, i);
     st = apply_redirections(cmd);

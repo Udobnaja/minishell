@@ -38,3 +38,10 @@ void sh_childprocess_signals(void)
     sh_set_signal_handler(SIGINT, SIG_DFL);
     sh_set_signal_handler(SIGQUIT, SIG_DFL);
 }
+
+void sh_empty_signals(void)
+{
+	sh_set_signal_handler(SIGQUIT, SIG_IGN);
+	sh_set_signal_handler(SIGINT, SIG_IGN);
+	sh_set_signal_handler(SIGTERM, SIG_IGN);
+}
