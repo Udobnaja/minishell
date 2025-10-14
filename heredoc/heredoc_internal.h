@@ -1,6 +1,7 @@
 #ifndef HEREDOC_INTERNAL_H
 # define HEREDOC_INTERNAL_H
 
+# include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <sys/errno.h>

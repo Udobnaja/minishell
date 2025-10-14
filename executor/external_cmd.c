@@ -86,7 +86,7 @@ static int preliminary_check(const char *path, char *argv)
     return 0;
 }
 
-t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
+t_exec_status run_external_cmd(t_shell *sh, t_cmd *cmd)
 {
     char full[PATH_MAX];
     pid_t pid;
@@ -94,21 +94,21 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
     int check_status;
     char **envp;
     
-    if(cmd.argv == NULL || cmd.argv[0] == NULL || cmd.argv[0][0] == '\0')
+    if(cmd->argv == NULL || cmd->argv[0] == NULL || cmd->argv[0][0] == '\0')
         return EXEC_OK;
     full[0] = '\0';
-    if(!cmd_path(sh, cmd.argv[0], full))
+    if(!cmd_path(sh, cmd->argv[0], full))
     {
-        if (ft_strchr(cmd.argv[0], '/') == NULL)
+        if (ft_strchr(cmd->argv[0], '/') == NULL)
             err_print(ERR_EXEC, EXEC_CMD_NOT_FOUND, 
-                        (t_err_payload){ .command = cmd.argv[0] });
+                        (t_err_payload){ .command = cmd->argv[0] });
         else
             err_print(ERR_EXEC, EXEC_NO_SUCH_FILE, 
-                        (t_err_payload){ .command = cmd.argv[0] });
+                        (t_err_payload){ .command = cmd->argv[0] });
         sh->last_status = 127;
         return EXEC_OK;
     }
-    check_status = preliminary_check (full, cmd.argv[0]);
+    check_status = preliminary_check (full, cmd->argv[0]);
     if(check_status != 0)
     {
         sh->last_status = check_status;
@@ -127,14 +127,14 @@ t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd)
         {
             t_err_payload payload = {0};
             payload.errno_val = errno;
-            payload.command = cmd.argv[0];
+            payload.command = cmd->argv[0];
             err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
             exit(1);
         }    
-        execve(full, cmd.argv, envp);
+        execve(full, cmd->argv, envp);
         {
             t_err_payload payload = {0};
-            payload.command   = cmd.argv[0];
+            payload.command   = cmd->argv[0];
             payload.errno_val = errno;
             if (errno == ENOEXEC) 
             {

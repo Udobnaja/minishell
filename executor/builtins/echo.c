@@ -11,22 +11,22 @@ static int	exec_echo_is_newline(const char *str)
 		i++;
 	return(str[i] == '\0');
 }
-t_exec_status	echo(const t_cmd cmd)
+t_exec_status	echo(t_cmd *cmd)
 {
 	int i;
 	int new_line;
 
 	i = 1;
 	new_line = 1;
-	while (cmd.argv[i] && exec_echo_is_newline(cmd.argv[i]))
+	while (cmd->argv[i] && exec_echo_is_newline(cmd->argv[i]))
 	{
 		new_line = 0;
 		i++;
 	}
-	while (cmd.argv[i])
+	while (cmd->argv[i])
 	{
-		ft_putstr_fd(cmd.argv[i], STDOUT_FILENO);
-		if (cmd.argv[i + 1])
+		ft_putstr_fd(cmd->argv[i], STDOUT_FILENO);
+		if (cmd->argv[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}

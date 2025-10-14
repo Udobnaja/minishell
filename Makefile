@@ -2,15 +2,39 @@ NAME := minishell
 
 CC := cc
 
+CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
+	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils -I./expansion -I./heredoc
+
+UNAME_S := $(shell uname -s)
+
+LDLIBS_READLINE ?=
+
+ifeq ($(UNAME_S),Darwin)
+READLINE_PREFIX := $(shell brew --prefix readline 2>/dev/null)
+ifneq ($(READLINE_PREFIX),)
+CFLAGS += -I$(READLINE_PREFIX)/include
+LDLIBS_READLINE += -L$(READLINE_PREFIX)/lib -lreadline
+else
+LDLIBS_READLINE += -lreadline
+endif
+else
+CFLAGS += -D_DEFAULT_SOURCE
+LDLIBS_READLINE += -lreadline
+endif
+
 LIBFT_DIR := ./libft
 LIBFT := $(LIBFT_DIR)/libft.a
 LIBFTFLAGS := -L$(LIBFT_DIR) -lft
 
-CFLAGS = -Wall -Wextra -Werror -I. -I$(LIBFT_DIR) \
-	-I./environment -I./pipeline -I./executor -I./sh -I./parser -I./errors -I./utils -I./expansion -I./heredoc
+
 
 SH_SRC := \
-	sh/sh_tempdir.c
+	sh/sh_tempdir.c \
+	sh/sh_status.c \
+	sh/sh_termios.c \
+	sh/sh_termios_utils.c \
+	sh/sh_signals.c \
+	sh/sh_rl_hook.c
 
 UTILS_SRC := \
 	utils/u_getcwd.c \
@@ -57,7 +81,8 @@ PARSE_SRC := \
 	parser/parser_ambiguous.c \
 	parser/parser_ambiguous_utils.c \
 	parser/parser_redirect_pipeline.c \
-	parser/parser_append_pieces.c
+	parser/parser_append_pieces.c \
+	parser/parser_cmd.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \
@@ -91,6 +116,12 @@ SRC := \
 	msh_pre_heredoc.c \
 	msh_heredoc.c \
 	msh_pipeline.c \
+	msh_parse_to_exit_status.c \
+	msh_pipeline_stage.c \
+	msh_preparse_stage.c \
+	msh_lex_stage.c \
+	msh_heredoc_stage.c \
+	msh_cleanup.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(PIPELINE_SRC) \
@@ -109,7 +140,7 @@ OBJ := $(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -L$(LIBFT_DIR) -lft -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -L$(LIBFT_DIR) -lft $(LDLIBS_READLINE) -o $(NAME)
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)

@@ -16,15 +16,15 @@
 
 // builtins
 bool			exec_is_invalid_option(const char *str);
-t_exec_status	unset(t_shell *sh, const t_cmd cmd);
-t_exec_status	env(t_shell *sh, const t_cmd cmd);
-t_exec_status	export(t_shell *sh, const t_cmd cmd);
-t_exec_status	pwd(t_shell *sh, t_cmd cmd);
-t_exec_status	echo(const t_cmd cmd);
-t_exec_status	cd(t_shell *sh, const t_cmd cmd);
-t_exec_status	builtin_exit(t_shell *sh, t_cmd cmd);
+t_exec_status	unset(t_shell *sh, t_cmd *cmd);
+t_exec_status	env(t_shell *sh, t_cmd *cmd);
+t_exec_status	export(t_shell *sh, t_cmd *cmd);
+t_exec_status	pwd(t_shell *sh, t_cmd *cmd);
+t_exec_status	echo(t_cmd *cmd);
+t_exec_status	cd(t_shell *sh, t_cmd *cmd);
+t_exec_status	builtin_exit(t_shell *sh, t_cmd *cmd);
 
-t_exec_status run_external_cmd(t_shell *sh, t_cmd cmd);
+t_exec_status run_external_cmd(t_shell *sh, t_cmd *cmd);
 t_exec_status execute_builtin(t_shell *sh, t_cmd *cmd);
 t_exec_status execute_pipeline(t_shell *sh, t_pipeline *pl);
 int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX]);

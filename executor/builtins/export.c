@@ -158,22 +158,22 @@ t_exec_status export_process_argv(t_env_store *store, char **av)
     return status;
 }
 
-t_exec_status export(t_shell *sh, const t_cmd cmd)
+t_exec_status export(t_shell *sh, t_cmd *cmd)
 {
     t_err_payload payload;
     t_exec_status status;
 
     payload = (t_err_payload){0};
-    if (!cmd.argv[1])
+    if (!cmd->argv[1])
         return export_if_no_argv(sh->env_store);
     
-    if (exec_is_invalid_option(cmd.argv[1]))
+    if (exec_is_invalid_option(cmd->argv[1]))
     {
         status = EXEC_ERR_INVALID_OPTION;
         payload.command = "export";
         err_print(ERR_EXEC, status, payload);
         return status;
     }
-    return export_process_argv(sh->env_store, &cmd.argv[1]);
+    return export_process_argv(sh->env_store, &cmd->argv[1]);
    
 }

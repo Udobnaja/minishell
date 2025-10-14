@@ -1,130 +1,107 @@
-#include "minishell.h"
+#include "minishell_internal.h"
 
-static size_t msh_pipeline_count_cmds(const t_token_list *token_list)
-{
-	size_t			count;
-	t_token_node	*cur;
+static int 				msh_process_word_token(const t_word *word,
+												t_shell *sh,
+												t_cmd *cmd,
+												t_parser_status *status);
+static int 				msh_process_pipe_token(t_cmd *cmd, t_parser_status *status);
+static t_parser_status	msh_process_token(t_token_node *token_node,
+											t_shell *shell,
+											t_cmd *cmd,
+											size_t	*cur_heredoc);
+static t_parser_status msh_tokens_to_pipeline(t_token_list *token_list,
+												t_shell *shell,
+												 t_pipeline *pipeline);
 
-	count = 0;
-	cur = token_list->head;
-	while (cur)
-	{
-		if (cur->token->type == T_PIPE)
-			count++;
-		cur = cur->next;
-	}
-	return (count + 1);
-}
-
-t_parser_status	msh_pipeline_init(t_token_list *token_list, t_pipeline *pipeline)
-{
-	const size_t	cmds_count = msh_pipeline_count_cmds(token_list);
-	
-	if (!pipeline_init(cmds_count, pipeline))
-	{
-		err_print(ERR_PARSER, PARSE_ALLOC_ERROR, (t_err_payload){0});
-		return (PARSE_ALLOC_ERROR);
-	}		
-	return (PARSE_OK);
-}
-
-
-static t_builtin prs_cmd_to_builtin(const char *name)
-{
-	if (!ft_strcmp(name, "echo"))
-		return (BUILTIN_ECHO);
-	if (!ft_strcmp(name, "cd"))
-		return (BUILTIN_CD);
-	if (!ft_strcmp(name, "pwd"))
-		return (BUILTIN_PWD);
-	if (!ft_strcmp(name, "export"))
-		return (BUILTIN_EXPORT);
-	if (!ft_strcmp(name, "unset"))
-		return (BUILTIN_UNSET);
-	if (!ft_strcmp(name, "env"))
-		return (BUILTIN_ENV);
-	if (!ft_strcmp(name, "exit"))
-		return (BUILTIN_EXIT);
-	return (BUILTIN_NONE);
-}
-
-t_parser_status prs_finish_cmd(t_cmd *cmd)
-{
-	char *default_name;
-
-	if (!cmd->argv)
-	{
-		default_name = ft_strdup("");
-		if (!default_name)
-			return (PARSE_ALLOC_ERROR);
-		if (!pipeline_push_cmd_argv(cmd, default_name))
-		{
-            free(default_name);
-            return (PARSE_ALLOC_ERROR);
-        }
-	}
-	cmd->name = ft_strdup(cmd->argv[0]);
-	if (!cmd->name)
-		return (PARSE_ALLOC_ERROR);
-	cmd->builtin_kind = prs_cmd_to_builtin(cmd->name);	
-	return (PARSE_OK);
-}
-
-
-
-// write errros here 
-// separate logic to parser
 t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
 {
-	size_t			i;
-	t_token_node	*cur;
 	t_parser_status	status;
-	size_t			cur_heredoc;
+	size_t cmds_count;
 
 	status = msh_pipeline_init(token_list, pipeline);
 	if (status != PARSE_OK)
 		return (status);
+	cmds_count = pipeline->count;
+	status = msh_tokens_to_pipeline(token_list, shell, pipeline);
+	if (status != PARSE_OK)
+		return (status);
+	status = prs_finish_cmd(pipeline->cmds[cmds_count - 1]);
+	if (status != PARSE_OK)
+		err_print(ERR_PARSER, status, (t_err_payload){0});
+	return (status);
+}
+
+static t_parser_status msh_tokens_to_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
+{
+	t_parser_status	status;
+	size_t			i;
+	t_token_node	*cur;
+	size_t			cur_heredoc;
+
 	i = 0;
 	cur_heredoc = 0;
 	cur = token_list->head;
 	while (cur)
 	{
-		if (cur->token->type == T_WORD)
-		{
-			status = prs_word_to_argv(&cur->token->word, shell, pipeline->cmds[i]);
-			if (status != PARSE_OK)
-			{
-				err_print(ERR_PARSER, status, (t_err_payload){0});
-				return (status);
-			}
-				
-		}
-		else if (cur->token->type == T_PIPE)
-		{
-			status = prs_finish_cmd(pipeline->cmds[i]);
-			if (status != PARSE_OK)
-			{
-				err_print(ERR_PARSER, status, (t_err_payload){0});
-				return (status);
-			}
+		status = msh_process_token(cur, shell, pipeline->cmds[i], &cur_heredoc);
+		if (status != PARSE_OK)
+			return (status);
+		if (cur->token->type == T_PIPE)
 			i++;
-		} else
-		{
-			status = prs_redirect_to_pipe(cur, shell, pipeline->cmds[i], &cur_heredoc);
-			if (status != PARSE_OK)
-			{
-				err_print(ERR_PARSER, status, (t_err_payload){0});
-				return (status);
-			}
+		if (cur->token->type != T_WORD && cur->token->type != T_PIPE)
 			cur = cur->next->next;
-			continue;
-		}
-		cur = cur->next;
-	}	
-	status = prs_finish_cmd(pipeline->cmds[i]);
-	if (status != PARSE_OK)
-		err_print(ERR_PARSER, status, (t_err_payload){0});
+		else	
+			cur = cur->next;
+	}
+	return (PARSE_OK);
+}
 
-	return (status);
+static int msh_process_word_token(const t_word *word,
+	t_shell *sh, t_cmd *cmd, t_parser_status *status)
+{
+	*status = prs_word_to_argv(word, sh, cmd);
+	if (*status != PARSE_OK)
+	{
+		err_print(ERR_PARSER, *status, (t_err_payload){0});
+		return (0);
+	}
+	return (1);
+}
+
+static int msh_process_pipe_token(t_cmd *cmd, t_parser_status *status)
+{
+	*status = prs_finish_cmd(cmd);
+	if (*status != PARSE_OK)
+	{
+		err_print(ERR_PARSER, *status, (t_err_payload){0});
+		return (0);
+	}
+	return (1);
+}
+
+static t_parser_status	msh_process_token(t_token_node *token_node, t_shell *shell, t_cmd *cmd, size_t	*cur_heredoc)
+{
+	t_parser_status	status;
+
+	if (token_node->token->type == T_WORD)
+	{
+		if (!msh_process_word_token(&token_node->token->word, shell, cmd, &status))
+			return (status);
+	}
+	else if (token_node->token->type == T_PIPE)
+	{
+		if (!msh_process_pipe_token(cmd, &status))
+			return (status);
+	}
+	else
+	{
+		status = prs_redirect_to_pipe(token_node, shell, cmd, cur_heredoc);
+		if (status != PARSE_OK)
+		{
+			err_print(ERR_PARSER, status, (t_err_payload){0});
+			return (status);
+		}
+	}
+	return (PARSE_OK);
 }
 
