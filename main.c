@@ -24,6 +24,7 @@ int msh_has_only_spaces(char *str)
 
 static void msh_clean_and_exit(t_shell *shell,int exit_status)
 {
+	sh_termios_restore();
 	msh_cleanup(shell);
 	exit(exit_status);
 }
@@ -43,6 +44,7 @@ int main(int argc, char **argv, char **envp)
 		return (SH_GENERAL_ERROR); 
 	char *line;
 	t_msh_parse_result parse_result;
+	t_exec_result exec_result;
 
 	sh_termios_apply();
 	rl_catch_signals = 0;
@@ -77,14 +79,19 @@ int main(int argc, char **argv, char **envp)
 		parse_result = msh_parse(line, &shell, &pipeline);
 		if (parse_result.domain == MPR_OK)
 		{
-			shell.last_status = SH_OK;
-			execute(&shell, &pipeline);
+			exec_result = execute(&shell, &pipeline);
+			shell.last_status = exec_result.exit_code;
+			if (exec_result.flow == FLOW_EXIT)
+			{
+				free(line);
+				pipeline_destroy(&pipeline);
+				msh_clean_and_exit(&shell, shell.last_status);
+			}
 		}
 		else 
 			shell.last_status = msh_parse_result_to_exit_status(parse_result);
 		pipeline_destroy(&pipeline);
 		free(line);
 	}
-	sh_termios_restore();
 	msh_clean_and_exit(&shell, shell.last_status);
 }
