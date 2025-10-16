@@ -158,7 +158,6 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 {
 	char			**envp;
 	t_exec_result	result;
-    t_exec_status   status;
 	
 	envp = env_to_envp(sh->env_store);
 	if (envp == NULL)

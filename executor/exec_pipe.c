@@ -39,7 +39,7 @@ t_exec_result child_process(t_pipe *p, size_t i)
     {
         if(p->prev[FD_READ] == -1)
         {
-            pipe_child_close(p);
+            pipe_close(p);
             return (
                 exec_external_sys_error(EXEC_ERR_DUP, cmd, 0)
             );
@@ -55,7 +55,7 @@ t_exec_result child_process(t_pipe *p, size_t i)
     {
         if(p->next[FD_WRITE] == -1)
         {
-            pipe_child_close(p);
+            pipe_close(p);
             return (
                 exec_external_sys_error(EXEC_ERR_DUP, cmd, 0)
             );

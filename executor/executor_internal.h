@@ -29,10 +29,12 @@ t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd);
 t_exec_result	execute_pipeline(t_shell *sh, t_pipeline *pl);
 t_exec_status	apply_redirections(t_cmd *cmd);
 int				cmd_path(t_shell *sh, const char *name, char out[PATH_MAX]);
-t_exec_result	exec_external_error_result(t_exec_status status, char *cmd,
-					int errno_val);
+t_exec_result	exec_external_error_result(t_exec_status status,
+					const char *cmd, int errno_val);
 t_exec_result	exec_external_result(t_exec_status status, int exit_code);
-t_exec_result    exec_external_sys_error(t_exec_status status, const char *cmd, int errno_val);
+t_exec_result	exec_external_sys_error(t_exec_status status, const char *cmd,
+					int errno_val);
+void			exec_child(const char *full, t_cmd *cmd, t_shell *sh);
 
 void			close_fd(int *fd);
 
