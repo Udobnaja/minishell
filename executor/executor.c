@@ -47,11 +47,19 @@ t_exec_result execute(t_shell *sh, t_pipeline *pipeline)
 
     ft_bzero(&result, sizeof result);
     if(pipeline->count > 1)
+    {
+        sh_setup_rl_hook(SH_JOB_NONE);
         execute_pipeline(sh, pipeline);
+        sh_setup_rl_hook(SH_INTERACTIVE);
+    }
     else if (pipeline->count == 1)
     {
         if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
+        {
+            sh_setup_rl_hook(SH_JOB_NONE);
             result = execute_external(sh, pipeline->cmds[0]);
+            sh_setup_rl_hook(SH_INTERACTIVE);
+        }
         else
             result = execute_builtin(sh, pipeline->cmds[0]);
     }

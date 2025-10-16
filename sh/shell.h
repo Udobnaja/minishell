@@ -71,6 +71,7 @@ void	sh_echoctl_on(struct termios *t);
 void	sh_shell_signals(void);
 void	sh_heredoc_signals(void);
 void	sh_childprocess_signals(void);
+void    sh_empty_signals(void);
 
 void	sh_setup_rl_hook(t_sh_job job);
 

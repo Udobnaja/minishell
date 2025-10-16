@@ -104,4 +104,3 @@ static t_parser_status	msh_process_token(t_token_node *token_node, t_shell *shel
 	}
 	return (PARSE_OK);
 }
-
