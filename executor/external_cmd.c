@@ -159,7 +159,6 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 	char			**envp;
 	t_exec_result	result;
 	
-	sh_setup_rl_hook(SH_CHILD);
 	envp = env_to_envp(sh->env_store);
 	if (envp == NULL)
 	{
@@ -224,6 +223,9 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 		return (exec_external_sys_error(
 					EXEC_ERR_GEN, "fork", errno));
 	if(pid == 0)
+	{
+		sh_setup_rl_hook(SH_CHILD);
 		exec_child(full, cmd, sh);
+	}
     return wait_one(pid, cmd->argv[0]);			
 }
