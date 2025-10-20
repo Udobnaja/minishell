@@ -82,7 +82,8 @@ PARSE_SRC := \
 	parser/parser_ambiguous_utils.c \
 	parser/parser_redirect_pipeline.c \
 	parser/parser_append_pieces.c \
-	parser/parser_cmd.c
+	parser/parser_cmd.c \
+	parser/parser_append_expanded_key.c
 
 EXPANSION_SRC := \
 	expansion/expansion.c \
