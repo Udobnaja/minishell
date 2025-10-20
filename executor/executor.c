@@ -8,7 +8,7 @@ static t_exec_result	exec_builtin_result(t_exec_status status)
     if (status != EXEC_OK)
         result.exit_code = SH_GENERAL_ERROR;
     else
-        result.exit_code = SH_OK;
+    result.exit_code = SH_OK;
 	result.status = status;
 	result.errno_val = 0;
 	return (result);
