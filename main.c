@@ -2,10 +2,22 @@
 
 volatile sig_atomic_t g_last_signal = 0;
 
-const char *msh_get_prompt(const char *default_name)
+const char *msh_get_prompt(const char *name)
 {
-	(void) (default_name);
-	return ("minishell $ ");
+	static char		buf[PROMPT_MAX];
+	const size_t	max_name = PROMPT_MAX - 4;
+	const char		*slash = ft_strrchr(name, '/');
+	const char		*base = name;
+	size_t			n;
+
+	if (slash != NULL)
+		base = slash + 1;
+	n = ft_strlen(base);
+	if (n > max_name)
+		n = max_name;
+	ft_memcpy(buf, base, n);
+	ft_memcpy(buf + n, " $ ", 4);
+	return (buf);
 }
 
 int msh_has_only_spaces(char *str)

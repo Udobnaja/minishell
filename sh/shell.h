@@ -24,6 +24,7 @@
 
 # define SHELL_NAME "minishell"
 # define HEREDOC_MAX 16
+# define PROMPT_MAX 128
 
 extern volatile sig_atomic_t g_last_signal;
 
