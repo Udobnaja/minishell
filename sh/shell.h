@@ -15,6 +15,7 @@
 
 # define SH_TMPDIR_MAX   256
 # define SH_TMPPATH_MAX  512
+# define SH_SHLVL_MAX  999
 
 # ifdef O_CLOEXEC
 #  define SH_O_CLOEXEC O_CLOEXEC

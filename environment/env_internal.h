@@ -3,6 +3,7 @@
 
 # include "utils.h"
 # include "libft.h"
+# include "shell.h"
 # include "env.h"
 
 typedef struct s_env

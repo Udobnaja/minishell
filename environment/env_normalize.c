@@ -50,7 +50,7 @@ static t_env_status	env_increment_shlvl(t_env_store *store)
 	if (!node || !node->value)
 		return (env_set_shlvl(store, "1"));
 	shlvl = ft_satoi(node->value, &error);
-	if (error || shlvl < 0 || shlvl >= 999) // TODO MSH-45: Define this number in header
+	if (error || shlvl < 0 || shlvl >= SH_SHLVL_MAX)
 		return (env_set_shlvl(store, "1"));
 	shlvl += 1;
 	str_shlvl = ft_itoa(shlvl);
