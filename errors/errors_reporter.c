@@ -1,39 +1,35 @@
 #include "errors_internal.h"
 
-static int	err_has_payload(const t_error *error);
+static void err_format_payload(const t_error *error, char *buf, size_t *pos);
 
 void	err_print(t_err_domain domain, int code, t_err_payload payload)
 {
-	t_error error;
+	const t_error error = err_create(domain, code, payload);
+	char buf[ERROR_MAX_BUFFER];
+	size_t pos;
 
-	error = err_create(domain, code, payload);
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	pos = 0;
+	err_format_msg(buf, &pos, "%s: ", SHELL_NAME);
 	if (err_has_payload(&error))
-	{
-		if ((error.domain == ERR_LEXER || error.domain == ERR_PARSER) && error.payload.token)
-			ft_eprintf(error.msg, error.payload.token);
-		else if (error.domain == ERR_HEREDOC && error.payload.errno_val)
-       		ft_eprintf(error.msg, strerror(error.payload.errno_val));	
-		else if (error.domain == ERR_EXEC && error.payload.command && error.payload.identifier)
-			ft_eprintf(error.msg, error.payload.command, error.payload.identifier);
-		else if (error.domain == ERR_EXEC && error.payload.command && error.payload.errno_val)
-			ft_eprintf(error.msg, error.payload.command, strerror(error.payload.errno_val));
-		else if (error.domain == ERR_EXEC && error.payload.command)
-			ft_eprintf(error.msg, error.payload.command);
-		else
-			ft_putstr_fd(error.msg, STDERR_FILENO);
-		ft_putstr_fd("\n", STDERR_FILENO);	
-	}
-	else    
-		ft_putendl_fd(error.msg, STDERR_FILENO);
+		err_format_payload(&error, buf, &pos);
+	else
+		err_format_msg(buf, &pos, error.msg);
+	err_format_msg(buf, &pos, "\n");
+	write(STDERR_FILENO, buf, pos);
 }
 
-static int err_has_payload(const t_error *error)
+static void err_format_payload(const t_error *error, char *buf, size_t *pos)
 {
-	return (
-		error->payload.token != NULL
-		|| error->payload.identifier != NULL
-		|| error->payload.path != NULL
-		|| error->payload.command != NULL
-		|| error->payload.errno_val != 0);
+	if ((error->domain == ERR_LEXER || error->domain == ERR_PARSER) && error->payload.token)
+		err_format_msg(buf, pos, error->msg, error->payload.token);
+	else if (error->domain == ERR_HEREDOC && error->payload.errno_val)
+		err_format_msg(buf, pos, error->msg, strerror(error->payload.errno_val));	
+	else if (error->domain == ERR_EXEC && error->payload.command && error->payload.identifier)
+		err_format_msg(buf, pos, error->msg, error->payload.command, error->payload.identifier);
+	else if (error->domain == ERR_EXEC && error->payload.command && error->payload.errno_val)
+		err_format_msg(buf, pos, error->msg, error->payload.command, strerror(error->payload.errno_val));
+	else if (error->domain == ERR_EXEC && error->payload.command)
+		err_format_msg(buf, pos, error->msg, error->payload.command);
+	else
+		err_format_msg(buf, pos, error->msg);
 }

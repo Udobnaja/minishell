@@ -2,7 +2,7 @@
 
 volatile sig_atomic_t g_last_signal = 0;
 
-const char *msh_get_prompt(char *default_name)
+const char *msh_get_prompt(const char *default_name)
 {
 	(void) (default_name);
 	return ("minishell $ ");
@@ -51,7 +51,7 @@ int main(int argc, char **argv, char **envp)
 	sh_setup_rl_hook(SH_INTERACTIVE);
 	while(1)
 	{
-		line = readline(msh_get_prompt(argv[0]));
+		line = readline(msh_get_prompt(sh_name));
 		if (g_last_signal == SIGINT)
 		{
 			shell.last_status = sh_status_from_signal(SIGINT);

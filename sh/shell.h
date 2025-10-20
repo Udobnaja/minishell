@@ -22,6 +22,9 @@
 #  define SH_O_CLOEXEC 0
 # endif
 
+# define SHELL_NAME "minishell"
+# define HEREDOC_MAX 16
+
 extern volatile sig_atomic_t g_last_signal;
 
 typedef struct s_heredoc_entry

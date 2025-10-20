@@ -8,9 +8,6 @@
 # include "errors.h"
 # include "parser.h"
 
-# define SHELL_NAME "minishell"
-# define HEREDOC_MAX 16
-
 typedef enum e_msh_parse_domain {
 	MPR_OK = 0,
 	MPR_LEX,
