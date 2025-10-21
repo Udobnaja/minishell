@@ -1,7 +1,6 @@
 #include "parser_internal.h"
 
 static t_parser_status	prs_append_expandable(const t_piece *piece, t_shell *sh, t_trim_state *st, char **new_word);
-static t_parser_status	prs_append_expanded_key(const char *str, t_shell *sh, size_t *consumed, char **new_word);
 static void				prs_append_until_expansion(const char *str, size_t *consumed, t_trim_state *st, char **new_word);
 static t_parser_status	prs_append_pieces(const t_word *word, t_shell *sh, char **new_word);
 
@@ -69,39 +68,12 @@ static t_parser_status	prs_append_expandable(const t_piece *piece, t_shell *sh, 
 		if (piece->text[j] == '$')
 		{
 			start = *new_word;
-			status = prs_append_expanded_key(piece->text + j, sh, &j, new_word);
+			status = prs_append_expanded_key(piece, sh, &j, new_word);
 			if (status != PARSE_OK)
 				return (status);
 			prs_trim_expansion(start, st, piece->quote != NONE, new_word);
 		}
 	}
-	return (PARSE_OK);
-}
-
-static t_parser_status	prs_append_expanded_key(const char *str, t_shell *sh, size_t *consumed, char **new_word)
-{
-	char	*key;
-	char	*expanded;
-	size_t	len;
-
-	key = expn_dup_env_key(str);
-	if (!key)
-		return (PARSE_ALLOC_ERROR);	
-	expanded = expn_expand(key, sh->env_store, sh->last_status);
-	if (!expanded)
-	{
-		free(key);
-		return (PARSE_ALLOC_ERROR);
-	}
-	len = ft_strlen(expanded);
-	if (len > 0)
-	{
-		ft_memcpy(*new_word, expanded, len);
-		*new_word += len; 
-	}	
-	*consumed += (ft_strlen(key));	
-	free(key);
-	free(expanded);
 	return (PARSE_OK);
 }
 
