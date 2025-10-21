@@ -123,78 +123,13 @@ int cmd_is_empty(const t_cmd *cmd)
     return 0;
 }
 
-static void pipeline_free_redirects(t_redirect *redirect)
-{
-	t_redirect *next;
-
-	while (redirect)
-	{
-		next = redirect->next;
-		if (redirect->type == REDIR_HEREDOC)
-		{
-            if (redirect->target.fd >= 0)
-                close(redirect->target.fd);
-		}
-		else if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT
-			|| redirect->type == REDIR_APPEND) && redirect->target.path)
-			free(redirect->target.path);
-		free(redirect);
-		redirect = next;
-	}
-}
-
-static void	pipeline_argv(char **argv)
-{
-	size_t	i;
-
-	i = 0;
-	while (argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}	
-	free(argv);
-}
-
-static void	pipeline_free_cmd(t_cmd *cmd)
-{
-	free(cmd->name);
-	if (cmd->argv)
-		pipeline_argv(cmd->argv);
-	if (cmd->redirect_list)
-		pipeline_free_redirects(cmd->redirect_list);
-	free(cmd);
-}
-void	pipeline_ddestroy(t_pipeline *pipeline)
-{
-	size_t	i;
-
-	if (!pipeline || !pipeline->cmds)
-		return;
-	i = 0;
-	while (i < pipeline->count)
-	{
-		if (pipeline->cmds[i])
-			pipeline_free_cmd(pipeline->cmds[i]);
-		i++;
-	}
-	free(pipeline->cmds);
-	pipeline->cmds = NULL;
-	pipeline->count = 0;
-}
-
 void exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,  t_pipeline *pl)
 {
     int exit_code;
     if (cmd->builtin_kind != BUILTIN_NONE)
     {
         exit_code = execute_builtin(sh, cmd).exit_code;
-        if (sh->env_store)
-            env_destroy(&sh->env_store);
-        if (sh->heredoc_store)
-		    heredoc_store_destroy(&sh->heredoc_store);
-        pipeline_ddestroy(pl);
-        free(pids);
+        exec_child_process_clean(sh, pids, pl);
         exit(exit_code);
     }
 }
@@ -212,23 +147,13 @@ void run_child_process(t_pipe *p, size_t i)
     if(result.status != EXEC_OK)
     {
         result = exec_external_result(result.status, SH_GENERAL_ERROR);
-         if (p->sh->env_store)
-            env_destroy(&p->sh->env_store);
-        if (p->sh->heredoc_store)
-		    heredoc_store_destroy(&p->sh->heredoc_store);
-        pipeline_ddestroy(p->pl);
-        free(p->pids);
+        exec_child_process_clean(p->sh, p->pids, p->pl);
         exit(result.exit_code);
     }
     if (cmd_is_empty(cmd))
     {
         result = exec_external_result(EXEC_OK, SH_OK);
-        if (p->sh->env_store)
-            env_destroy(&p->sh->env_store);
-        if (p->sh->heredoc_store)
-		    heredoc_store_destroy(&p->sh->heredoc_store);
-        pipeline_ddestroy(p->pl);
-        free(p->pids);
+        exec_child_process_clean(p->sh, p->pids, p->pl);
         exit(result.exit_code);
     }
     exec_run_buildin(p->sh, cmd, p->pids, p->pl);
@@ -317,8 +242,6 @@ t_exec_result execute_pipeline(t_shell *sh, t_pipeline *pl)
     result = execution_run_pipeline(&p);
     if(result.status == EXEC_OK)
         result = wait_all(p.pids, p.n);
-   free(p.pids);
-    // if (p.sh->env_store)
-    //     env_destroy(&p.sh->env_store);
+    free(p.pids);
     return (result);
 }

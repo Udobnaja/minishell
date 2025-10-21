@@ -100,7 +100,8 @@ EXECUTOR_SRC := \
 	executor/executor.c \
 	executor/external_cmd.c \
 	executor/exec_pipe.c \
-	executor/exec_redirect.c
+	executor/exec_redirect.c \
+	executor/exec_child_process_clean.c
 
 ERRORS_SRC := \
 	errors/errors_reporter.c \

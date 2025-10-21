@@ -40,5 +40,6 @@ t_exec_result	exec_external_sys_error(t_exec_status status, const char *cmd,
 void			exec_child(const char *full, t_cmd *cmd, t_shell *sh);
 
 void			close_fd(int *fd);
+void			exec_child_process_clean(t_shell *sh, pid_t *pids,  t_pipeline *pl);
 
 #endif
