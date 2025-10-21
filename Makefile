@@ -107,7 +107,8 @@ ERRORS_SRC := \
 	errors/errors_parser_msgs.c \
 	errors/err_exec_msg.c \
 	errors/errors_heredoc_msg.c \
-	errors/errors_factory.c 
+	errors/errors_factory.c \
+	errors/errors_reporter_utils.c
 
 SRC := \
 	main.c \
