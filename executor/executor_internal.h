@@ -1,13 +1,16 @@
 #ifndef EXECUTOR_INTERNAL_H
 # define EXECUTOR_INTERNAL_H
 
+# include <errno.h>
+# include <stdbool.h>
+
 # include "env.h"
 # include "errors.h"
 # include "executor.h"
+# include "heredoc.h"
 # include "libft.h"
 # include "utils.h"
-# include <errno.h>
-# include <stdbool.h>
+
 
 # ifndef FD_READ
 #  define FD_READ 0

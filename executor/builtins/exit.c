@@ -59,6 +59,7 @@ static t_exec_result	exec_quit(t_exec_status status, int exit_code)
 	t_exec_result	result;
 	t_err_payload	payload;
 
+	ft_bzero(&payload, sizeof payload);
 	result = exec_exit_result(FLOW_EXIT, status, exit_code);
 	if (status != EXEC_OK)
 	{
@@ -73,6 +74,7 @@ static t_exec_result	exec_continue(t_exec_status status, int exit_code)
 	t_exec_result	result;
 	t_err_payload	payload;
 
+	ft_bzero(&payload, sizeof payload);
 	result = exec_exit_result(FLOW_OK, status, exit_code);
 	if (status != EXEC_OK)
 	{
