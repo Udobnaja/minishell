@@ -246,7 +246,7 @@ t_exec_result external_path(t_shell *sh, const char *name, char full[PATH_MAX])
 			return (exec_external_error_result(
 					EXEC_NO_SUCH_FILE, name, 0));
 	}
-	return exec_external_result(EXEC_OK, 0);
+	return exec_external_result(EXEC_OK, sh->last_status);
 }
 
 t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
