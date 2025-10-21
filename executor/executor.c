@@ -105,11 +105,29 @@ t_exec_result exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd)
 	return result;
 }
 
+static void exec_update_underscore(t_shell *sh, const t_cmd *cmd)
+{
+	const char *val = NULL;
+    t_env_status	status;
+
+	if (cmd->argv && cmd->argc > 0 && cmd->argv[cmd->argc - 1])
+        val = cmd->argv[cmd->argc - 1];
+    if (!val)
+        val = cmd->name;
+	if (!val)
+		val = "";
+	status = env_set(sh->env_store, "_", val);
+    if (status != ENV_OK)
+        err_print(ERR_ENV, status, (t_err_payload){0});
+}
+
 t_exec_result execute(t_shell *sh, t_pipeline *pipeline)
 {
 	t_exec_result   result;
 
     ft_bzero(&result, sizeof result);
+    if (pipeline->count > 0)
+        exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
     if(pipeline->count > 1)
     {
         sh_setup_rl_hook(SH_JOB_NONE);
