@@ -1,0 +1,47 @@
+# readline
+
+{
+	leak readline
+	Memcheck:Leak
+	...
+	fun:readline
+}
+{
+	leak add_history
+	Memcheck:Leak
+	...
+	fun:add_history
+}
+
+# std_libs
+
+{
+	grep
+	Memcheck:Leak
+	...
+	obj:/usr/bin/grep
+}
+{
+	ls
+	Memcheck:Leak
+	...
+	obj:/usr/bin/ls
+}
+{
+	cat
+	Memcheck:Leak
+	...
+	obj:/usr/bin/cat
+}
+{
+	sort
+	Memcheck:Leak
+	...
+	obj:/usr/bin/sort
+}
+{
+	expr
+	Memcheck:Leak
+	...
+	obj:/usr/bin/expr
+}

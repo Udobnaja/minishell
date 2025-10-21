@@ -1,4 +1,12 @@
 #include "executor_internal.h"
+/* 
+Generates a full path to the executable file, checks its
+existence and availability for execution
+dir - path to the directory from the PATH variable
+name - the name of the command
+len - the length of the current segment from the PATH variable
+out - the buffer into which the full path is written
+*/
 
 static int check_candidate(const char *dir, size_t len, const char *name, char out[PATH_MAX])
 {
@@ -6,24 +14,36 @@ static int check_candidate(const char *dir, size_t len, const char *name, char o
 	size_t need;
 
 	name_len = ft_strlen(name);
-	need = 0;
-	if (len > 0)
-		need = 1;
-	need += name_len + len + 1;
-	if(need > PATH_MAX)
-		return 0;
-	if(len > 0)
+	if(len == 0)
 	{
+		need = 2 + name_len + 1;
+		if(need > PATH_MAX)
+			return 0;
+		ft_strlcpy(out, "./", 3);
+		ft_strlcat(out, name, PATH_MAX);
+	}
+	else
+	{
+		need = len + 1 + name_len + 1;
+		if(need > PATH_MAX)
+			return 0;
 		ft_memcpy(out, dir, len);
 		out[len] = '/';
 		out[len + 1] = '\0';
 		ft_strlcat(out, name, PATH_MAX);
-	} else
-		ft_strlcpy(out, name, PATH_MAX);
+	}
 	if(access(out, X_OK) == 0)
 		return 1;
 	return 0;
 }
+/* 
+Loop through all directories listed in PATH,
+and use check_candidate() to check whether an executable 
+file named name exists in any of them.
+param i is the current index of the character in the string path
+param start the beginning of the current directory
+
+ */
 static int search_in_path(const char *path, const char *name, char out[PATH_MAX])
 {
 	size_t i;
@@ -48,6 +68,11 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
 	errno = ENOENT;
 	return 0;
 }
+/* 
+The function searches for the name command and writes 
+the full path to out. Decides where to search (in PATH or in a given path)
+If the file is found, it returns 1.
+ */
 
 int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 {
@@ -62,6 +87,8 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 	path_env = env_get_value(sh->env_store, "PATH");
 	if(path_env == NULL || path_env[0] == '\0' )
 	{
+		if(check_candidate(".", 1, name, out))
+			return 1;
 		errno = ENOENT;
 		return 0;
 	}
@@ -130,6 +157,11 @@ t_exec_result    exec_external_result(t_exec_status status, int exit_code)
 	result.errno_val = 0;
 	return (result);
 }
+/* 
+The function checks whether the file at the specified path can be run
+path - full path to the file ("/bin/cat")
+argv - command name to print in the error message
+ */
 
 static t_exec_result preliminary_check(const char *path, char *argv)
 {
@@ -153,6 +185,9 @@ static t_exec_result preliminary_check(const char *path, char *argv)
 	}
 	return exec_external_result(EXEC_OK, 0);
 }
+/*
+ Runs an external executable in a child process using execve
+ */
 
 void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 {
@@ -178,6 +213,10 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 		exit(result.exit_code);
 	}
 }
+/* 
+the function waits for the child process 
+to complete and receives its exit code 
+*/
 
 static t_exec_result wait_one(pid_t pid, const char *cmd)
 {
@@ -196,6 +235,19 @@ static t_exec_result wait_one(pid_t pid, const char *cmd)
         return exec_external_sys_error(EXEC_ERR_GEN, (char *)cmd, errno);
     return exec_external_result(EXEC_OK, sh_status_from_wait(status));
 }
+t_exec_result external_path(t_shell *sh, const char *name, char full[PATH_MAX])
+{
+	if(!cmd_path(sh, name, full))
+	{
+		if (ft_strchr(name, '/') == NULL)
+			return (exec_external_error_result(
+					EXEC_CMD_NOT_FOUND, name, 0));
+		else
+			return (exec_external_error_result(
+					EXEC_NO_SUCH_FILE, name, 0));
+	}
+	return exec_external_result(EXEC_OK, sh->last_status);
+}
 
 t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 {
@@ -207,15 +259,9 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 	if(cmd->argv[0][0] == '\0')
 		return  exec_external_result(EXEC_OK, sh->last_status);
 	full[0] = '\0';
-	if(!cmd_path(sh, cmd->argv[0], full))
-	{
-		if (ft_strchr(cmd->argv[0], '/') == NULL)
-			return (exec_external_error_result(
-					EXEC_CMD_NOT_FOUND, cmd->argv[0], 0));
-		else
-			return (exec_external_error_result(
-					EXEC_NO_SUCH_FILE, cmd->argv[0], 0));
-	}
+	result = external_path(sh, cmd->argv[0],full);
+	if(result.status != EXEC_OK)
+		return (result);
 	result = preliminary_check(full, cmd->argv[0]);
 	if(result.status != EXEC_OK)
 		return (result);
