@@ -137,16 +137,15 @@ void run_child_process(t_pipe *p, size_t i)
 {
     t_cmd  *cmd;
     char    path[PATH_MAX];
-    t_exec_status st;
     t_exec_result result;
 
     sh_setup_rl_hook(SH_CHILD);
     cmd = p->pl->cmds[i];
     child_setup(p, i);
-    st = apply_redirections(cmd);
-    if(st != EXEC_OK)
+    result = apply_redirections(cmd);
+    if(result.status != EXEC_OK)
     {
-        result = exec_external_result(st, SH_GENERAL_ERROR);
+        result = exec_external_result(result.status, SH_GENERAL_ERROR);
         exit(result.exit_code);
     }
     if (cmd_is_empty(cmd))
