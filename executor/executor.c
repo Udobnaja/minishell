@@ -76,7 +76,7 @@ t_exec_result exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd)
 {
 	int fd[3];
 	t_exec_result result;
-	t_exec_status status;
+	t_exec_result redir_result;
 
 	fd[0] = -1;
 	fd[1] = -1;
@@ -87,12 +87,12 @@ t_exec_result exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd)
 			EXEC_ERR_GEN, "dup", errno
 		));
 	}
-	status = apply_redirections(cmd);
-	if (status != EXEC_OK) 
+	redir_result = apply_redirections(cmd);
+	if (redir_result.status != EXEC_OK) 
 	{
 		restore_descriptors(fd); // TODO: look
 		close_descriptors(fd);
-		return exec_external_result(status, SH_GENERAL_ERROR);
+		return redir_result;
 	}
 	result = execute_builtin(sh, cmd);
 	if (restore_descriptors(fd) < 0) 
