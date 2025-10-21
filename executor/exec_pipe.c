@@ -212,6 +212,12 @@ void run_child_process(t_pipe *p, size_t i)
     if(result.status != EXEC_OK)
     {
         result = exec_external_result(result.status, SH_GENERAL_ERROR);
+         if (p->sh->env_store)
+            env_destroy(&p->sh->env_store);
+        if (p->sh->heredoc_store)
+		    heredoc_store_destroy(&p->sh->heredoc_store);
+        pipeline_ddestroy(p->pl);
+        free(p->pids);
         exit(result.exit_code);
     }
     if (cmd_is_empty(cmd))
