@@ -11,7 +11,6 @@ t_exec_result builtin_exit(t_shell *sh, t_cmd *cmd)
 	int				error;
 	
 	error = 0;
-	ft_putendl_fd("exit", STDERR_FILENO);
 	if(!cmd->argv[1])
 		return (exec_quit(EXEC_OK, sh->last_status));
 	if(!exec_is_number(cmd->argv[1]))

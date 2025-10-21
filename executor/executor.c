@@ -136,7 +136,11 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 			sh_setup_rl_hook(SH_INTERACTIVE);
 		}
 		else
+		{
+			if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT)
+				ft_putendl_fd("exit", STDERR_FILENO);
 			result = execute_builtin(sh, pipeline->cmds[0]);
+		}
 	}
 	return (result);
 }
