@@ -1,13 +1,16 @@
 #ifndef EXECUTOR_INTERNAL_H
 # define EXECUTOR_INTERNAL_H
 
+# include <errno.h>
+# include <stdbool.h>
+
 # include "env.h"
 # include "errors.h"
 # include "executor.h"
+# include "heredoc.h"
 # include "libft.h"
 # include "utils.h"
-# include <errno.h>
-# include <stdbool.h>
+
 
 # ifndef FD_READ
 #  define FD_READ 0
@@ -34,8 +37,10 @@ t_exec_result	exec_external_error_result(t_exec_status status,
 t_exec_result	exec_external_result(t_exec_status status, int exit_code);
 t_exec_result	exec_external_sys_error(t_exec_status status, const char *cmd,
 					int errno_val);
-void			exec_child(const char *full, t_cmd *cmd, t_shell *sh);
+void			exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p);
 
 void			close_fd(int *fd);
+void			exec_child_process_clean(t_shell *sh, pid_t *pids,  t_pipeline *pl);
+void			exec_child_clean(t_shell *sh, t_pipe *p);
 
 #endif

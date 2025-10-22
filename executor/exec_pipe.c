@@ -82,7 +82,7 @@ t_exec_result wait_all(pid_t *pids, size_t n)
     i = 0;
     while(i < n)
     {
-        if(pids[i] != 0)
+        if(pids[i] > 0)
         {
             st = 0;
             while (1)
@@ -107,7 +107,10 @@ static void child_setup(t_pipe *p, size_t i)
 
     result = child_process(p, i);
     if (result.status != EXEC_OK)
+    {
+        exec_child_process_clean(p->sh, p->pids, p->pl);
         exit(result.exit_code);
+    }
 }
 
 int cmd_is_empty(const t_cmd *cmd)
@@ -123,12 +126,13 @@ int cmd_is_empty(const t_cmd *cmd)
     return 0;
 }
 
-void exec_run_buildin(t_shell *sh, t_cmd *cmd)
+void exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,  t_pipeline *pl)
 {
     int exit_code;
     if (cmd->builtin_kind != BUILTIN_NONE)
     {
         exit_code = execute_builtin(sh, cmd).exit_code;
+        exec_child_process_clean(sh, pids, pl);
         exit(exit_code);
     }
 }
@@ -146,14 +150,16 @@ void run_child_process(t_pipe *p, size_t i)
     if(result.status != EXEC_OK)
     {
         result = exec_external_result(result.status, SH_GENERAL_ERROR);
+        exec_child_process_clean(p->sh, p->pids, p->pl);
         exit(result.exit_code);
     }
     if (cmd_is_empty(cmd))
     {
         result = exec_external_result(EXEC_OK, SH_OK);
+        exec_child_process_clean(p->sh, p->pids, p->pl);
         exit(result.exit_code);
     }
-    exec_run_buildin(p->sh, cmd); // TODO: need check status
+    exec_run_buildin(p->sh, cmd, p->pids, p->pl);
     path[0] = '\0';
     if (cmd_path(p->sh, cmd->argv[0], path) == 0)
     {
@@ -163,9 +169,10 @@ void run_child_process(t_pipe *p, size_t i)
 		else
 		    result = exec_external_error_result(
 					EXEC_NO_SUCH_FILE, cmd->argv[0], 0);
+        exec_child_process_clean(p->sh, p->pids, p->pl);       
         exit(result.exit_code);
     }
-    exec_child(path, cmd, p->sh);
+    exec_child(path, cmd, p->sh, p);
 }
 
 t_exec_result exec_make_pipe(t_pipe *p)
@@ -229,16 +236,18 @@ t_exec_result execute_pipeline(t_shell *sh, t_pipeline *pl)
 {
     t_pipe p;
     t_exec_result result;
+    t_exec_result w_result;
 
     p.sh = sh;
     p.pl = pl;
     p.n = pl->count;
-    p.pids = (pid_t *)malloc(sizeof(pid_t)* p.n);
+    p.pids = ft_calloc(p.n, sizeof(pid_t));
     if(p.pids == NULL)
         return exec_external_sys_error(EXEC_ALLOC_ERR, NULL, 1);
     result = execution_run_pipeline(&p);
-    if(result.status == EXEC_OK)
-        result = wait_all(p.pids, p.n);
+    w_result = wait_all(p.pids, p.n);
     free(p.pids);
-    return (result);
+    if(result.status != EXEC_OK)
+        return (result);
+    return (w_result);
 }

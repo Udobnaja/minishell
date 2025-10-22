@@ -185,11 +185,12 @@ static t_exec_result preliminary_check(const char *path, char *argv)
 	}
 	return exec_external_result(EXEC_OK, 0);
 }
+
 /*
  Runs an external executable in a child process using execve
  */
 
-void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
+void exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p)
 {
 	char			**envp;
 	t_exec_result	result;
@@ -198,18 +199,14 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh)
 	if (envp == NULL)
 	{
 		result = exec_external_error_result(EXEC_ALLOC_ERR, NULL, 0);
+		exec_child_clean(sh, p);
 		exit(result.exit_code);
 	}
 	execve(full, cmd->argv, envp);
 	{		
-		if (errno) 
-		{
-			result = exec_external_error_result(EXEC_ERR_GEN, cmd->argv[0], errno);
-			env_free_envp(envp); 
-			exit(result.exit_code);
-		}
-		result = exec_external_error_result(EXEC_ERR_EXECUTION, NULL, 0);
+		result = exec_external_error_result(EXEC_ERR_GEN, cmd->argv[0], errno);
 		env_free_envp(envp); 
+		exec_child_clean(sh, p);
 		exit(result.exit_code);
 	}
 }
@@ -273,8 +270,11 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
 		sh_setup_rl_hook(SH_CHILD);
         result = apply_redirections(cmd);
         if(result.status != EXEC_OK)
+		{
+			exec_child_process_clean(sh, NULL, NULL);
             exit(result.exit_code);
-		exec_child(full, cmd, sh);
+		}
+		exec_child(full, cmd, sh, NULL);
 	}
     return wait_one(pid, cmd->argv[0]);
 }
