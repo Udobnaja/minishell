@@ -230,6 +230,7 @@ static t_exec_result wait_one(pid_t pid, const char *cmd)
     }
     if (w_pid == -1)
         return exec_external_sys_error(EXEC_ERR_GEN, (char *)cmd, errno);
+	sh_report_wait_signal(status);
     return exec_external_result(EXEC_OK, sh_status_from_wait(status));
 }
 t_exec_result external_path(t_shell *sh, const char *name, char full[PATH_MAX])

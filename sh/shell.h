@@ -82,5 +82,8 @@ void							sh_childprocess_signals(void);
 void							sh_empty_signals(void);
 
 void							sh_setup_rl_hook(t_sh_job job);
+void							sh_sigint_sighandler(int signo);
+void							sh_set_signal_handler(int sig, void (*handler)(int));
+void							sh_report_wait_signal(int wst);
 
 #endif

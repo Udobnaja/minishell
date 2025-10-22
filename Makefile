@@ -34,7 +34,8 @@ SH_SRC := \
 	sh/sh_termios.c \
 	sh/sh_termios_utils.c \
 	sh/sh_signals.c \
-	sh/sh_rl_hook.c
+	sh/sh_rl_hook.c \
+	sh/sh_signals_handler.c
 
 UTILS_SRC := \
 	utils/u_getcwd.c \
