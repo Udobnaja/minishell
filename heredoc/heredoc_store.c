@@ -1,32 +1,33 @@
 #include "heredoc_internal.h"
 
-static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_store);
+static void		heredoc_cpy(t_heredoc_entry *entries,
+					const t_heredoc_store *src_store);
 
-t_heredoc_store *heredoc_store_create(void)
+t_heredoc_store	*heredoc_store_create(void)
 {
-	t_heredoc_store *s;
+	t_heredoc_store	*s;
 
-	s = ft_calloc(1, sizeof *s);
-	return s;
+	s = ft_calloc (1, sizeof * s);
+	return (s);
 }
 
-void heredoc_store_clear(t_heredoc_store *store)
+void	heredoc_store_clear(t_heredoc_store *store)
 {
-    size_t i;
+	size_t	i;
 
-    if (!store)
-        return;
-    i = 0;
-    while (i < store->count)
-    {
-        if (store->entries[i].fd >= 0)
-            close(store->entries[i].fd);
-        i++;
-    }
-    free(store->entries);
-    store->entries = NULL;
-    store->count = 0;
-    store->capacity = 0;
+	if (!store)
+		return ;
+	i = 0;
+	while (i < store->count)
+	{
+		if (store->entries[i].fd >= 0)
+			close(store->entries[i].fd);
+		i++;
+	}
+	free(store->entries);
+	store->entries = NULL;
+	store->count = 0;
+	store->capacity = 0;
 }
 
 int	heredoc_store_add(t_heredoc_store *store, int fd)
@@ -41,9 +42,9 @@ int	heredoc_store_add(t_heredoc_store *store, int fd)
 		else
 		{
 			if (store->capacity > SIZE_MAX / 2)
-        		return (-1);
+				return (-1);
 			capacity = store->capacity * 2;
-		}			
+		}
 		entries = ft_calloc(capacity, sizeof(t_heredoc_entry));
 		if (!entries)
 			return (-1);
@@ -57,7 +58,8 @@ int	heredoc_store_add(t_heredoc_store *store, int fd)
 	return (0);
 }
 
-static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_store)
+static void	heredoc_cpy(t_heredoc_entry *entries,
+		const t_heredoc_store *src_store)
 {
 	size_t	i;
 
@@ -69,9 +71,10 @@ static void heredoc_cpy(t_heredoc_entry	*entries, const t_heredoc_store *src_sto
 	}
 }
 
-void heredoc_store_destroy(t_heredoc_store **store)
+void	heredoc_store_destroy(t_heredoc_store **store)
 {
-	if (!store || !*store) return;
+	if (!store || !*store)
+		return ;
 	heredoc_store_clear(*store);
 	free(*store);
 	*store = NULL;
