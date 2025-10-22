@@ -1,7 +1,7 @@
 #ifndef ERRORS_H
 # define ERRORS_H
 
-typedef struct s_error t_error;
+typedef struct s_error	t_error;
 
 typedef enum e_err_domain
 {
@@ -11,18 +11,18 @@ typedef enum e_err_domain
 	ERR_PARSER,
 	ERR_HEREDOC,
 	ERR_EXEC
-}	t_err_domain;
+}						t_err_domain;
 
 typedef struct s_err_payload
 {
-	int			errno_val;
-	const char	*token;
-	const char	*path;
-	const char	*identifier;
-	const char	*command;
-}	t_err_payload;
+	int					errno_val;
+	const char			*token;
+	const char			*path;
+	const char			*identifier;
+	const char			*command;
+}						t_err_payload;
 
-
-void	err_print(t_err_domain domain, int code, t_err_payload payload);
+void					err_print(t_err_domain domain, int code,
+							t_err_payload payload);
 
 #endif
