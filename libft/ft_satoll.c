@@ -16,11 +16,8 @@ static unsigned long long	set_limit(int sign)
 	return ((unsigned long long)LLONG_MAX + 1ULL);
 }
 
-static int	step_acc(
-	unsigned long long *acc,
-	unsigned long long limit,
-	unsigned digit
-)
+static int	step_acc(unsigned long long *acc, unsigned long long limit,
+		unsigned long long digit)
 {
 	if (*acc > (limit - digit) / 10ULL)
 		return (0);
@@ -35,13 +32,13 @@ static long long	finalize_ll(unsigned long long acc, int sign)
 	return (-(long long)acc);
 }
 
-long long  ft_satoll(const char *nptr, int *error)
+long long	ft_satoll(const char *nptr, int *error)
 {
-	int                 sign;
-	unsigned long long  acc;
-	unsigned long long  limit;
+	int					sign;
+	unsigned long long	acc;
+	unsigned long long	limit;
 	size_t				i;
-	unsigned			digit;
+	unsigned long long	digit;
 
 	acc = 0;
 	i = 0;
@@ -49,7 +46,7 @@ long long  ft_satoll(const char *nptr, int *error)
 		i++;
 	sign = get_sign(nptr[i], &i);
 	if (nptr[i] == '\0' || !ft_isdigit(nptr[i]))
-		return ft_set_error(error);
+		return (ft_set_error(error));
 	limit = set_limit(sign);
 	while (nptr[i] && ft_isdigit(nptr[i]))
 	{
@@ -59,6 +56,6 @@ long long  ft_satoll(const char *nptr, int *error)
 		i++;
 	}
 	if (nptr[i] != '\0')
-		return ft_set_error(error);
+		return (ft_set_error(error));
 	return (finalize_ll(acc, sign));
 }
