@@ -94,6 +94,7 @@ EXECUTOR_SRC := \
 	executor/builtins/env.c \
 	executor/builtins/unset.c \
 	executor/builtins/export.c \
+	executor/builtins/export_utils.c \
 	executor/builtins/pwd.c \
 	executor/builtins/echo.c \
 	executor/builtins/cd.c \

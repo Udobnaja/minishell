@@ -1,16 +1,14 @@
 #ifndef EXECUTOR_INTERNAL_H
 # define EXECUTOR_INTERNAL_H
 
-# include <errno.h>
-# include <stdbool.h>
-
 # include "env.h"
 # include "errors.h"
 # include "executor.h"
 # include "heredoc.h"
 # include "libft.h"
 # include "utils.h"
-
+# include <errno.h>
+# include <stdbool.h>
 
 # ifndef FD_READ
 #  define FD_READ 0
@@ -26,6 +24,11 @@ t_exec_status	pwd(t_shell *sh, t_cmd *cmd);
 t_exec_status	echo(t_cmd *cmd);
 t_exec_status	cd(t_shell *sh, t_cmd *cmd);
 t_exec_result	builtin_exit(t_shell *sh, t_cmd *cmd);
+void			exec_sort_list(t_env_pair *pairs, size_t size);
+void			export_print_list(t_env_pair *pairs, size_t size);
+t_exec_status	exec_check_identifier(char *str);
+t_exec_status	export_no_value(t_env_store *store, char *av);
+t_exec_status	export_set_pairs(t_env_store *store, char *av, char *eqpos);
 
 t_exec_result	execute_external(t_shell *sh, t_pipeline *pipeline);
 t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd);
@@ -37,10 +40,13 @@ t_exec_result	exec_external_error_result(t_exec_status status,
 t_exec_result	exec_external_result(t_exec_status status, int exit_code);
 t_exec_result	exec_external_sys_error(t_exec_status status, const char *cmd,
 					int errno_val);
-void			exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p);
-void			exec_one_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipeline *pl);
+void			exec_child(const char *full, t_cmd *cmd, t_shell *sh,
+					t_pipe *p);
+void			exec_one_child(const char *full, t_cmd *cmd, t_shell *sh,
+					t_pipeline *pl);
 
 void			close_fd(int *fd);
-void			exec_child_process_clean(t_shell *sh, pid_t *pids,  t_pipeline *pl);
+void			exec_child_process_clean(t_shell *sh, pid_t *pids,
+					t_pipeline *pl);
 
 #endif
