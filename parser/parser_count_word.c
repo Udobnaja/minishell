@@ -1,11 +1,14 @@
 #include "parser_internal.h"
 
-static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh, size_t *consumed, size_t *total);
-static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh, size_t *total);
+static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh,
+							size_t *consumed, size_t *total);
+static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh,
+							size_t *total);
 
-t_parser_status	prs_count_piece_len(const t_piece	*piece, t_shell *sh, size_t *total)
+t_parser_status	prs_count_piece_len(const t_piece *piece, t_shell *sh,
+		size_t *total)
 {
-	t_parser_status status;
+	t_parser_status	status;
 
 	if (piece->quote == SGL)
 		*total += ft_strlen(piece->text);
@@ -18,10 +21,11 @@ t_parser_status	prs_count_piece_len(const t_piece	*piece, t_shell *sh, size_t *t
 	return (PARSE_OK);
 }
 
-t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh, size_t *total)
+t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh,
+		size_t *total)
 {
 	size_t			i;
-	t_parser_status status;
+	t_parser_status	status;
 
 	*total = 0;
 	i = 0;
@@ -35,10 +39,11 @@ t_parser_status	prs_count_word_len(const t_word *word, t_shell *sh, size_t *tota
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh, size_t *consumed, size_t *total)
+static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh,
+		size_t *consumed, size_t *total)
 {
 	char	*key;
-	char 	*expanded;
+	char	*expanded;
 
 	key = expn_dup_env_key(str);
 	if (!key)
@@ -56,10 +61,11 @@ static t_parser_status	prs_count_expanded_key_len(const char *str, t_shell *sh, 
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh, size_t *total)
+static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh,
+		size_t *total)
 {
-	size_t	j;
-	t_parser_status status;
+	size_t			j;
+	t_parser_status	status;
 
 	j = 0;
 	while (str[j])
@@ -74,7 +80,7 @@ static t_parser_status	prs_count_expandable_len(const char *str, t_shell *sh, si
 		{
 			j++;
 			*total += 1;
-		}	
+		}
 	}
 	return (PARSE_OK);
 }

@@ -3,7 +3,8 @@
 
 # include "libft.h"
 
-typedef enum e_lex_status {
+typedef enum e_lex_status
+{
 	LEX_OK = 0,
 	LEX_UNMATCHED_QUOTES,
 	LEX_ALLOC_ERROR,
@@ -47,16 +48,18 @@ typedef struct s_token
 	t_word			word;
 }	t_token;
 
-typedef struct s_token_node {
-    t_token        		*token;
-    struct s_token_node	*next;
-} t_token_node;
+typedef struct s_token_node
+{
+	t_token				*token;
+	struct s_token_node	*next;
+}	t_token_node;
 
-typedef struct s_token_list {
-    t_token_node  *head;
-    t_token_node  *tail;
-    size_t      size;
-} t_token_list;
+typedef struct s_token_list
+{
+	t_token_node	*head;
+	t_token_node	*tail;
+	size_t			size;
+}	t_token_list;
 
 typedef struct s_lex_result
 {
@@ -67,6 +70,6 @@ typedef struct s_lex_result
 t_token_list	*lex_create_token_list(void);
 void			lex_clear_token_list(t_token_list *list);
 void			lex_destroy_token_list(t_token_list **list);
-t_lex_result lex_tokenize(const char *str, t_token_list	*token_list);
+t_lex_result	lex_tokenize(const char *str, t_token_list	*token_list);
 
 #endif

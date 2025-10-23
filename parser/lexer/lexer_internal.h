@@ -17,8 +17,8 @@ typedef struct s_lex_count_result
 
 typedef struct s_lex_token_success
 {
-	t_token *token;
-	size_t  consumed;
+	t_token	*token;
+	size_t	consumed;
 }	t_lex_token_success;
 
 typedef struct s_lex_token_error
@@ -46,7 +46,7 @@ typedef union u_lex_parse_payload
 
 typedef struct s_lex_parse_result
 {
-	t_lex_status	status;
+	t_lex_status		status;
 	t_lex_parse_payload	payload;
 }	t_lex_parse_result;
 
