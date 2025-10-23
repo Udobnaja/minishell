@@ -1,7 +1,8 @@
 #include "parser_internal.h"
 
 static t_token_node			*prs_validate_pipe(t_token_node *pipe);
-static t_token_node			*prs_validate_tokens_order(t_token_list *token_list);
+static t_token_node			*prs_validate_tokens_order(
+								t_token_list *token_list);
 static t_pre_parse_result	prs_ok(void);
 static t_pre_parse_result	prs_err(t_parser_status e, t_token_node *node);
 
