@@ -1,14 +1,14 @@
 #include "shell.h"
 
-static void sh_sigint_sighandler(int signo)
+static void	sh_sigint_sighandler(int signo)
 {
-    g_last_signal = signo;
-    rl_done = 1;
+	g_last_signal = signo;
+	rl_done = 1;
 }
 
-static void sh_set_signal_handler(int sig, void (*handler)(int))
+static void	sh_set_signal_handler(int sig, void (*handler)(int))
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
@@ -16,7 +16,7 @@ static void sh_set_signal_handler(int sig, void (*handler)(int))
 	sigaction(sig, &sa, NULL);
 }
 
-void sh_shell_signals(void)
+void	sh_shell_signals(void)
 {
 	sh_set_signal_handler(SIGQUIT, SIG_IGN);
 	if (isatty(STDIN_FILENO))
@@ -26,20 +26,20 @@ void sh_shell_signals(void)
 	}
 }
 
-void sh_heredoc_signals(void)
+void	sh_heredoc_signals(void)
 {
-    sh_set_signal_handler(SIGQUIT, SIG_IGN);
+	sh_set_signal_handler(SIGQUIT, SIG_IGN);
 	sh_set_signal_handler(SIGINT, sh_sigint_sighandler);
 }
 
-void sh_childprocess_signals(void)
+void	sh_childprocess_signals(void)
 {
-	sh_set_signal_handler(SIGINT,  SIG_DFL); 
-    sh_set_signal_handler(SIGINT, SIG_DFL);
-    sh_set_signal_handler(SIGQUIT, SIG_DFL);
+	sh_set_signal_handler(SIGINT, SIG_DFL);
+	sh_set_signal_handler(SIGINT, SIG_DFL);
+	sh_set_signal_handler(SIGQUIT, SIG_DFL);
 }
 
-void sh_empty_signals(void)
+void	sh_empty_signals(void)
 {
 	sh_set_signal_handler(SIGQUIT, SIG_IGN);
 	sh_set_signal_handler(SIGINT, SIG_IGN);
