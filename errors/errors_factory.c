@@ -25,7 +25,8 @@ t_error	err_create(t_err_domain domain, int code, t_err_payload payload)
 
 static const char	*(*err_resolver(t_err_domain domain))(int c)
 {
-	static const char	*(*table[])(int) = {[ERR_NONE] = NULL,
+	static const char	*(*table[])(int) = {
+	[ERR_NONE] = NULL,
 	[ERR_ENV] = err_env_msg, [ERR_LEXER] = err_lexer_msg,
 	[ERR_PARSER] = err_parser_msg, [ERR_HEREDOC] = err_heredoc_msg,
 	[ERR_EXEC] = err_exec_msg};

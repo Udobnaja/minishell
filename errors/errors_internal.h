@@ -29,7 +29,7 @@ t_error				err_create(t_err_domain domain, int code,
 						t_err_payload payload);
 const char			*err_exec_msg(int code);
 int					err_has_payload(const t_error *error);
-void				err_format_msg(char *buf, size_t *pos, const char *format,
-						...);
+void				err_format_msg(char *buf, size_t *pos,
+						const char *format, ...);
 
 #endif
