@@ -49,10 +49,7 @@ int	sh_mktmpfd(const t_env_store *env, char *path, const char *prefix)
 			return (-1);
 		}
 		if (sh_build_tmp_path(path, tempdir, prefix, suff) != 0)
-		{
-			free(suff);
-			return (-1);
-		}
+			return (free(suff), -1);
 		free(suff);
 		fd = open(path, O_CREAT | O_EXCL | O_WRONLY | SH_O_CLOEXEC,
 				S_IRUSR | S_IWUSR);
