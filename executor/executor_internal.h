@@ -27,7 +27,7 @@ t_exec_status	echo(t_cmd *cmd);
 t_exec_status	cd(t_shell *sh, t_cmd *cmd);
 t_exec_result	builtin_exit(t_shell *sh, t_cmd *cmd);
 
-t_exec_result	execute_external(t_shell *sh, t_cmd *cmd);
+t_exec_result	execute_external(t_shell *sh, t_pipeline *pipeline);
 t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd);
 t_exec_result	execute_pipeline(t_shell *sh, t_pipeline *pl);
 t_exec_result	apply_redirections(t_cmd *cmd);
@@ -38,9 +38,9 @@ t_exec_result	exec_external_result(t_exec_status status, int exit_code);
 t_exec_result	exec_external_sys_error(t_exec_status status, const char *cmd,
 					int errno_val);
 void			exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p);
+void			exec_one_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipeline *pl);
 
 void			close_fd(int *fd);
 void			exec_child_process_clean(t_shell *sh, pid_t *pids,  t_pipeline *pl);
-void			exec_child_clean(t_shell *sh, t_pipe *p);
 
 #endif
