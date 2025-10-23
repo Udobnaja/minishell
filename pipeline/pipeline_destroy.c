@@ -1,6 +1,6 @@
 #include "pipeline_internal.h"
 
-static void pipeline_free_redirects(t_redirect *redirect);
+static void	pipeline_free_redirects(t_redirect *redirect);
 static void	pipeline_argv(char **argv);
 static void	pipeline_free_cmd(t_cmd *cmd);
 
@@ -9,7 +9,7 @@ void	pipeline_destroy(t_pipeline *pipeline)
 	size_t	i;
 
 	if (!pipeline || !pipeline->cmds)
-		return;
+		return ;
 	i = 0;
 	while (i < pipeline->count)
 	{
@@ -22,20 +22,20 @@ void	pipeline_destroy(t_pipeline *pipeline)
 	pipeline->count = 0;
 }
 
-static void pipeline_free_redirects(t_redirect *redirect)
+static void	pipeline_free_redirects(t_redirect *redirect)
 {
-	t_redirect *next;
+	t_redirect	*next;
 
 	while (redirect)
 	{
 		next = redirect->next;
 		if (redirect->type == REDIR_HEREDOC)
 		{
-            if (redirect->target.fd >= 0)
-                close(redirect->target.fd);
+			if (redirect->target.fd >= 0)
+				close(redirect->target.fd);
 		}
 		else if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT
-			|| redirect->type == REDIR_APPEND) && redirect->target.path)
+				|| redirect->type == REDIR_APPEND) && redirect->target.path)
 			free(redirect->target.path);
 		free(redirect);
 		redirect = next;
@@ -51,7 +51,7 @@ static void	pipeline_argv(char **argv)
 	{
 		free(argv[i]);
 		i++;
-	}	
+	}
 	free(argv);
 }
 
