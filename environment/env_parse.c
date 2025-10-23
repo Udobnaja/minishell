@@ -18,7 +18,8 @@ t_env_status	env_parse_row(const char *row, char **key, char **value)
 		if (!*key)
 			return (ENV_ALLOC_ERROR);
 		*value = ft_strdup(substr + 1);
-		if (!*value) {
+		if (!*value)
+		{
 			free(*key);
 			return (ENV_ALLOC_ERROR);
 		}

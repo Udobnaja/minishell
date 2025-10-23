@@ -1,11 +1,13 @@
 #include "minishell.h"
 
 static int				msh_heredoc_has_expansion(t_token_node *node);
-static char				*msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node);
+static char				*msh_heredoc_cpy_pieces(char *delimeter,
+							t_token_node *node);
 static char				*msh_heredoc_make_delimeter(t_token_node *node);
-static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result);
+static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node,
+							t_shell *sh, t_heredoc_result *result);
 
-t_heredoc_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
+t_heredoc_status	msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
 {
 	t_token_node		*cur;
 	t_heredoc_status	status;
@@ -27,23 +29,25 @@ t_heredoc_status msh_prepare_heredocs(t_token_list *token_list, t_shell *sh)
 			}
 		}
 		cur = cur->next;
-	}    
+	}
 	return (HEREDOC_OK);
 }
 
-static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell *sh, t_heredoc_result *result)
+static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node,
+		t_shell *sh, t_heredoc_result *result)
 {
-	const int			has_expansion = msh_heredoc_has_expansion(heredoc_node->next);
-	char				*delimeter;
-	t_err_payload		payload;
+	char			*delimeter;
+	t_err_payload	payload;
+	int				has_expansion;
 
+	has_expansion = msh_heredoc_has_expansion(heredoc_node->next);
 	delimeter = msh_heredoc_make_delimeter(heredoc_node->next);
 	payload = (t_err_payload){0};
 	if (!delimeter)
 	{
 		err_print(ERR_HEREDOC, HEREDOC_ALLOC_ERROR, payload);
 		return (HEREDOC_ALLOC_ERROR);
-	}	
+	}
 	*result = heredoc_write_to_tmpfile(sh, delimeter, has_expansion);
 	free(delimeter);
 	if (result->status != HEREDOC_OK)
@@ -57,7 +61,7 @@ static t_heredoc_status	msh_process_heredoc(t_token_node *heredoc_node, t_shell 
 	return (HEREDOC_OK);
 }
 
-static int msh_heredoc_has_expansion(t_token_node *node)
+static int	msh_heredoc_has_expansion(t_token_node *node)
 {
 	size_t	i;
 
@@ -71,7 +75,7 @@ static int msh_heredoc_has_expansion(t_token_node *node)
 	return (1);
 }
 
-static char *msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node)
+static char	*msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node)
 {
 	size_t	len;
 	size_t	counter;
@@ -91,7 +95,7 @@ static char *msh_heredoc_cpy_pieces(char *delimeter, t_token_node *node)
 	return (delimeter);
 }
 
-static char *msh_heredoc_make_delimeter(t_token_node *node)
+static char	*msh_heredoc_make_delimeter(t_token_node *node)
 {
 	size_t	i;
 	size_t	len;

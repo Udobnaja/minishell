@@ -2,8 +2,8 @@
 
 t_env_status	env_set(t_env_store *store, const char *key, const char *value)
 {
-	char *d_key;
-	char *d_value;
+	char	*d_key;
+	char	*d_value;
 
 	d_key = ft_strdup(key);
 	if (!d_key)
@@ -24,14 +24,14 @@ t_env_status	env_set(t_env_store *store, const char *key, const char *value)
 
 t_env_status	env_set_internal(t_env_store *store, char *key, char *value)
 {
-	t_env	        *node;
+	t_env	*node;
 
 	node = env_lookup(store, key);
 	if (node)
 	{
 		free(key);
 		if (!value)
-			return (ENV_OK);	
+			return (ENV_OK);
 		free(node->value);
 		node->value = value;
 		return (ENV_OK);
@@ -74,7 +74,7 @@ void	env_unset(t_env_store *store, const char *key)
 
 const char	*env_get_value(const t_env_store *store, const char *key)
 {
-	t_env	        *node;
+	t_env	*node;
 
 	node = env_lookup(store, key);
 	if (!node)
@@ -84,5 +84,5 @@ const char	*env_get_value(const t_env_store *store, const char *key)
 
 size_t	env_size(const t_env_store *store)
 {
-	return store->size;
+	return (store->size);
 }

@@ -30,42 +30,42 @@ void pipe_close(t_pipe *p)
     close_pair(p->prev);
 }
 
+
+t_exec_result exec_pipe_apply_stdio(t_pipe *p, int std_in, int std_out)
+{
+    t_exec_result result;
+    const char *cmd = "dup2";
+
+    if(std_in == -1)
+    {
+        pipe_close(p);
+        return (
+            exec_external_sys_error(EXEC_ERR_GEN, cmd, EBADF));
+    }
+    if(dup2(std_in, std_out) == -1)
+    {
+        result = exec_external_sys_error(EXEC_ERR_GEN, cmd, errno);
+        pipe_close(p);
+        return result;
+    }
+    return exec_external_result(EXEC_OK, SH_OK);
+}
+
 t_exec_result child_process(t_pipe *p, size_t i)
 {
-    const char *cmd = "dup2";
     t_exec_result result;
 
     if (i > 0)
     {
-        if(p->prev[FD_READ] == -1)
-        {
-            pipe_close(p);
-            return (
-                exec_external_sys_error(EXEC_ERR_DUP, cmd, 0)
-            );
-        }
-        if(dup2(p->prev[FD_READ], STDIN_FILENO) == -1)
-        {
-            result = exec_external_sys_error(EXEC_ERR_GEN, cmd, errno);
-            pipe_close(p);
-            return result;
-        }
+        result = exec_pipe_apply_stdio(p, p->prev[FD_READ], STDIN_FILENO);
+        if (result.status != EXEC_OK)
+            return (result);
     }
     if (i + 1 < p->n)
     {
-        if(p->next[FD_WRITE] == -1)
-        {
-            pipe_close(p);
-            return (
-                exec_external_sys_error(EXEC_ERR_DUP, cmd, 0)
-            );
-        }
-        if(dup2(p->next[FD_WRITE], STDOUT_FILENO) == -1)
-        {
-            result = exec_external_sys_error(EXEC_ERR_GEN, cmd, errno);
-            pipe_close(p);
-            return result;
-        }
+        result = exec_pipe_apply_stdio(p, p->next[FD_WRITE], STDOUT_FILENO);
+        if (result.status != EXEC_OK)
+            return (result);
     }
     pipe_close(p);
     return exec_external_result(EXEC_OK, SH_OK);
@@ -155,6 +155,22 @@ void exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,  t_pipeline *pl)
         exit(exit_code);
     }
 }
+void exec_cmd_path(t_pipe *p, t_cmd *cmd, char path[PATH_MAX])
+{
+    t_exec_result result;
+
+    if (cmd_path(p->sh, cmd->argv[0], path) == 0)
+    {
+        if (ft_strchr(cmd->argv[0], '/') == NULL)
+		    result = exec_external_error_result(
+					EXEC_CMD_NOT_FOUND, cmd->argv[0], 0);
+		else
+		    result = exec_external_error_result(
+					EXEC_NO_SUCH_FILE, cmd->argv[0], 0);
+        exec_child_process_clean(p->sh, p->pids, p->pl);       
+        exit(result.exit_code);
+    }
+}
 
 void run_child_process(t_pipe *p, size_t i)
 {
@@ -180,17 +196,7 @@ void run_child_process(t_pipe *p, size_t i)
     }
     exec_run_buildin(p->sh, cmd, p->pids, p->pl);
     path[0] = '\0';
-    if (cmd_path(p->sh, cmd->argv[0], path) == 0)
-    {
-        if (ft_strchr(cmd->argv[0], '/') == NULL)
-		    result = exec_external_error_result(
-					EXEC_CMD_NOT_FOUND, cmd->argv[0], 0);
-		else
-		    result = exec_external_error_result(
-					EXEC_NO_SUCH_FILE, cmd->argv[0], 0);
-        exec_child_process_clean(p->sh, p->pids, p->pl);       
-        exit(result.exit_code);
-    }
+    exec_cmd_path(p, cmd, path);
     exec_child(path, cmd, p->sh, p);
 }
 

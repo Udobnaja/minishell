@@ -1,22 +1,19 @@
 #include "minishell_internal.h"
 
-static int 				msh_process_word_token(const t_word *word,
-												t_shell *sh,
-												t_cmd *cmd,
-												t_parser_status *status);
-static int 				msh_process_pipe_token(t_cmd *cmd, t_parser_status *status);
+static int				msh_process_word_token(const t_word *word, t_shell *sh,
+							t_cmd *cmd, t_parser_status *status);
+static int				msh_process_pipe_token(t_cmd *cmd,
+							t_parser_status *status);
 static t_parser_status	msh_process_token(t_token_node *token_node,
-											t_shell *shell,
-											t_cmd *cmd,
-											size_t	*cur_heredoc);
-static t_parser_status msh_tokens_to_pipeline(t_token_list *token_list,
-												t_shell *shell,
-												 t_pipeline *pipeline);
+							t_shell *shell, t_cmd *cmd, size_t *cur_heredoc);
+static t_parser_status	msh_tokens_to_pipeline(t_token_list *token_list,
+							t_shell *shell, t_pipeline *pipeline);
 
-t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
+t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell,
+		t_pipeline *pipeline)
 {
 	t_parser_status	status;
-	size_t cmds_count;
+	size_t			cmds_count;
 
 	status = msh_pipeline_init(token_list, pipeline);
 	if (status != PARSE_OK)
@@ -31,7 +28,8 @@ t_parser_status	msh_pipeline(t_token_list *token_list, t_shell *shell, t_pipelin
 	return (status);
 }
 
-static t_parser_status msh_tokens_to_pipeline(t_token_list *token_list, t_shell *shell, t_pipeline *pipeline)
+static t_parser_status	msh_tokens_to_pipeline(t_token_list *token_list,
+		t_shell *shell, t_pipeline *pipeline)
 {
 	t_parser_status	status;
 	size_t			i;
@@ -50,14 +48,14 @@ static t_parser_status msh_tokens_to_pipeline(t_token_list *token_list, t_shell 
 			i++;
 		if (cur->token->type != T_WORD && cur->token->type != T_PIPE)
 			cur = cur->next->next;
-		else	
+		else
 			cur = cur->next;
 	}
 	return (PARSE_OK);
 }
 
-static int msh_process_word_token(const t_word *word,
-	t_shell *sh, t_cmd *cmd, t_parser_status *status)
+static int	msh_process_word_token(const t_word *word, t_shell *sh, t_cmd *cmd,
+		t_parser_status *status)
 {
 	*status = prs_word_to_argv(word, sh, cmd);
 	if (*status != PARSE_OK)
@@ -68,7 +66,7 @@ static int msh_process_word_token(const t_word *word,
 	return (1);
 }
 
-static int msh_process_pipe_token(t_cmd *cmd, t_parser_status *status)
+static int	msh_process_pipe_token(t_cmd *cmd, t_parser_status *status)
 {
 	*status = prs_finish_cmd(cmd);
 	if (*status != PARSE_OK)
@@ -79,13 +77,15 @@ static int msh_process_pipe_token(t_cmd *cmd, t_parser_status *status)
 	return (1);
 }
 
-static t_parser_status	msh_process_token(t_token_node *token_node, t_shell *shell, t_cmd *cmd, size_t	*cur_heredoc)
+static t_parser_status	msh_process_token(t_token_node *token_node,
+		t_shell *shell, t_cmd *cmd, size_t *cur_heredoc)
 {
 	t_parser_status	status;
 
 	if (token_node->token->type == T_WORD)
 	{
-		if (!msh_process_word_token(&token_node->token->word, shell, cmd, &status))
+		if (!msh_process_word_token(&token_node->token->word, shell, cmd,
+				&status))
 			return (status);
 	}
 	else if (token_node->token->type == T_PIPE)

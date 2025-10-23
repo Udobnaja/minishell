@@ -13,13 +13,14 @@ t_env	*env_create_node(char *key, char *value)
 	return (node);
 }
 
-void	env_push_node(t_env_store *store, t_env	*node)
+void	env_push_node(t_env_store *store, t_env *node)
 {
-	t_env *cur;
+	t_env	*cur;
 
 	if (!store->head)
 		store->head = node;
-	else {
+	else
+	{
 		cur = store->head;
 		while (cur->next)
 			cur = cur->next;
@@ -29,7 +30,7 @@ void	env_push_node(t_env_store *store, t_env	*node)
 
 t_env	*env_lookup(const t_env_store *store, const char *key)
 {
-	t_env *cur;
+	t_env	*cur;
 
 	cur = store->head;
 	while (cur)
@@ -38,10 +39,10 @@ t_env	*env_lookup(const t_env_store *store, const char *key)
 			return (cur);
 		cur = cur->next;
 	}
-    return (NULL);
+	return (NULL);
 }
 
-void	env_free_node(t_env	*node)
+void	env_free_node(t_env *node)
 {
 	free(node->key);
 	free(node->value);

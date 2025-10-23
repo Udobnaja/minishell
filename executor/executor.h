@@ -37,7 +37,6 @@ typedef enum e_exec_flow
 	FLOW_EXIT
 }	t_exec_flow;
 
-
 typedef struct s_pipe
 {
 	t_shell *sh;
