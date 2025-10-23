@@ -7,7 +7,7 @@
 # include "shell.h"
 
 # define IFS " \t\n"
-# define FIELD_SEP ((char)0x1F)
+# define FIELD_SEP 0x1F
 
 typedef struct s_ambiguous_state
 {
