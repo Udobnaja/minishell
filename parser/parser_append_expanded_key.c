@@ -38,9 +38,8 @@ t_parser_status	prs_append_expanded_key(const t_piece *piece, t_shell *sh,
 {
 	char		*key;
 	char		*expanded;
-	const char	*str;
+	const char	*str = piece->text + *consumed;
 
-	str = piece->text + *consumed;
 	key = expn_dup_env_key(str);
 	if (!key)
 		return (PARSE_ALLOC_ERROR);
