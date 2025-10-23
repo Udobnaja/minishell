@@ -7,7 +7,7 @@ typedef enum e_heredoc_status
 {
 	HEREDOC_OK = 0,
 	HEREDOC_ALLOC_ERROR,
-	HEREDOC_ABORTED, // TODO: not sure that it is a error
+	HEREDOC_ABORTED,
 	HEREDOC_EXCEED_LIMIT,
 	HEREDOC_CREATE_FAIL,
 	HEREDOC_WRITE_ERROR,
