@@ -3,10 +3,7 @@
 static t_parser_status	prs_split_word(const char *arg, t_cmd *cmd);
 static t_parser_status	prs_export_word(char *arg, t_cmd *cmd);
 
-t_parser_status prs_word_to_argv(
-	const t_word *word,
-	t_shell *sh, t_cmd *cmd
-)
+t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
 {
 	char			*arg;
 	t_parser_status	status;
@@ -16,7 +13,8 @@ t_parser_status prs_word_to_argv(
 	status = prs_join_word(word, sh, &arg);
 	if (status != PARSE_OK)
 		return (status);
-	is_export = (cmd->argv && cmd->argv[0] && ft_strcmp(cmd->argv[0], "export") == 0);
+	is_export = (cmd->argv && cmd->argv[0] && ft_strcmp(cmd->argv[0],
+				"export") == 0);
 	if (is_export && ft_strchr(arg, '=') != NULL)
 		return (prs_export_word(arg, cmd));
 	if (arg && ft_strchr(arg, FIELD_SEP))
@@ -32,7 +30,7 @@ t_parser_status prs_word_to_argv(
 
 static t_parser_status	prs_export_word(char *arg, t_cmd *cmd)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (arg[i])

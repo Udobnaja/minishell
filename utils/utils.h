@@ -1,10 +1,10 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# include <stddef.h> 
-# include <unistd.h>
 # include <limits.h>
+# include <stddef.h>
 # include <sys/stat.h>
+# include <unistd.h>
 
 # ifndef U_PATH_MAX
 #  ifndef PATH_MAX
@@ -24,6 +24,5 @@ int			u_file_exists(const char *path);
 int			u_file_isdir(const char *path);
 int			u_file_iswdir(const char *path);
 int			u_file_iswxdir(const char *path);
-
 
 #endif

@@ -16,10 +16,10 @@ int	u_file_isdir(const char *path)
 
 int	u_file_iswdir(const char *path)
 {
-    return (u_file_isdir(path) && access(path, W_OK) == 0);
+	return (u_file_isdir(path) && access(path, W_OK) == 0);
 }
 
 int	u_file_iswxdir(const char *path)
 {
-    return (u_file_isdir(path) && access(path, W_OK | X_OK) == 0);
+	return (u_file_isdir(path) && access(path, W_OK | X_OK) == 0);
 }

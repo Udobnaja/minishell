@@ -1,30 +1,18 @@
 #include "parser_internal.h"
 
-static t_parser_status	prs_is_expanded_ambiguous(
-	const char *expanded,
-	const char	*set,
-	t_ambiguous_state *amb_state
-);
+static t_parser_status	prs_is_expanded_ambiguous(const char *expanded,
+							const char *set, t_ambiguous_state *amb_state);
 
-static t_parser_status	prs_is_expandble_ambiguous(
-	const char *str, t_shell *sh,
-	t_ambiguous_state *amb_state,
-	size_t *consumed
-);
+static t_parser_status	prs_is_expandble_ambiguous(const char *str, t_shell *sh,
+							t_ambiguous_state *amb_state, size_t *consumed);
 
-static t_parser_status	prs_is_unquoted_ambiguous(
-    const char *str,
-    t_shell *sh,
-    t_ambiguous_state *amb_state
-);
+static t_parser_status	prs_is_unq_ambgs(const char *str, t_shell *sh,
+							t_ambiguous_state *amb_state);
 
-static t_parser_status prs_process_quoted_ambiguous(
-	const t_piece *piece,
-	t_shell *sh,
-	t_ambiguous_state *st
-);
+static t_parser_status	prs_process_q_ambgs(const t_piece *piece,
+							t_shell *sh, t_ambiguous_state *st);
 
-t_parser_status prs_is_word_ambiguous(const t_word *word, t_shell *sh)
+t_parser_status	prs_is_word_ambiguous(const t_word *word, t_shell *sh)
 {
 	size_t				i;
 	t_ambiguous_state	amb_state;
@@ -36,28 +24,24 @@ t_parser_status prs_is_word_ambiguous(const t_word *word, t_shell *sh)
 	{
 		if (word->pieces[i].quote != NONE)
 		{
-			status = prs_process_quoted_ambiguous(&word->pieces[i], sh, &amb_state);
+			status = prs_process_q_ambgs(&word->pieces[i], sh, &amb_state);
 			if (status != PARSE_OK)
 				return (status);
 			i++;
-			continue;
+			continue ;
 		}
-		status = prs_is_unquoted_ambiguous(word->pieces[i].text, sh, &amb_state);
+		status = prs_is_unq_ambgs(word->pieces[i].text, sh, &amb_state);
 		if (status != PARSE_OK)
 			return (status);
 		i++;
 	}
 	if (!amb_state.in_word)
 		return (PARSE_AMBIGUOUS_REDIRECT);
-
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_is_expanded_ambiguous(
-	const char *expanded,
-	const char	*set,
-	t_ambiguous_state *amb_state
-)
+static t_parser_status	prs_is_expanded_ambiguous(const char *expanded,
+		const char *set, t_ambiguous_state *amb_state)
 {
 	int		only_spaces;
 	size_t	len;
@@ -68,8 +52,10 @@ static t_parser_status	prs_is_expanded_ambiguous(
 	if (!only_spaces)
 	{
 		len = ft_strlen(expanded);
-		amb_state->leading_sp = ft_strchr(set, (unsigned char)expanded[0]) != NULL;
-		if (amb_state->in_word && (amb_state->leading_sp || amb_state->trailing_sp))
+		amb_state->leading_sp = ft_strchr(set,
+				(unsigned char)expanded[0]) != NULL;
+		if (amb_state->in_word && (amb_state->leading_sp
+				|| amb_state->trailing_sp))
 			return (PARSE_AMBIGUOUS_REDIRECT);
 		if (ft_strchr(set, expanded[len - 1]))
 			amb_state->trailing_sp = 1;
@@ -81,11 +67,8 @@ static t_parser_status	prs_is_expanded_ambiguous(
 	return (PARSE_OK);
 }
 
-static t_parser_status	prs_is_expandble_ambiguous(
-	const char *str, t_shell *sh,
-	t_ambiguous_state *amb_state,
-	size_t *consumed
-)
+static t_parser_status	prs_is_expandble_ambiguous(const char *str, t_shell *sh,
+		t_ambiguous_state *amb_state, size_t *consumed)
 {
 	char			*key;
 	char			*expanded;
@@ -93,7 +76,7 @@ static t_parser_status	prs_is_expandble_ambiguous(
 
 	key = expn_dup_env_key(str);
 	if (!key)
-		return (PARSE_ALLOC_ERROR);	
+		return (PARSE_ALLOC_ERROR);
 	expanded = expn_expand(key, sh->env_store, sh->last_status);
 	if (!expanded)
 	{
@@ -107,11 +90,12 @@ static t_parser_status	prs_is_expandble_ambiguous(
 	return (free(key), free(expanded), PARSE_OK);
 }
 
-static t_parser_status	prs_is_unquoted_ambiguous(const char *str, t_shell *sh, t_ambiguous_state *amb_state)
+static t_parser_status	prs_is_unq_ambgs(const char *str, t_shell *sh,
+		t_ambiguous_state *amb_state)
 {
 	size_t			j;
-	t_parser_status status;
-	
+	t_parser_status	status;
+
 	j = 0;
 	while (str[j])
 	{
@@ -121,7 +105,7 @@ static t_parser_status	prs_is_unquoted_ambiguous(const char *str, t_shell *sh, t
 			if (amb_state->trailing_sp)
 				return (PARSE_AMBIGUOUS_REDIRECT);
 			j++;
-		}		
+		}
 		if (str[j] == '$')
 		{
 			status = prs_is_expandble_ambiguous(str + j, sh, amb_state, &j);
@@ -132,15 +116,12 @@ static t_parser_status	prs_is_unquoted_ambiguous(const char *str, t_shell *sh, t
 	return (PARSE_OK);
 }
 
-static t_parser_status prs_process_quoted_ambiguous(
-	const t_piece *piece,
-	t_shell *sh,
-	t_ambiguous_state *st
-)
+static t_parser_status	prs_process_q_ambgs(const t_piece *piece,
+		t_shell *sh, t_ambiguous_state *st)
 {
 	size_t			piece_len;
 	t_parser_status	status;
-	
+
 	piece_len = 0;
 	status = prs_count_piece_len(piece, sh, &piece_len);
 	if (status != PARSE_OK)

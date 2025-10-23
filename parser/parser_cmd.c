@@ -1,10 +1,10 @@
 #include "parser_internal.h"
 
-static t_builtin prs_cmd_to_builtin(const char *name);
+static t_builtin	prs_cmd_to_builtin(const char *name);
 
-t_parser_status prs_finish_cmd(t_cmd *cmd)
+t_parser_status	prs_finish_cmd(t_cmd *cmd)
 {
-	char *default_name;
+	char	*default_name;
 
 	if (!cmd->argv)
 	{
@@ -17,11 +17,11 @@ t_parser_status prs_finish_cmd(t_cmd *cmd)
 	cmd->name = ft_strdup(cmd->argv[0]);
 	if (!cmd->name)
 		return (PARSE_ALLOC_ERROR);
-	cmd->builtin_kind = prs_cmd_to_builtin(cmd->name);	
+	cmd->builtin_kind = prs_cmd_to_builtin(cmd->name);
 	return (PARSE_OK);
 }
 
-static t_builtin prs_cmd_to_builtin(const char *name)
+static t_builtin	prs_cmd_to_builtin(const char *name)
 {
 	if (!ft_strcmp(name, "echo"))
 		return (BUILTIN_ECHO);

@@ -1,9 +1,9 @@
 #include "shell.h"
 
-int		sh_termios_apply(void)
+int	sh_termios_apply(void)
 {
-	struct termios t;
-	int ret;
+	struct termios	t;
+	int				ret;
 
 	ret = tcgetattr(STDIN_FILENO, &t);
 	if (ret == -1)
@@ -17,8 +17,8 @@ int		sh_termios_apply(void)
 
 void	sh_termios_restore(void)
 {
-	struct termios t;
-	int ret;
+	struct termios	t;
+	int				ret;
 
 	ret = tcgetattr(STDIN_FILENO, &t);
 	if (ret == -1)
