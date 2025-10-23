@@ -23,7 +23,7 @@ t_error	err_create(t_err_domain domain, int code, t_err_payload payload)
 	return (error);
 }
 
-static const char	*(*err_resolver(t_err_domain domain))(int)
+static const char	*(*err_resolver(t_err_domain domain))(int c)
 {
 	static const char	*(*table[])(int) = {[ERR_NONE] = NULL,
 	[ERR_ENV] = err_env_msg, [ERR_LEXER] = err_lexer_msg,
