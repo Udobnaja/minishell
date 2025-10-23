@@ -23,6 +23,11 @@ t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
 		free(arg);
 		return (status);
 	}
+	 if (arg == NULL || arg[0] == '\0')
+	{
+		free(arg);
+		return (PARSE_OK);
+	}
 	if (!pipeline_push_cmd_argv(cmd, arg))
 		return (PARSE_ALLOC_ERROR);
 	return (PARSE_OK);

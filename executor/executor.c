@@ -117,7 +117,6 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 	ft_bzero(&result, sizeof result);
 	if (pipeline->count <= 0)
 		return (result);
-	exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
 	if (pipeline->count == 1)
 	{
 		if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
@@ -125,14 +124,17 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 			sh_setup_rl_hook(SH_JOB_NONE);
 			result = execute_external(sh, pipeline);
 			sh_setup_rl_hook(SH_INTERACTIVE);
+			exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
 			return (result);
 		}
-		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT)
+		exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
+		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT && (isatty(STDIN_FILENO)))
 			ft_putendl_fd("exit", STDERR_FILENO);
 		return (exec_builtin_with_redirs(sh, pipeline->cmds[0]));
 	}
 	sh_setup_rl_hook(SH_JOB_NONE);
 	result = execute_pipeline(sh, pipeline);
 	sh_setup_rl_hook(SH_INTERACTIVE);
+	exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
 	return (result);
 }

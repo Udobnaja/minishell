@@ -16,7 +16,7 @@ const char	*err_exec_msg(int code)
 	[EXEC_NO_SUCH_FILE] = "%s: No such file or directory",
 	[EXEC_CMD_NOT_FOUND] = "%s: command not found",
 	[EXEC_PERMISSION_DENIED] = "%s: Permission denied",
-	[EXEC_IS_DIRECTORY] = "%s: Is a directory",
+	[EXEC_IS_DIRECTORY] = "%s: is a directory",
 	[EXEC_ERR_EXECUTION] = "Internal execution error"};
 	const int			size = sizeof(map) / sizeof(*map);
 
