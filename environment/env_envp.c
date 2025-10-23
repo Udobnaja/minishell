@@ -5,12 +5,11 @@ static size_t	env_count_entries(const t_env_store *store);
 
 char	**env_to_envp(const t_env_store *store)
 {
-	char 	**envp;
-	t_env 	*cur;
+	char	**envp;
+	t_env	*cur;
 	size_t	i;
 
-	envp = ft_calloc(
-		env_count_entries(store) + 1, sizeof(char *));
+	envp = ft_calloc(env_count_entries(store) + 1, sizeof(char *));
 	if (!envp)
 		return (NULL);
 	cur = store->head;
@@ -35,9 +34,9 @@ void	env_free_envp(char **envp)
 	size_t	i;
 
 	if (!envp)
-		return;
+		return ;
 	i = 0;
-	while(envp[i])
+	while (envp[i])
 	{
 		free(envp[i]);
 		i++;
@@ -63,15 +62,16 @@ static char	*env_str_from_node(const t_env *node)
 
 static size_t	env_count_entries(const t_env_store *store)
 {
-    size_t i;
-	t_env *cur;
+	size_t	i;
+	t_env	*cur;
 
 	i = 0;
-    cur = store->head;
-    while (cur) {
+	cur = store->head;
+	while (cur)
+	{
 		if (cur->value)
 			i++;
 		cur = cur->next;
 	}
-    return (i);
+	return (i);
 }
