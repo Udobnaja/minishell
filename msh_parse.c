@@ -1,6 +1,7 @@
 #include "minishell_internal.h"
 
-t_msh_parse_result	msh_parse(const char *str, t_shell *shell, t_pipeline *pipeline)
+t_msh_parse_result	msh_parse(const char *str, t_shell *shell,
+		t_pipeline *pipeline)
 {
 	t_token_list		*token_list;
 	t_msh_parse_result	status;
@@ -12,17 +13,17 @@ t_msh_parse_result	msh_parse(const char *str, t_shell *shell, t_pipeline *pipeli
 	{
 		lex_destroy_token_list(&token_list);
 		return (status);
-	}	
+	}
 	if (!msh_stage_preparse(token_list, &status))
 	{
 		lex_destroy_token_list(&token_list);
 		return (status);
-	}	
+	}
 	if (!msh_stage_heredoc(shell, token_list, &status))
 	{
 		lex_destroy_token_list(&token_list);
 		return (status);
-	}	
+	}
 	if (!msh_stage_pipeline(shell, pipeline, token_list, &status))
 		heredoc_store_clear(shell->heredoc_store);
 	lex_destroy_token_list(&token_list);

@@ -12,7 +12,7 @@ typedef enum e_env_status
 	ENV_ALLOC_ERROR
 }							t_env_status;
 
-typedef struct
+typedef struct s_env_pair
 {
 	char					*key;
 	char					*value;

@@ -1,13 +1,14 @@
 #include "minishell_internal.h"
 
 static const char		*msh_token_to_char(t_token_type type);
-static const char		*msh_err_token_label(t_token_node *invalid_node, size_t token_list_size);
+static const char		*msh_err_token_label(t_token_node *invalid_node,
+							size_t token_list_size);
 static t_parser_status	msh_preparse(t_token_list *token_list);
 
-
-int	msh_stage_preparse(t_token_list *token_list, t_msh_parse_result	*status)
+int	msh_stage_preparse(t_token_list *token_list, t_msh_parse_result *status)
 {
 	const t_parser_status	parser_status = msh_preparse(token_list);
+
 	if (parser_status != PARSE_OK)
 	{
 		status->domain = MPR_PARSE;
@@ -33,19 +34,20 @@ static t_parser_status	msh_preparse(t_token_list *token_list)
 	return (PARSE_OK);
 }
 
-static const char *msh_err_token_label(t_token_node *invalid_node, size_t token_list_size)
+static const char	*msh_err_token_label(t_token_node *invalid_node,
+		size_t token_list_size)
 {
-	t_token_type type;
+	t_token_type	type;
 
 	type = invalid_node->token->type;
 	if (type == T_PIPE && (token_list_size == 1 || invalid_node->next))
-		return (msh_token_to_char(type));		
+		return (msh_token_to_char(type));
 	if (!invalid_node->next)
-		return "newline";
+		return ("newline");
 	return (msh_token_to_char(invalid_node->next->token->type));
 }
 
-static const char *msh_token_to_char(t_token_type type)
+static const char	*msh_token_to_char(t_token_type type)
 {
 	if (type == T_PIPE)
 		return ("|");
@@ -59,4 +61,3 @@ static const char *msh_token_to_char(t_token_type type)
 		return ("<<");
 	return ("?");
 }
-

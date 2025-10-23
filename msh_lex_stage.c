@@ -2,9 +2,9 @@
 
 static t_lex_status	msh_lex(const char *str, t_token_list *token_list);
 
-int	msh_stage_init_tokens(t_token_list **token_list, t_msh_parse_result	*status)
+int	msh_stage_init_tokens(t_token_list **token_list, t_msh_parse_result *status)
 {
-    *token_list = ft_calloc(1, sizeof **token_list);
+	*token_list = ft_calloc(1, sizeof **token_list);
 	if (!*token_list)
 	{
 		status->domain = MPR_LEX;
@@ -12,12 +12,14 @@ int	msh_stage_init_tokens(t_token_list **token_list, t_msh_parse_result	*status)
 		err_print(ERR_LEXER, status->code.lex, (t_err_payload){0});
 		return (0);
 	}
-    return (1);
+	return (1);
 }
 
-int	msh_stage_tokenize(const char *str, t_token_list *token_list, t_msh_parse_result	*status)
+int	msh_stage_tokenize(const char *str, t_token_list *token_list,
+		t_msh_parse_result *status)
 {
 	const t_lex_status	tokenize_status = msh_lex(str, token_list);
+
 	if (tokenize_status != LEX_OK)
 	{
 		status->domain = MPR_LEX;
@@ -41,8 +43,8 @@ static t_lex_status	msh_lex(const char *str, t_token_list *token_list)
 		{
 			token[0] = result.invalid_char;
 			token[1] = '\0';
-			payload.token = token;	
-		}	
+			payload.token = token;
+		}
 		err_print(ERR_LEXER, result.status, payload);
 		return (result.status);
 	}

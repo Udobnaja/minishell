@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_heredoc_status msh_pre_heredocs(t_token_list *token_list)
+t_heredoc_status	msh_pre_heredocs(t_token_list *token_list)
 {
 	t_token_node	*cur;
 	size_t			h_count;
@@ -24,4 +24,3 @@ t_heredoc_status msh_pre_heredocs(t_token_list *token_list)
 	}
 	return (HEREDOC_OK);
 }
-
