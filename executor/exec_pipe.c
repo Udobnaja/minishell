@@ -71,14 +71,29 @@ t_exec_result child_process(t_pipe *p, size_t i)
     return exec_external_result(EXEC_OK, SH_OK);
 }
 
+static pid_t find_last_pid(const pid_t *pids, size_t n)
+{
+    size_t i;
+
+    i = n;
+    while (i > 0)
+    {
+        i--;
+        if (pids[i] > 0)
+            return (pids[i]);
+    }
+    return (0);
+}
+
 t_exec_result wait_all(pid_t *pids, size_t n)
 {
     size_t i;
-    int last;
+    int last_code;
     int st;
     pid_t  w_pid;
+    const pid_t last_pid = find_last_pid(pids, n);
 
-    last = 0;
+    last_code = 0;
     i = 0;
     while(i < n)
     {
@@ -94,11 +109,15 @@ t_exec_result wait_all(pid_t *pids, size_t n)
             }
             if (w_pid == -1)
                 return exec_external_sys_error(EXEC_ERR_GEN, "waitpid", errno);
-            last = sh_status_from_wait(st);
+            if (pids[i] == last_pid)
+            {
+                last_code = sh_status_from_wait(st);
+                sh_report_wait_signal(st);
+            }
         }
         i++;
     }
-    return exec_external_result(EXEC_OK, last);
+    return exec_external_result(EXEC_OK, last_code);
 }
 
 static void child_setup(t_pipe *p, size_t i)
