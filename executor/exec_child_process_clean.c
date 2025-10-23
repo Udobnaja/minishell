@@ -9,10 +9,3 @@ void	exec_child_process_clean(t_shell *sh, pid_t *pids,  t_pipeline *pl)
 	pipeline_destroy(pl);
 	free(pids);
 }
-void	exec_child_clean(t_shell *sh, t_pipe *p)
-{
-	if (p)
-		exec_child_process_clean(sh, p->pids, p->pl);
-	else
-		exec_child_process_clean(sh, NULL, NULL);
-}

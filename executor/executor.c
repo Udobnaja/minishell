@@ -128,7 +128,7 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 		if (pipeline->cmds[0]->builtin_kind == BUILTIN_NONE)
 		{
 			sh_setup_rl_hook(SH_JOB_NONE);
-			result = execute_external(sh, pipeline->cmds[0]);
+			result = execute_external(sh, pipeline);
 			sh_setup_rl_hook(SH_INTERACTIVE);
 		}
 		else

@@ -199,14 +199,35 @@ void exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p)
 	if (envp == NULL)
 	{
 		result = exec_external_error_result(EXEC_ALLOC_ERR, NULL, 0);
-		exec_child_clean(sh, p);
+		exec_child_process_clean(sh, p->pids, p->pl);
 		exit(result.exit_code);
 	}
 	execve(full, cmd->argv, envp);
 	{		
 		result = exec_external_error_result(EXEC_ERR_GEN, cmd->argv[0], errno);
 		env_free_envp(envp); 
-		exec_child_clean(sh, p);
+		exec_child_process_clean(sh, p->pids, p->pl);
+		exit(result.exit_code);
+	}
+}
+
+void exec_one_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipeline *pl)
+{
+	char			**envp;
+	t_exec_result	result;
+	
+	envp = env_to_envp(sh->env_store);
+	if (envp == NULL)
+	{
+		result = exec_external_error_result(EXEC_ALLOC_ERR, NULL, 0);
+		exec_child_process_clean(sh, NULL, pl);
+		exit(result.exit_code);
+	}
+	execve(full, cmd->argv, envp);
+	{		
+		result = exec_external_error_result(EXEC_ERR_GEN, cmd->argv[0], errno);
+		env_free_envp(envp); 
+		exec_child_process_clean(sh, NULL, pl);
 		exit(result.exit_code);
 	}
 }
@@ -247,16 +268,17 @@ t_exec_result external_path(t_shell *sh, const char *name, char full[PATH_MAX])
 	return exec_external_result(EXEC_OK, sh->last_status);
 }
 
-t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
+t_exec_result execute_external(t_shell *sh, t_pipeline *pl)
 {
 	char			full[PATH_MAX];
 	pid_t			pid;
 	t_exec_result	result;
+	t_cmd *cmd = pl->cmds[0];
 	
 	if(cmd->argv[0][0] == '\0')
 		return  exec_external_result(EXEC_OK, sh->last_status);
 	full[0] = '\0';
-	result = external_path(sh, cmd->argv[0],full);
+	result = external_path(sh, cmd->argv[0], full);
 	if(result.status != EXEC_OK)
 		return (result);
 	result = preliminary_check(full, cmd->argv[0]);
@@ -272,10 +294,10 @@ t_exec_result execute_external(t_shell *sh, t_cmd *cmd)
         result = apply_redirections(cmd);
         if(result.status != EXEC_OK)
 		{
-			exec_child_process_clean(sh, NULL, NULL);
+			exec_child_process_clean(sh, NULL, pl);
             exit(result.exit_code);
 		}
-		exec_child(full, cmd, sh, NULL);
+		exec_one_child(full, cmd, sh, pl);
 	}
     return wait_one(pid, cmd->argv[0]);
 }
