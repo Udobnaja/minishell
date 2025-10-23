@@ -1,14 +1,14 @@
 #ifndef HEREDOC_INTERNAL_H
 # define HEREDOC_INTERNAL_H
 
-# include "../expansion/expansion.h"
-# include "heredoc.h"
-# include "libft.h"
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <stdint.h>
 # include <stdio.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <sys/errno.h>
+# include "libft.h"
+# include "heredoc.h"
+# include "../expansion/expansion.h"
 
 # define HEREDOC_STORE_CAPACITY 16
 

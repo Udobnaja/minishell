@@ -1,16 +1,16 @@
 #ifndef SHELL_H
 # define SHELL_H
 
-# include "env.h"
-# include "libft.h"
-# include "utils.h"
 # include <fcntl.h>
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <sys/errno.h>
 # include <termios.h>
+# include "libft.h"
+# include "env.h"
+# include "utils.h"
 
 # define SH_TMPDIR_MAX 256
 # define SH_TMPPATH_MAX 512
