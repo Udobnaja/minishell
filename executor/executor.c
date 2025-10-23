@@ -79,21 +79,17 @@ t_exec_result	exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd)
 	fd[1] = -1;
 	fd[2] = -1;
 	if (save_descriptors(fd) < 0)
-	{
 		return (exec_external_error_result(EXEC_ERR_GEN, "dup", errno));
-	}
 	result = apply_redirections(cmd);
 	if (result.status != EXEC_OK)
 	{
-		restore_descriptors(fd); // TODO: look
+		restore_descriptors(fd);
 		close_descriptors(fd);
 		return (result);
 	}
 	result = execute_builtin(sh, cmd);
 	if (restore_descriptors(fd) < 0)
-	{
 		result = exec_external_error_result(EXEC_ERR_GEN, "dup2", errno);
-	}
 	close_descriptors(fd);
 	return (result);
 }
@@ -139,7 +135,7 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 		{
 			if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT)
 				ft_putendl_fd("exit", STDERR_FILENO);
-			result = execute_builtin(sh, pipeline->cmds[0]);
+			result = exec_builtin_with_redirs(sh, pipeline->cmds[0]);
 		}
 	}
 	return (result);
