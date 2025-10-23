@@ -228,8 +228,8 @@ static t_exec_result wait_one(pid_t pid, const char *cmd)
             continue;
         break;
     }
-    if (w_pid == -1)
-        return exec_external_sys_error(EXEC_ERR_GEN, (char *)cmd, errno);
+	if (w_pid == -1)
+		return exec_external_sys_error(EXEC_ERR_GEN, (char *)cmd, errno);
 	sh_report_wait_signal(status);
     return exec_external_result(EXEC_OK, sh_status_from_wait(status));
 }
