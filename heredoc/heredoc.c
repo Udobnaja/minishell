@@ -45,8 +45,8 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 	sh_setup_rl_hook(SH_HEREDOC);
 	while (1)
 	{
-		line = readline("> ");
-		if (!heredoc_read_prompt(line, &status, eof))
+		line = get_next_line(fileno(stdin));//readline("> ");
+		if (!heredoc_read_prompt(line, &status, eof));
 			break ;
 		status = heredoc_write_line(fd, line, has_expansion, sh);
 		free(line);

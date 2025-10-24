@@ -71,7 +71,7 @@ int main(int argc, char **argv, char **envp)
 		if (is_interactive)
 			line = readline(msh_get_prompt(sh_name));
 		else
-			line = readline(NULL);
+			line = get_next_line(fileno(stdin));//readline(NULL); //get_next_line(fileno(stdin)); // readline(NULL); // 
 		if (g_last_signal == SIGINT)
 		{
 			shell.last_status = sh_status_from_signal(SIGINT);
@@ -122,8 +122,8 @@ int main(int argc, char **argv, char **envp)
 			shell.last_status = msh_parse_result_to_exit_status(parse_result);
 		pipeline_destroy(&pipeline);
 		free(line);
-		if (!is_interactive)
-			break;
+		// if (!is_interactive)
+		// 	break;
 	}
 	msh_clean_and_exit(&shell, shell.last_status, is_interactive);
 }
