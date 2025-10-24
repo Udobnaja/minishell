@@ -267,6 +267,21 @@ t_exec_result external_path(t_shell *sh, const char *name, char full[PATH_MAX])
 	}
 	return exec_external_result(EXEC_OK, sh->last_status);
 }
+void process_child(t_shell *sh, t_pipeline *pl)
+{
+	char			full[PATH_MAX];
+	t_exec_result	result;
+	t_cmd *cmd = pl->cmds[0];
+
+	sh_setup_rl_hook(SH_CHILD);
+	result = apply_redirections(cmd);
+	if(result.status != EXEC_OK)
+	{
+		exec_child_process_clean(sh, NULL, pl);
+		exit(result.exit_code);
+	}
+	exec_one_child(full, cmd, sh, pl);
+}
 
 t_exec_result execute_external(t_shell *sh, t_pipeline *pl)
 {
@@ -289,15 +304,6 @@ t_exec_result execute_external(t_shell *sh, t_pipeline *pl)
 		return (exec_external_sys_error(
 					EXEC_ERR_GEN, "fork", errno));
 	if(pid == 0)
-	{
-		sh_setup_rl_hook(SH_CHILD);
-        result = apply_redirections(cmd);
-        if(result.status != EXEC_OK)
-		{
-			exec_child_process_clean(sh, NULL, pl);
-            exit(result.exit_code);
-		}
-		exec_one_child(full, cmd, sh, pl);
-	}
+		process_child(sh, pl);
     return wait_one(pid, cmd->argv[0]);
 }

@@ -84,6 +84,18 @@ static pid_t find_last_pid(const pid_t *pids, size_t n)
     }
     return (0);
 }
+pid_t process_pid(pid_t pid, int *st)
+{
+    pid_t w_pid;
+    while (1)
+    {
+        w_pid = waitpid(pid, st, 0);
+        if (w_pid == -1 && errno == EINTR)
+            continue; 
+        break;
+    }
+    return w_pid;
+}
 
 t_exec_result wait_all(pid_t *pids, size_t n)
 {
@@ -100,13 +112,7 @@ t_exec_result wait_all(pid_t *pids, size_t n)
         if(pids[i] > 0)
         {
             st = 0;
-            while (1)
-            {
-                w_pid = waitpid(pids[i], &st, 0);
-                if (w_pid == -1 && errno == EINTR)
-                    continue; 
-                break;
-            }
+            w_pid = process_pid(pids[i], &st);
             if (w_pid == -1)
                 return exec_external_sys_error(EXEC_ERR_GEN, "waitpid", errno);
             if (pids[i] == last_pid)
