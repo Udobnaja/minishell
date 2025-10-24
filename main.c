@@ -71,7 +71,7 @@ int main(int argc, char **argv, char **envp)
 		if (is_interactive)
 			line = readline(msh_get_prompt(sh_name));
 		else
-			line = get_next_line(fileno(stdin));//readline(NULL); //get_next_line(fileno(stdin)); // readline(NULL); // 
+			line = get_next_line(fileno(stdin)); // readline(NULL); // 
 		if (g_last_signal == SIGINT)
 		{
 			shell.last_status = sh_status_from_signal(SIGINT);

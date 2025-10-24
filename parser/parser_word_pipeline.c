@@ -3,12 +3,20 @@
 static t_parser_status	prs_split_word(const char *arg, t_cmd *cmd);
 static t_parser_status	prs_export_word(char *arg, t_cmd *cmd);
 
-static int prs_word_has_any_quotes(const t_word *w) {
-    if (!w || !w->pieces) return 0;
-    for (size_t i = 0; i < w->count; ++i)
-        if (w->pieces[i].quote != NONE)
+static int prs_word_has_any_quotes(const t_word *w)
+{
+	size_t i;
+
+    if (!w || !w->pieces)
+		return 0;
+	i = 0;
+	while (i < w->count)
+	{
+		if (w->pieces[i].quote != NONE)
             return 1;
-    return 0;
+		i++;
+	}
+	return (0);
 }
 
 t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
@@ -26,18 +34,13 @@ t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
 				"export") == 0);
 	if (is_export && ft_strchr(arg, '=') != NULL)
 		return (prs_export_word(arg, cmd));
-	if (had_quotes) {
-		if (!pipeline_push_cmd_argv(cmd, arg))
-			return (PARSE_ALLOC_ERROR);
-		return (PARSE_OK);
-	}
 	if (arg && ft_strchr(arg, FIELD_SEP))
 	{
 		status = prs_split_word(arg, cmd);
 		free(arg);
 		return (status);
 	}
-	if (arg == NULL || (arg[0] == '\0' && cmd->redirect_list == NULL))
+	if (arg == NULL || (arg[0] == '\0' && !had_quotes))
 	{
 		free(arg);
 		return (PARSE_OK);

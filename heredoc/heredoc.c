@@ -56,6 +56,10 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 			g_last_signal = 0;
 			break ;
 		}
+		size_t len = ft_strlen(line);
+        int had_nl = (len > 0 && line[len - 1] == '\n');
+        if (had_nl)
+            line[len - 1] = '\0'; 
 		if (ft_strcmp(line, eof) == 0)
 		{
 			free(line);
