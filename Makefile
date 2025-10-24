@@ -94,14 +94,22 @@ EXECUTOR_SRC := \
 	executor/builtins/env.c \
 	executor/builtins/unset.c \
 	executor/builtins/export.c \
+	executor/builtins/export_utils.c \
 	executor/builtins/pwd.c \
 	executor/builtins/echo.c \
 	executor/builtins/cd.c \
 	executor/builtins/exit.c \
 	executor/executor.c \
 	executor/external_cmd.c \
+	executor/external_check_path.c \
+	executor/external_errors.c \
 	executor/exec_pipe.c \
+	executor/pipe_close_fd.c \
+	executor/pipe_child_process.c \
+	executor/pipe_utils.c \
 	executor/exec_redirect.c \
+	executor/redirect_utils.c \
+	executor/executor_run_redir_for_built.c \
 	executor/exec_child_process_clean.c
 
 ERRORS_SRC := \
