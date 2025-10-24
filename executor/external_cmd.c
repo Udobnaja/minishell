@@ -275,6 +275,8 @@ t_exec_result execute_external(t_shell *sh, t_pipeline *pl)
 	t_exec_result	result;
 	t_cmd *cmd = pl->cmds[0];
 	
+	if(cmd->argv[0][0] == '\0' && cmd->redirect_list)
+		return (apply_redirs_temporarily(cmd));
 	if(cmd->argv[0][0] == '\0')
 		return  exec_external_result(EXEC_OK, sh->last_status);
 	full[0] = '\0';
