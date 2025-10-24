@@ -64,4 +64,10 @@ void			exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,
 void			exec_cmd_path(t_pipe *p, t_cmd *cmd, char path[PATH_MAX]);
 t_exec_result	dup2_end_close(int fd, int target, const char *name);
 
+t_exec_status	redir_status_from_errno(int err);
+int				save_descriptors(int fd[3]);
+int				restore_descriptors(int fd[3]);
+void			close_descriptors(int fd[3]);
+t_exec_result	exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd);
+
 #endif

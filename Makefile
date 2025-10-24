@@ -106,6 +106,8 @@ EXECUTOR_SRC := \
 	executor/pipe_utils_child_process.c \
 	executor/pipe_utils.c \
 	executor/exec_redirect.c \
+	executor/redirect_utils.c \
+	executor/executor_run_redir_for_built.c \
 	executor/exec_child_process_clean.c
 
 ERRORS_SRC := \
