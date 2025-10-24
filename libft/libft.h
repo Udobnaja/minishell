@@ -7,6 +7,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# include "get_next_line.h"
+
 # define BASE16L "0123456789abcdef"
 # define BASE16U "0123456789ABCDEF"
 # define BASE10 "0123456789"
