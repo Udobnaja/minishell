@@ -101,6 +101,8 @@ EXECUTOR_SRC := \
 	executor/builtins/exit.c \
 	executor/executor.c \
 	executor/external_cmd.c \
+	executor/external_check_path.c \
+	executor/external_errors.c \
 	executor/exec_pipe.c \
 	executor/pipe_close_fd.c \
 	executor/pipe_child_process.c \

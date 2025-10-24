@@ -70,4 +70,13 @@ int				restore_descriptors(int fd[3]);
 void			close_descriptors(int fd[3]);
 t_exec_result	exec_builtin_with_redirs(t_shell *sh, t_cmd *cmd);
 
+t_exec_result	external_path(t_shell *sh, const char *name,
+					char full[PATH_MAX]);
+t_exec_result	preliminary_check(const char *path, char *argv);
+int				cmd_path(t_shell *sh, const char *name, char out[PATH_MAX]);
+int				search_in_path(const char *path, const char *name,
+					char out[PATH_MAX]);
+int				check_candidate(const char *dir, size_t len, const char *name,
+					char out[PATH_MAX]);
+
 #endif

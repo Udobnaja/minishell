@@ -13,6 +13,7 @@ pid_t	process_pid(pid_t pid, int *st)
 	}
 	return (w_pid);
 }
+
 int	get_last_code(int st)
 {
 	int	last_code;
@@ -97,4 +98,3 @@ t_exec_result	execute_pipeline(t_shell *sh, t_pipeline *pl)
 		return (result);
 	return (w_result);
 }
-

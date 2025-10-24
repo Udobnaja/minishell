@@ -1,13 +1,12 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-#include <sys/wait.h>
-
 # include "pipeline.h"
 # include "shell.h"
+# include <sys/wait.h>
 
-#define X_NOTFOUND 127
-#define X_NOEXEC 126
+# define X_NOTFOUND 127
+# define X_NOEXEC 126
 
 typedef enum e_exec_status
 {
@@ -29,33 +28,33 @@ typedef enum e_exec_status
 	EXEC_ERR_PIPE,
 	EXEC_IS_DIRECTORY,
 	EXEC_ERR_EXECUTION
-}	t_exec_status;
+}					t_exec_status;
 
 typedef enum e_exec_flow
 {
 	FLOW_OK = 0,
 	FLOW_EXIT
-}	t_exec_flow;
+}					t_exec_flow;
 
 typedef struct s_pipe
 {
-	t_shell *sh;
-	t_pipeline *pl;
-	pid_t *pids;
-	size_t n;
-	int prev[2];
-	int next[2];
-}t_pipe;
+	t_shell			*sh;
+	t_pipeline		*pl;
+	pid_t			*pids;
+	size_t			n;
+	int				prev[2];
+	int				next[2];
+}					t_pipe;
 
-typedef struct s_exec_result 
+typedef struct s_exec_result
 {
 	t_exec_status	status;
 	int				errno_val;
 	int				exit_code;
 	t_exec_flow		flow;
-	
-}	t_exec_result;
 
-t_exec_result execute(t_shell *sh, t_pipeline *pipeline);
+}					t_exec_result;
+
+t_exec_result		execute(t_shell *sh, t_pipeline *pipeline);
 
 #endif
