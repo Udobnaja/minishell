@@ -48,5 +48,19 @@ void			exec_one_child(const char *full, t_cmd *cmd, t_shell *sh,
 void			close_fd(int *fd);
 void			exec_child_process_clean(t_shell *sh, pid_t *pids,
 					t_pipeline *pl);
+void			close_pair(int p[2]);
+void			pipe_parent_rotate(t_pipe *p);
+void			pipe_close(t_pipe *p);
+t_exec_result	exec_pipe_apply_stdio(t_pipe *p, int std_in, int std_out);
+t_exec_result	child_process(t_pipe *p, size_t i);
+void			child_setup(t_pipe *p, size_t i);
+void			run_child_process(t_pipe *p, size_t i);
+t_exec_result	exec_make_pipe(t_pipe *p);
+t_exec_result	exec_fork_child(t_pipe *p, size_t i);
+pid_t			find_last_pid(const pid_t *pids, size_t n);
+int				cmd_is_empty(const t_cmd *cmd);
+void			exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,
+					t_pipeline *pl);
+void			exec_cmd_path(t_pipe *p, t_cmd *cmd, char path[PATH_MAX]);
 
 #endif

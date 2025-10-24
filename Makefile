@@ -102,6 +102,9 @@ EXECUTOR_SRC := \
 	executor/executor.c \
 	executor/external_cmd.c \
 	executor/exec_pipe.c \
+	executor/pipe_utils_close_fd.c \
+	executor/pipe_utils_child_process.c \
+	executor/pipe_utils.c \
 	executor/exec_redirect.c \
 	executor/exec_child_process_clean.c
 
