@@ -62,5 +62,6 @@ int				cmd_is_empty(const t_cmd *cmd);
 void			exec_run_buildin(t_shell *sh, t_cmd *cmd, pid_t *pids,
 					t_pipeline *pl);
 void			exec_cmd_path(t_pipe *p, t_cmd *cmd, char path[PATH_MAX]);
+t_exec_result	dup2_end_close(int fd, int target, const char *name);
 
 #endif
