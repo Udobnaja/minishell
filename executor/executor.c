@@ -110,6 +110,29 @@ static void	exec_update_underscore(t_shell *sh, const t_cmd *cmd)
 		err_print(ERR_ENV, status, (t_err_payload){0});
 }
 
+t_exec_result apply_redirs_temporarily(t_cmd *cmd)
+{
+    int				fd[3];
+    t_exec_result	result;
+
+	fd[0] = -1;
+	fd[1] = -1;
+	fd[2] = -1;
+	if (save_descriptors(fd) < 0)
+		return (exec_external_error_result(EXEC_ERR_GEN, "dup", errno));
+    result = apply_redirections(cmd);
+	if (result.status != EXEC_OK)
+	{
+		restore_descriptors(fd);
+		close_descriptors(fd);
+		return (result);
+	}
+    if (restore_descriptors(fd) < 0)
+		result = exec_external_error_result(EXEC_ERR_GEN, "dup2", errno);
+	close_descriptors(fd);
+	return (result);
+}
+
 t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 {
 	t_exec_result result;
