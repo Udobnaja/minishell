@@ -3,11 +3,28 @@
 static t_parser_status	prs_split_word(const char *arg, t_cmd *cmd);
 static t_parser_status	prs_export_word(char *arg, t_cmd *cmd);
 
+static int prs_word_has_any_quotes(const t_word *w)
+{
+	size_t i;
+
+    if (!w || !w->pieces)
+		return 0;
+	i = 0;
+	while (i < w->count)
+	{
+		if (w->pieces[i].quote != NONE)
+            return 1;
+		i++;
+	}
+	return (0);
+}
+
 t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
 {
 	char			*arg;
 	t_parser_status	status;
 	int				is_export;
+	const int		had_quotes = prs_word_has_any_quotes(word);
 
 	arg = NULL;
 	status = prs_join_word(word, sh, &arg);
@@ -22,6 +39,11 @@ t_parser_status	prs_word_to_argv(const t_word *word, t_shell *sh, t_cmd *cmd)
 		status = prs_split_word(arg, cmd);
 		free(arg);
 		return (status);
+	}
+	if (arg == NULL || (arg[0] == '\0' && !had_quotes))
+	{
+		free(arg);
+		return (PARSE_OK);
 	}
 	if (!pipeline_push_cmd_argv(cmd, arg))
 		return (PARSE_ALLOC_ERROR);

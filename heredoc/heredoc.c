@@ -45,7 +45,7 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 	sh_setup_rl_hook(SH_HEREDOC);
 	while (1)
 	{
-		line = readline("> ");
+		line = get_next_line(fileno(stdin));//readline("> ");
 		if (!line)
 			break ;
 		if (g_last_signal == SIGINT)
@@ -56,6 +56,10 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 			g_last_signal = 0;
 			break ;
 		}
+		size_t len = ft_strlen(line);
+        int had_nl = (len > 0 && line[len - 1] == '\n');
+        if (had_nl)
+            line[len - 1] = '\0'; 
 		if (ft_strcmp(line, eof) == 0)
 		{
 			free(line);

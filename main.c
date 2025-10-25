@@ -34,9 +34,10 @@ int msh_has_only_spaces(char *str)
 	return (1);
 }
 
-static void msh_clean_and_exit(t_shell *shell,int exit_status)
+static void msh_clean_and_exit(t_shell *shell, int exit_status, int is_interactive)
 {
-	sh_termios_restore();
+	if (is_interactive)
+		sh_termios_restore();
 	msh_cleanup(shell);
 	exit(exit_status);
 }
@@ -57,31 +58,46 @@ int main(int argc, char **argv, char **envp)
 	char *line;
 	t_msh_parse_result parse_result;
 	t_exec_result exec_result;
+	int is_interactive = isatty(STDIN_FILENO);
 
-	sh_termios_apply();
+	if (is_interactive)
+		sh_termios_apply();
+	else
+		rl_outstream = stdin;
 	rl_catch_signals = 0;
 	sh_setup_rl_hook(SH_INTERACTIVE);
 	while(1)
 	{
-		line = readline(msh_get_prompt(sh_name));
+		if (is_interactive)
+			line = readline(msh_get_prompt(sh_name));
+		else
+			line = get_next_line(fileno(stdin)); // readline(NULL); // 
 		if (g_last_signal == SIGINT)
 		{
 			shell.last_status = sh_status_from_signal(SIGINT);
 			g_last_signal = 0;
 			free(line);
-			continue;
+			if (is_interactive)
+				continue;
+			else 
+				break;
 		}
 		if (!line)
 		{
-			write(STDOUT_FILENO, "exit\n", 5);
+			if (is_interactive)
+				write(STDOUT_FILENO, "exit\n", 5);
 			break;
 		}
 		if (*line == '\0')
 		{
 			free(line);
-			continue;
+			if (is_interactive)
+				continue;
+			else 
+				break;
 		}
-		add_history(line);
+		if (is_interactive)
+			add_history(line);
 		if (msh_has_only_spaces(line))
 		{
 			free(line);
@@ -99,13 +115,15 @@ int main(int argc, char **argv, char **envp)
 			{
 				free(line);
 				pipeline_destroy(&pipeline);
-				msh_clean_and_exit(&shell, shell.last_status);
+				msh_clean_and_exit(&shell, shell.last_status, is_interactive);
 			}
 		}
 		else 
 			shell.last_status = msh_parse_result_to_exit_status(parse_result);
 		pipeline_destroy(&pipeline);
 		free(line);
+		// if (!is_interactive)
+		// 	break;
 	}
-	msh_clean_and_exit(&shell, shell.last_status);
+	msh_clean_and_exit(&shell, shell.last_status, is_interactive);
 }
