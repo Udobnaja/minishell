@@ -97,7 +97,7 @@ t_exec_result	execute_external(t_shell *sh, t_pipeline *pl)
 	
 	if(cmd->argv[0][0] == '\0' && cmd->redirect_list)
 		return (apply_redirs_temporarily(cmd));
-	if(cmd->argv[0][0] == '\0')
+	if(cmd->argv[0][0] == '\0' && !cmd->name)
 		return  exec_external_result(EXEC_OK, sh->last_status);
 	full[0] = '\0';
 	result = external_path(sh, cmd->argv[0], full);
