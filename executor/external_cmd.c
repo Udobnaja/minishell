@@ -68,6 +68,21 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
 	errno = ENOENT;
 	return 0;
 }
+
+static int exec_check_in_curr_dir(const char *name, char out[PATH_MAX], const char *path)
+{
+	struct stat st;
+
+	if(check_candidate(".", 1, name, out))
+		return 1;
+	if (path == NULL)
+	{
+		if (stat(out, &st) == 0)
+			return (1);
+	}
+	errno = ENOENT;
+	return 0;
+}
 /* 
 The function searches for the name command and writes 
 the full path to out. Decides where to search (in PATH or in a given path)
@@ -77,6 +92,7 @@ If the file is found, it returns 1.
 int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 {
 	const char *path_env;
+
 	if (name == NULL || out == NULL)
 		return 0;
 	if(ft_strchr(name, '/') != NULL)
@@ -86,14 +102,10 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 	}
 	path_env = env_get_value(sh->env_store, "PATH");
 	if(path_env == NULL || path_env[0] == '\0' )
-	{
-		if(check_candidate(".", 1, name, out))
-			return 1;
-		errno = ENOENT;
-		return 0;
-	}
+		return (exec_check_in_curr_dir(name, out, path_env));
 	if(search_in_path(path_env, name, out) != 0)
 		return 1;
+	errno = ENOENT;
 	return 0;
 }
 
