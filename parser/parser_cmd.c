@@ -13,6 +13,8 @@ t_parser_status	prs_finish_cmd(t_cmd *cmd)
 			return (PARSE_ALLOC_ERROR);
 		if (!pipeline_push_cmd_argv(cmd, default_name))
 			return (PARSE_ALLOC_ERROR);
+		cmd->builtin_kind = BUILTIN_NONE;
+		return (PARSE_OK);
 	}
 	cmd->name = ft_strdup(cmd->argv[0]);
 	if (!cmd->name)
