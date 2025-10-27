@@ -44,29 +44,6 @@ t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd)
 	return (exec_builtin_result(status));
 }
 
-t_exec_result apply_redirs_arily(t_cmd *cmd)
-{
-    int				fd[3];
-    t_exec_result	result;
-
-	fd[0] = -1;
-	fd[1] = -1;
-	fd[2] = -1;
-	if (save_descriptors(fd) < 0)
-		return (exec_external_error_result(EXEC_ERR_GEN, "dup", errno));
-    result = apply_redirections(cmd);
-	if (result.status != EXEC_OK)
-	{
-		restore_descriptors(fd);
-		close_descriptors(fd);
-		return (result);
-	}
-    if (restore_descriptors(fd) < 0)
-		result = exec_external_error_result(EXEC_ERR_GEN, "dup2", errno);
-	close_descriptors(fd);
-	return (result);
-}
-
 static void	exec_update_underscore(t_shell *sh, const t_cmd *cmd)
 {
 	const char		*val = NULL;
