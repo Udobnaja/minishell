@@ -56,7 +56,8 @@ HEREDOC_SRC := \
 	heredoc/heredoc.c \
 	heredoc/heredoc_write.c \
 	heredoc/heredoc_write_line.c \
-	heredoc/heredoc_store.c
+	heredoc/heredoc_store.c \
+	heredoc/heredoc_prompt.c
 
 PIPELINE_SRC := \
 	pipeline/pipeline_destroy.c \

@@ -15,5 +15,6 @@
 t_heredoc_status	heredoc_write_line(int fd, const char *document,
 						int has_expansion, t_shell *sh);
 int					heredoc_write(int fd, const char *buf, size_t len);
+int					heredoc_read_prompt(char *line, t_heredoc_status *status, char *eof);
 
 #endif
