@@ -32,6 +32,8 @@ static int check_candidate(const char *dir, size_t len, const char *name, char o
 		out[len + 1] = '\0';
 		ft_strlcat(out, name, PATH_MAX);
 	}
+	if (u_file_isdir(out))
+		return (0); 
 	if(access(out, X_OK) == 0)
 		return 1;
 	return 0;
@@ -68,6 +70,10 @@ static int search_in_path(const char *path, const char *name, char out[PATH_MAX]
 	errno = ENOENT;
 	return 0;
 }
+
+static int exec_is_dot_or_dotdot(const char *s) {
+    return (s && (ft_strcmp(s, ".") == 0 || ft_strcmp(s, "..") == 0));
+}
 /* 
 The function searches for the name command and writes 
 the full path to out. Decides where to search (in PATH or in a given path)
@@ -84,6 +90,10 @@ int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
 		ft_strlcpy(out, name, PATH_MAX);
 		return 1;
 	}
+	 if (exec_is_dot_or_dotdot(name)) {
+        errno = ENOENT;
+        return (0);
+    }
 	path_env = env_get_value(sh->env_store, "PATH");
 	if(path_env == NULL || path_env[0] == '\0' )
 	{
