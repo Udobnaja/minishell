@@ -135,6 +135,9 @@ SRC := \
 	msh_lex_stage.c \
 	msh_heredoc_stage.c \
 	msh_cleanup.c \
+	msh_repl_utils.c \
+	msh_interactive.c \
+	msh_noninteractive.c \
 	$(SH_SRC) \
 	$(UTILS_SRC) \
 	$(PIPELINE_SRC) \
