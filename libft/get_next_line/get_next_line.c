@@ -3,96 +3,105 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alavrukh <alavrukh@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/23 14:45:22 by alavrukh          #+#    #+#             */
-/*   Updated: 2025/08/12 12:20:38 by alavrukh         ###   ########.fr       */
+/*   Created: 2025/05/01 16:54:12 by audobnai          #+#    #+#             */
+/*   Updated: 2025/05/03 18:18:12 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "get_next_line.h"
 
-static char	*g_remainder;
-
-char	*fill_line(int fd, char *remainder, char *buffer)
+static void	ft_strcpy(char *dst, const char *str, size_t n)
 {
-	ssize_t	read_bytes;
-	char	*temp;
+	size_t	i;
 
-	read_bytes = 1;
-	while (read_bytes > 0)
+	i = 0;
+	while (str[i] && (n == 0 || i < n))
 	{
-		read_bytes = read(fd, buffer, BUFFER_SIZE);
-		if (read_bytes <= 0)
-			break ;
-		buffer[read_bytes] = '\0';
-		if (!remainder)
-			remainder = ft_strdup("");
-		temp = remainder;
-		remainder = ft_strjoin(temp, buffer);
-		free (temp);
-		temp = NULL;
-		if (ft_strchr(buffer, '\n'))
-			break ;
+		dst[i] = str[i];
+		i++;
 	}
-	if (read_bytes < 0)
-	{
-		free(remainder);
-		return (NULL);
-	}
-	return (remainder);
+	dst[i] = '\0';
 }
 
-char	*save_line(char *entire_line)
+static char	*ft_strdup(const char *s)
 {
-	char	*newline;
-	char	*after_newline;
+	char	*str;
+	size_t	len;
 
-	newline = ft_strchr(entire_line, '\n');
-	if (newline)
+	len = ft_strlen(s);
+	str = malloc((len + 1) * sizeof(char));
+	if (!str)
+		return (NULL);
+	ft_strcpy(str, s, 0);
+	return (str);
+}
+
+static char	*ft_strjoin(const char *s1, const char *s2, size_t s2_n)
+{
+	char	*alloc_memory;
+	size_t	s1_len;
+	size_t	s2_len;
+	size_t	alloc_size;
+
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	alloc_size = s1_len + s2_len + 1;
+	alloc_memory = malloc(alloc_size * sizeof(char));
+	if (!alloc_memory)
+		return (NULL);
+	ft_strcpy(alloc_memory, s1, 0);
+	ft_strcpy(alloc_memory + s1_len, s2, s2_n);
+	return (alloc_memory);
+}
+
+static char	*ft_merge_line_buf(char *line, char *buf, size_t n)
+{
+	char	*new_line;
+
+	if (!line)
 	{
-		after_newline = ft_strdup(newline + 1);
-		if (!after_newline || *after_newline == '\0')
-		{
-			free(after_newline);
-			after_newline = NULL;
+		line = ft_strdup("");
+		if (!line)
 			return (NULL);
-		}
-		*(newline + 1) = '\0';
-		return (after_newline);
 	}
-	return (NULL);
+	new_line = ft_strjoin(line, buf, n);
+	if (!new_line)
+	{
+		free(line);
+		return (NULL);
+	}
+	ft_strcpy(buf, buf + n, 0);
+	free(line);
+	return (new_line);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*buffer;
-	char		*result;
+	static char	buf[BUFFER_SIZE + 1];
+	char		*line;
+	ssize_t		i;
+	ssize_t		buf_size;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (NULL);
-	result = NULL;
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
+	line = NULL;
+	buf_size = ft_strlen(buf);
+	if (!buf_size)
+		buf_size = read(fd, buf, BUFFER_SIZE);
+	while (buf_size)
 	{
-		free(g_remainder);
-		return (NULL);
+		if (buf_size < 0)
+			return (NULL);
+		i = 0;
+		buf[buf_size] = '\0';
+		while (i < buf_size && buf[i] != '\n')
+			i++;
+		if (buf[i] == '\n')
+			return (ft_merge_line_buf(line, buf, i + 1));
+		line = ft_merge_line_buf(line, buf, i);
+		if (!line)
+			return (NULL);
+		buf_size = read(fd, buf, BUFFER_SIZE);
 	}
-	g_remainder = fill_line (fd, g_remainder, buffer);
-	free (buffer);
-	buffer = NULL;
-	if (!g_remainder)
-		return (NULL);
-	result = g_remainder;
-	g_remainder = save_line(result);
-	return (result);
-}
-
-void	clean_remainder(void)
-{
-	if (g_remainder)
-	{
-		free(g_remainder);
-		g_remainder = NULL;
-	}
+	return (line);
 }
