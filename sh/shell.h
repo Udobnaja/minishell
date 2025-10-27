@@ -8,8 +8,9 @@
 # include <readline/readline.h>
 # include <sys/errno.h>
 # include <termios.h>
-# include "libft.h"
+
 # include "env.h"
+# include "libft.h"
 # include "utils.h"
 
 # define SH_TMPDIR_MAX 256
