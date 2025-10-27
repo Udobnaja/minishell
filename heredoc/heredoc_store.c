@@ -7,7 +7,7 @@ t_heredoc_store	*heredoc_store_create(void)
 {
 	t_heredoc_store	*s;
 
-	s = ft_calloc (1, sizeof * s);
+	s = ft_calloc(1, sizeof(*s));
 	return (s);
 }
 

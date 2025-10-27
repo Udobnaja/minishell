@@ -2,11 +2,12 @@
 
 int	heredoc_read_prompt(char *line, t_heredoc_status *status, char *eof)
 {
+	size_t	str_len;
+
 	if (!line)
 		return (0);
-	// JUST FOR TEST
-	size_t str_len = ft_strlen(line);
-	if (line[str_len - 1] == '\n')
+	str_len = ft_strlen(line);
+	if (line[str_len - 1] == '\n' && isatty(STDIN_FILENO))
 		line[str_len - 1] = '\0';
 	if (g_last_signal == SIGINT)
 	{
