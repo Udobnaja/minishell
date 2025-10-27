@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc_store.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:59:24 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:59:25 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "heredoc_internal.h"
 
 static void		heredoc_cpy(t_heredoc_entry *entries,
@@ -7,7 +19,7 @@ t_heredoc_store	*heredoc_store_create(void)
 {
 	t_heredoc_store	*s;
 
-	s = ft_calloc (1, sizeof * s);
+	s = ft_calloc(1, sizeof(*s));
 	return (s);
 }
 

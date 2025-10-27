@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sh_signals.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 22:23:16 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 22:23:17 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "shell.h"
 
 void	sh_shell_signals(void)
@@ -5,9 +17,9 @@ void	sh_shell_signals(void)
 	sh_set_signal_handler(SIGQUIT, SIG_IGN);
 	sh_set_signal_handler(SIGINT, sh_sigint_sighandler);
 	if (isatty(STDIN_FILENO))
-        sh_set_signal_handler(SIGTERM, SIG_IGN);
-    else
-        sh_set_signal_handler(SIGTERM, SIG_DFL);
+		sh_set_signal_handler(SIGTERM, SIG_IGN);
+	else
+		sh_set_signal_handler(SIGTERM, SIG_DFL);
 }
 
 void	sh_heredoc_signals(void)

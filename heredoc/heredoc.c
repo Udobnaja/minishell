@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:59:32 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:59:33 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "heredoc_internal.h"
 
 static t_heredoc_result	heredoc_ok(int fd);
@@ -45,7 +57,7 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 	sh_setup_rl_hook(SH_HEREDOC);
 	while (1)
 	{
-		line = get_next_line(fileno(stdin));// readline("> ");
+		line = readline("> ");
 		if (!heredoc_read_prompt(line, &status, eof))
 			break ;
 		status = heredoc_write_line(fd, line, has_expansion, sh);

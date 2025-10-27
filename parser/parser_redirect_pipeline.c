@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_redirect_pipeline.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:50:42 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:50:43 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 
 static t_redirect_type	prs_map_redirect_type(t_token_type type);
@@ -30,7 +42,7 @@ static t_parser_status	prs_smpl_redirect_to_pipe(const t_token_type type,
 	status = prs_join_word(word, sh, &arg);
 	if (status != PARSE_OK)
 		return (status);
-	node = ft_calloc(1, sizeof * node);
+	node = ft_calloc(1, sizeof(*node));
 	if (!node)
 	{
 		free(arg);
@@ -50,7 +62,7 @@ static t_parser_status	prs_heredoc_redirect_to_pipe(t_cmd *cmd, t_shell *sh,
 
 	if (*cur_heredoc >= sh->heredoc_store->count)
 		return (PARSE_HEREDOC_INNER_ERROR);
-	node = ft_calloc(1, sizeof * node);
+	node = ft_calloc(1, sizeof(*node));
 	if (!node)
 		return (PARSE_ALLOC_ERROR);
 	node->type = REDIR_HEREDOC;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   shell.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 22:23:29 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 22:23:30 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SHELL_H
 # define SHELL_H
 
@@ -8,8 +20,9 @@
 # include <readline/readline.h>
 # include <sys/errno.h>
 # include <termios.h>
-# include "libft.h"
+
 # include "env.h"
+# include "libft.h"
 # include "utils.h"
 
 # define SH_TMPDIR_MAX 256

@@ -1,5 +1,16 @@
-#include "minishell_internal.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_repl_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:45:06 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:45:07 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "minishell_internal.h"
 
 const char	*msh_get_prompt(const char *name)
 {

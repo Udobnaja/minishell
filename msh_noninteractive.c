@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_noninteractive.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:44:44 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:44:45 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell_internal.h"
 
 void	msh_run_noninteractive(t_shell *sh)
@@ -6,7 +18,7 @@ void	msh_run_noninteractive(t_shell *sh)
 
 	while (1)
 	{
-		line = get_next_line(fileno(stdin));
+		line = readline(NULL);
 		if (!line)
 			break ;
 		if (msh_signal_check(line, sh))
@@ -25,4 +37,3 @@ void	msh_run_noninteractive(t_shell *sh)
 	}
 	msh_clean_and_exit(sh, sh->last_status, 0);
 }
-

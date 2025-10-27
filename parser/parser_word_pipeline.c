@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_word_pipeline.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:50:48 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:50:49 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 
 static t_parser_status	prs_split_word(const char *arg, t_cmd *cmd);
@@ -74,17 +86,17 @@ static t_parser_status	prs_split_word(const char *arg, t_cmd *cmd)
 	return (PARSE_OK);
 }
 
-static int prs_word_has_any_quotes(const t_word *w)
+static int	prs_word_has_any_quotes(const t_word *w)
 {
-	size_t i;
+	size_t	i;
 
-    if (!w || !w->pieces)
-		return 0;
+	if (!w || !w->pieces)
+		return (0);
 	i = 0;
 	while (i < w->count)
 	{
 		if (w->pieces[i].quote != NONE)
-            return 1;
+			return (1);
 		i++;
 	}
 	return (0);

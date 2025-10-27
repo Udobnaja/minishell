@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   msh_interactive.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:44:39 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:44:40 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell_internal.h"
 
-static int msh_interactive_space_check(char *line);
+static int	msh_interactive_space_check(char *line);
 
 void	msh_run_interactive(const char *sh_name, t_shell *sh)
 {
@@ -29,7 +41,7 @@ void	msh_run_interactive(const char *sh_name, t_shell *sh)
 	msh_clean_and_exit(sh, sh->last_status, 1);
 }
 
-static int msh_interactive_space_check(char *line)
+static int	msh_interactive_space_check(char *line)
 {
 	if (msh_has_only_spaces(line))
 	{
