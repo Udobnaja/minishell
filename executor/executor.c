@@ -96,18 +96,18 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 		{
 			sh_setup_rl_hook(SH_JOB_NONE);
 			result = execute_external(sh, pipeline);
-			sh_setup_rl_hook(SH_INTERACTIVE);
+			sh_setup_rl_hook(SH_JOB_RW);
 			exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
 			return (result);
 		}
 		exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
-		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT)
-			ft_putendl_fd("exit", STDERR_FILENO);
+		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT && (isatty(STDIN_FILENO)))
+			write(STDERR_FILENO, "exit", 4);
 		return (exec_builtin_with_redirs(sh, pipeline->cmds[0]));
 	}
 	env_set(sh->env_store, "_", "");
 	sh_setup_rl_hook(SH_JOB_NONE);
 	result = execute_pipeline(sh, pipeline);
-	sh_setup_rl_hook(SH_INTERACTIVE);
+	sh_setup_rl_hook(SH_JOB_RW);
 	return (result);
 }

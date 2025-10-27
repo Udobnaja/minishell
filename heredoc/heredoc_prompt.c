@@ -4,6 +4,10 @@ int	heredoc_read_prompt(char *line, t_heredoc_status *status, char *eof)
 {
 	if (!line)
 		return (0);
+	// JUST FOR TEST
+	size_t str_len = ft_strlen(line);
+	if (line[str_len - 1] == '\n')
+		line[str_len - 1] = '\0';
 	if (g_last_signal == SIGINT)
 	{
 		if (line)
