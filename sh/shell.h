@@ -60,7 +60,7 @@ typedef enum e_sh_job
 {
 	SH_JOB_NONE = 0,
 	SH_HEREDOC = 1,
-	SH_INTERACTIVE = 2,
+	SH_JOB_RW = 2,
 	SH_CHILD = 3
 }								t_sh_job;
 
