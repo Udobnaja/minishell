@@ -14,7 +14,6 @@
 
 volatile sig_atomic_t	g_last_signal = 0;
 
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell		shell;
