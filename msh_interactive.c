@@ -1,6 +1,6 @@
 #include "minishell_internal.h"
 
-static int msh_interactive_space_check(char *line);
+static int	msh_interactive_space_check(char *line);
 
 void	msh_run_interactive(const char *sh_name, t_shell *sh)
 {
@@ -29,7 +29,7 @@ void	msh_run_interactive(const char *sh_name, t_shell *sh)
 	msh_clean_and_exit(sh, sh->last_status, 1);
 }
 
-static int msh_interactive_space_check(char *line)
+static int	msh_interactive_space_check(char *line)
 {
 	if (msh_has_only_spaces(line))
 	{

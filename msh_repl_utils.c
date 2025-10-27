@@ -1,6 +1,5 @@
 #include "minishell_internal.h"
 
-
 const char	*msh_get_prompt(const char *name)
 {
 	static char		buf[PROMPT_MAX];

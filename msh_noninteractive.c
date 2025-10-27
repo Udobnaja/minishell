@@ -6,7 +6,7 @@ void	msh_run_noninteractive(t_shell *sh)
 
 	while (1)
 	{
-		line = get_next_line(fileno(stdin));
+		line = readline(NULL);
 		if (!line)
 			break ;
 		if (msh_signal_check(line, sh))
@@ -25,4 +25,3 @@ void	msh_run_noninteractive(t_shell *sh)
 	}
 	msh_clean_and_exit(sh, sh->last_status, 0);
 }
-

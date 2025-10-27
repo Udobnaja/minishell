@@ -6,9 +6,9 @@ static t_heredoc_status	msh_preparse_heredoc(t_token_list *token_list,
 int	msh_stage_heredoc(t_shell *shell, t_token_list *token_list,
 		t_msh_parse_result *status)
 {
-	const t_heredoc_status	heredoc_status = msh_preparse_heredoc(token_list,
-			shell);
+	t_heredoc_status	heredoc_status;
 
+	heredoc_status = msh_preparse_heredoc(token_list, shell);
 	if (heredoc_status != HEREDOC_OK)
 	{
 		status->domain = MPR_HEREDOC;

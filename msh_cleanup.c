@@ -11,8 +11,7 @@ void	msh_cleanup(t_shell *shell)
 		env_destroy(&shell->env_store);
 }
 
-void	msh_clean_and_exit(t_shell *shell, int exit_status,
-		int is_interactive)
+void	msh_clean_and_exit(t_shell *shell, int exit_status, int is_interactive)
 {
 	if (is_interactive)
 		sh_termios_restore();

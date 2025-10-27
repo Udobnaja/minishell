@@ -5,9 +5,9 @@ static size_t	msh_pipeline_count_cmds(const t_token_list *token_list);
 int	msh_stage_pipeline(t_shell *shell, t_pipeline *pipeline,
 		t_token_list *token_list, t_msh_parse_result *status)
 {
-	const t_parser_status	parser_status = msh_pipeline(token_list, shell,
-			pipeline);
+	t_parser_status	parser_status;
 
+	parser_status = msh_pipeline(token_list, shell, pipeline);
 	if (parser_status != PARSE_OK)
 	{
 		status->domain = MPR_PARSE;
