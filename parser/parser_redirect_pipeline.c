@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_redirect_pipeline.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:50:42 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:50:43 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 
 static t_redirect_type	prs_map_redirect_type(t_token_type type);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_ambiguous.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:50:16 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:50:17 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "parser_internal.h"
 
 static t_parser_status	prs_is_expanded_ambiguous(const char *expanded,

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_parse_word.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/27 21:49:54 by audobnai          #+#    #+#             */
+/*   Updated: 2025/10/27 21:49:55 by audobnai         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "lexer_internal.h"
 
 static t_lex_parse_result	lex_parse_piece(const char *str, t_piece *piece,
