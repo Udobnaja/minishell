@@ -53,7 +53,7 @@ static t_heredoc_status	heredoc_to_fd(char *eof, int fd, int has_expansion,
 		if (status != HEREDOC_OK)
 			break ;
 	}
-	sh_setup_rl_hook(SH_INTERACTIVE);
+	sh_setup_rl_hook(SH_JOB_RW);
 	return (status);
 }
 

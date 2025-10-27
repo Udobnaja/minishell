@@ -20,7 +20,7 @@ static int	sh_rl_heredoc_hook(void)
 
 void	sh_setup_rl_hook(t_sh_job job)
 {
-	if (job == SH_INTERACTIVE)
+	if (job == SH_JOB_RW)
 	{
 		rl_event_hook = sh_rl_interactive_hook;
 		sh_shell_signals();

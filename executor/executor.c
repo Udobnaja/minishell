@@ -174,7 +174,7 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 		{
 			sh_setup_rl_hook(SH_JOB_NONE);
 			result = execute_external(sh, pipeline);
-			sh_setup_rl_hook(SH_INTERACTIVE);
+			sh_setup_rl_hook(SH_JOB_RW);
 			exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
 			return (result);
 		}
@@ -186,6 +186,6 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 	env_set(sh->env_store, "_", "");
 	sh_setup_rl_hook(SH_JOB_NONE);
 	result = execute_pipeline(sh, pipeline);
-	sh_setup_rl_hook(SH_INTERACTIVE);
+	sh_setup_rl_hook(SH_JOB_RW);
 	return (result);
 }
