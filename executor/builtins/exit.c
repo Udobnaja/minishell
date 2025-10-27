@@ -66,6 +66,7 @@ static t_exec_result	exec_quit(t_exec_status status, int exit_code)
 	if (status != EXEC_OK)
 	{
 		payload.command = "exit";
+		ft_putendl_fd("", STDERR_FILENO);
 		err_print(ERR_EXEC, status, payload);
 	}
 	return (result);
@@ -85,6 +86,7 @@ static t_exec_result	exec_continue(t_exec_status status, int exit_code)
 	if (status != EXEC_OK)
 	{
 		payload.command = "exit";
+		ft_putendl_fd("", STDERR_FILENO);
 		err_print(ERR_EXEC, status, payload);
 	}
 	return (result);
