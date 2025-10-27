@@ -103,6 +103,7 @@ EXECUTOR_SRC := \
 	executor/executor.c \
 	executor/executor_builtin.c \
 	executor/external_cmd.c \
+	executor/external_utils.c \
 	executor/external_check_path.c \
 	executor/external_errors.c \
 	executor/exec_pipe.c \
