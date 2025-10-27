@@ -83,6 +83,13 @@ t_exec_result	apply_redirs_temporarily(t_cmd *cmd)
 	return (result);
 }
 
+static void exec_write_exit_ifneeded(t_builtin kind)
+{
+	if (kind == BUILTIN_EXIT
+		&& (isatty(STDIN_FILENO)))
+		write(STDERR_FILENO, "exit", 4);
+}
+
 t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 {
 	t_exec_result	result;
@@ -101,9 +108,7 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 			return (result);
 		}
 		exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
-		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT
-			&& (isatty(STDIN_FILENO)))
-			write(STDERR_FILENO, "exit", 4);
+		exec_write_exit_ifneeded(pipeline->cmds[0]->builtin_kind);
 		return (exec_builtin_with_redirs(sh, pipeline->cmds[0]));
 	}
 	env_set(sh->env_store, "_", "");
