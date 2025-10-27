@@ -1,34 +1,43 @@
 #include "executor_internal.h"
 
-t_exec_status pwd(t_shell *sh, t_cmd *cmd)
+t_exec_status	check_pwd_options(t_cmd *cmd)
 {
-	const char *cwd;
-	const char *pwd;
-	t_err_payload payload;
+	t_err_payload	payload;
 
 	payload = (t_err_payload){0};
-	if(exec_is_invalid_option(cmd->argv[1]))
+	if (exec_is_invalid_option(cmd->argv[1]))
 	{
 		payload.command = cmd->argv[0];
 		err_print(ERR_EXEC, EXEC_ERR_INVALID_OPTION, payload);
-		return EXEC_ERR_INVALID_OPTION;
+		return (EXEC_ERR_INVALID_OPTION);
 	}
+	return (EXEC_OK);
+}
+
+t_exec_status	pwd(t_shell *sh, t_cmd *cmd)
+{
+	const char		*cwd;
+	const char		*pwd;
+	t_err_payload	payload;
+
+	payload = (t_err_payload){0};
+	if (check_pwd_options(cmd) != EXEC_OK)
+		return (EXEC_ERR_INVALID_OPTION);
 	errno = 0;
 	cwd = u_getcwd();
-	if(cwd)
+	if (cwd)
 	{
 		ft_putendl_fd(cwd, STDOUT_FILENO);
-		return EXEC_OK;
+		return (EXEC_OK);
 	}
 	pwd = env_get_value(sh->env_store, "PWD");
 	if (pwd)
 	{
 		ft_putendl_fd(pwd, STDOUT_FILENO);
-		return EXEC_OK;
-		
+		return (EXEC_OK);
 	}
 	payload.command = cmd->argv[0];
 	payload.errno_val = errno;
 	err_print(ERR_EXEC, EXEC_ERR_GEN, payload);
-	return EXEC_ERR_GEN;
+	return (EXEC_ERR_GEN);
 }
