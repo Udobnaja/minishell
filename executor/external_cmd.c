@@ -70,7 +70,8 @@ static t_exec_result	wait_one(pid_t pid, const char *cmd)
 	return (exec_external_result(EXEC_OK, sh_status_from_wait(status)));
 }
 
-void	process_child(t_cmd *cmd, t_shell *sh, t_pipeline *pl, char	full[PATH_MAX])
+void	process_child(t_cmd *cmd, t_shell *sh, t_pipeline *pl,
+		char full[PATH_MAX])
 {
 	t_exec_result	result;
 
@@ -89,13 +90,13 @@ t_exec_result	execute_external(t_shell *sh, t_pipeline *pl)
 	char			full[PATH_MAX];
 	pid_t			pid;
 	t_exec_result	result;
+	t_cmd			*cmd;
 
-	t_cmd *cmd = pl->cmds[0];
-	
-	if(cmd->argv[0][0] == '\0' && cmd->redirect_list)
+	cmd = pl->cmds[0];
+	if (cmd->argv[0][0] == '\0' && cmd->redirect_list)
 		return (apply_redirs_temporarily(cmd));
-	if(cmd->argv[0][0] == '\0' && !cmd->name)
-		return  exec_external_result(EXEC_OK, sh->last_status);
+	if (cmd->argv[0][0] == '\0' && !cmd->name)
+		return (exec_external_result(EXEC_OK, sh->last_status));
 	full[0] = '\0';
 	result = external_path(sh, cmd->argv[0], full);
 	if (result.status != EXEC_OK)

@@ -1,49 +1,5 @@
 #include "executor_internal.h"
 
-static t_exec_result	exec_builtin_result(t_exec_status status)
-{
-	t_exec_result	result;
-
-	result.flow = FLOW_OK;
-	if (status != EXEC_OK)
-	{
-		if (status == EXEC_ERR_INVALID_OPTION)
-			result.exit_code = SH_MISUSE;
-		else
-			result.exit_code = SH_GENERAL_ERROR;
-	}
-	else
-		result.exit_code = SH_OK;
-	result.status = status;
-	result.errno_val = 0;
-	return (result);
-}
-
-static t_exec_status	exec_smpl_builtin(t_shell *sh, t_cmd *cmd)
-{
-	if (cmd->builtin_kind == BUILTIN_ENV)
-		return (env(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_UNSET)
-		return (unset(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_EXPORT)
-		return (export(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_PWD)
-		return (pwd(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_ECHO)
-		return (echo(cmd));
-	return (cd(sh, cmd));
-}
-
-t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd)
-{
-	t_exec_status	status;
-
-	if (cmd->builtin_kind == BUILTIN_EXIT)
-		return (builtin_exit(sh, cmd));
-	status = exec_smpl_builtin(sh, cmd);
-	return (exec_builtin_result(status));
-}
-
 static void	exec_update_underscore(t_shell *sh, const t_cmd *cmd)
 {
 	const char		*val = NULL;
@@ -60,27 +16,33 @@ static void	exec_update_underscore(t_shell *sh, const t_cmd *cmd)
 		err_print(ERR_ENV, status, (t_err_payload){0});
 }
 
-t_exec_result apply_redirs_temporarily(t_cmd *cmd)
+t_exec_result	apply_redirs_temporarily(t_cmd *cmd)
 {
-    int				fd[3];
-    t_exec_result	result;
+	int				fd[3];
+	t_exec_result	result;
 
 	fd[0] = -1;
 	fd[1] = -1;
 	fd[2] = -1;
 	if (save_descriptors(fd) < 0)
 		return (exec_external_error_result(EXEC_ERR_GEN, "dup", errno));
-    result = apply_redirections(cmd);
+	result = apply_redirections(cmd);
 	if (result.status != EXEC_OK)
 	{
 		restore_descriptors(fd);
 		close_descriptors(fd);
 		return (result);
 	}
-    if (restore_descriptors(fd) < 0)
+	if (restore_descriptors(fd) < 0)
 		result = exec_external_error_result(EXEC_ERR_GEN, "dup2", errno);
 	close_descriptors(fd);
 	return (result);
+}
+
+static void	exec_write_exit_ifneeded(t_builtin kind)
+{
+	if (kind == BUILTIN_EXIT && (isatty(STDIN_FILENO)))
+		write(STDERR_FILENO, "exit", 4);
 }
 
 t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
@@ -101,8 +63,7 @@ t_exec_result	execute(t_shell *sh, t_pipeline *pipeline)
 			return (result);
 		}
 		exec_update_underscore(sh, pipeline->cmds[pipeline->count - 1]);
-		if (pipeline->cmds[0]->builtin_kind == BUILTIN_EXIT && (isatty(STDIN_FILENO)))
-			write(STDERR_FILENO, "exit", 4);
+		exec_write_exit_ifneeded(pipeline->cmds[0]->builtin_kind);
 		return (exec_builtin_with_redirs(sh, pipeline->cmds[0]));
 	}
 	env_set(sh->env_store, "_", "");
