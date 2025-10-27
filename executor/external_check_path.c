@@ -8,36 +8,41 @@ name - the name of the command
 len - the length of the current segment from the PATH variable
 out - the buffer into which the full path is written
 */
-
-static int check_candidate(const char *dir, size_t len, const char *name, char out[PATH_MAX])
+static int exec_check_access(char out[PATH_MAX])
 {
-	size_t name_len;
-	size_t need;
+	if (u_file_isdir(out))
+		return (0);
+	if (access(out, X_OK) == 0)
+		return (1);
+	return (0);
+}
+
+static int	check_candidate(const char *dir, size_t len, const char *name,
+		char out[PATH_MAX])
+{
+	size_t	name_len;
+	size_t	need;
 
 	name_len = ft_strlen(name);
-	if(len == 0)
+	if (len == 0)
 	{
 		need = 2 + name_len + 1;
-		if(need > PATH_MAX)
-			return 0;
+		if (need > PATH_MAX)
+			return (0);
 		ft_strlcpy(out, "./", 3);
 		ft_strlcat(out, name, PATH_MAX);
 	}
 	else
 	{
 		need = len + 1 + name_len + 1;
-		if(need > PATH_MAX)
-			return 0;
+		if (need > PATH_MAX)
+			return (0);
 		ft_memcpy(out, dir, len);
 		out[len] = '/';
 		out[len + 1] = '\0';
 		ft_strlcat(out, name, PATH_MAX);
 	}
-	if (u_file_isdir(out))
-		return (0); 
-	if(access(out, X_OK) == 0)
-		return 1;
-	return 0;
+	return (exec_check_access(out));
 }
 
 /*
@@ -48,48 +53,51 @@ param i is the current index of the character in the string path
 param start the beginning of the current directory
 
  */
-static int search_in_path(const char *path, const char *name, char out[PATH_MAX])
+static int	search_in_path(const char *path, const char *name,
+		char out[PATH_MAX])
 {
-	size_t i;
-	size_t start;
-	size_t len;
+	size_t	i;
+	size_t	start;
+	size_t	len;
 
 	i = 0;
 	start = 0;
-	while(1)
+	while (1)
 	{
-		if(path[i] == ':' || path[i] == '\0')
+		if (path[i] == ':' || path[i] == '\0')
 		{
 			len = i - start;
-			if(check_candidate(path+start, len, name, out) != 0)
-				return 1;
-			if(path[i] == '\0')
-				break;
+			if (check_candidate(path + start, len, name, out) != 0)
+				return (1);
+			if (path[i] == '\0')
+				break ;
 			start = i + 1;
 		}
 		i++;
 	}
 	errno = ENOENT;
-	return 0;
+	return (0);
 }
 
-static int exec_is_dot_or_dotdot(const char *s) {
-    return (s && (ft_strcmp(s, ".") == 0 || ft_strcmp(s, "..") == 0));
-}
-
-static int exec_check_in_curr_dir(const char *name, char out[PATH_MAX], const char *path)
+static int	exec_is_dot_or_dotdot(const char *s)
 {
-	struct stat st;
+	return (s && (ft_strcmp(s, ".") == 0 || ft_strcmp(s, "..") == 0));
+}
 
-	if(check_candidate(".", 1, name, out))
-		return 1;
+static int	exec_check_in_curr_dir(const char *name, char out[PATH_MAX],
+		const char *path)
+{
+	struct stat	st;
+
+	if (check_candidate(".", 1, name, out))
+		return (1);
 	if (path == NULL)
 	{
 		if (stat(out, &st) == 0)
 			return (1);
 	}
 	errno = ENOENT;
-	return 0;
+	return (0);
 }
 /*
 The function searches for the name command and writes
@@ -97,35 +105,30 @@ the full path to out. Decides where to search (in PATH or in a given path)
 If the file is found, it returns 1.
  */
 
-/* 
-The function searches for the name command and writes 
-the full path to out. Decides where to search (in PATH or in a given path)
-If the file is found, it returns 1.
- */
+int	cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
+{
+	const char	*path_env;
 
- int cmd_path(t_shell *sh, const char *name, char out[PATH_MAX])
- {
-	 const char *path_env;
- 
-	 if (name == NULL || out == NULL)
-		 return 0;
-	 if(ft_strchr(name, '/') != NULL)
-	 {
-		 ft_strlcpy(out, name, PATH_MAX);
-		 return 1;
-	 }
-	  if (exec_is_dot_or_dotdot(name)) {
-		 errno = ENOENT;
-		 return (0);
-	 }
-	 path_env = env_get_value(sh->env_store, "PATH");
-	 if(path_env == NULL || path_env[0] == '\0' )
-		 return (exec_check_in_curr_dir(name, out, path_env));
-	 if(search_in_path(path_env, name, out) != 0)
-		 return 1;
-	 errno = ENOENT;
-	 return 0;
- }
+	if (name == NULL || out == NULL)
+		return (0);
+	if (ft_strchr(name, '/') != NULL)
+	{
+		ft_strlcpy(out, name, PATH_MAX);
+		return (1);
+	}
+	if (exec_is_dot_or_dotdot(name))
+	{
+		errno = ENOENT;
+		return (0);
+	}
+	path_env = env_get_value(sh->env_store, "PATH");
+	if (path_env == NULL || path_env[0] == '\0')
+		return (exec_check_in_curr_dir(name, out, path_env));
+	if (search_in_path(path_env, name, out) != 0)
+		return (1);
+	errno = ENOENT;
+	return (0);
+}
 
 /*
 The function checks whether the file at the specified path can be run
@@ -133,28 +136,24 @@ path - full path to the file ("/bin/cat")
 argv - command name to print in the error message
  */
 
-t_exec_result preliminary_check(const char *path, char *argv)
- {
-	 if(!u_file_exists(path))
-		 return (exec_external_error_result(
-			 EXEC_NO_SUCH_FILE, argv, 0));
-	 if (u_file_isdir(path))
-	 {
-		 return (exec_external_error_result(
-			 EXEC_IS_DIRECTORY, argv, 0));
-	 }
-	 errno = 0;
-	 if (access(path, X_OK) == -1)
-	 {
-		 if (errno)
-			 return (exec_external_error_result(
-				 EXEC_ERR_GEN, argv, errno));
-		 else
-			 return (exec_external_error_result(
-					 EXEC_ERR_EXECUTION, NULL, 0));
-	 }
-	 return exec_external_result(EXEC_OK, 0);
- }
+t_exec_result	preliminary_check(const char *path, char *argv)
+{
+	if (!u_file_exists(path))
+		return (exec_external_error_result(EXEC_NO_SUCH_FILE, argv, 0));
+	if (u_file_isdir(path))
+	{
+		return (exec_external_error_result(EXEC_IS_DIRECTORY, argv, 0));
+	}
+	errno = 0;
+	if (access(path, X_OK) == -1)
+	{
+		if (errno)
+			return (exec_external_error_result(EXEC_ERR_GEN, argv, errno));
+		else
+			return (exec_external_error_result(EXEC_ERR_EXECUTION, NULL, 0));
+	}
+	return (exec_external_result(EXEC_OK, 0));
+}
 
 t_exec_result	external_path(t_shell *sh, const char *name,
 		char full[PATH_MAX])

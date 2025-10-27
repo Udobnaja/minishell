@@ -13,6 +13,7 @@ static t_exec_status	cd_print_error_and_exit(t_exec_status status, char *cmd,
 	err_print(ERR_EXEC, status, payload);
 	return (status);
 }
+
 /*
 oldpwd directory before change
 newpwd the actual new path
