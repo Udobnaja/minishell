@@ -13,7 +13,7 @@ typedef enum e_parser_status
 	PARSE_ALLOC_ERROR,
 	PARSE_HEREDOC_INNER_ERROR,
 	PARSE_AMBIGUOUS_REDIRECT
-}	t_parser_status;
+}						t_parser_status;
 
 typedef struct s_pre_parse_result
 {
