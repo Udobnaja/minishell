@@ -1,49 +1,5 @@
 #include "executor_internal.h"
 
-static t_exec_result	exec_builtin_result(t_exec_status status)
-{
-	t_exec_result	result;
-
-	result.flow = FLOW_OK;
-	if (status != EXEC_OK)
-	{
-		if (status == EXEC_ERR_INVALID_OPTION)
-			result.exit_code = SH_MISUSE;
-		else
-			result.exit_code = SH_GENERAL_ERROR;
-	}
-	else
-		result.exit_code = SH_OK;
-	result.status = status;
-	result.errno_val = 0;
-	return (result);
-}
-
-static t_exec_status	exec_smpl_builtin(t_shell *sh, t_cmd *cmd)
-{
-	if (cmd->builtin_kind == BUILTIN_ENV)
-		return (env(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_UNSET)
-		return (unset(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_EXPORT)
-		return (export(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_PWD)
-		return (pwd(sh, cmd));
-	if (cmd->builtin_kind == BUILTIN_ECHO)
-		return (echo(cmd));
-	return (cd(sh, cmd));
-}
-
-t_exec_result	execute_builtin(t_shell *sh, t_cmd *cmd)
-{
-	t_exec_status	status;
-
-	if (cmd->builtin_kind == BUILTIN_EXIT)
-		return (builtin_exit(sh, cmd));
-	status = exec_smpl_builtin(sh, cmd);
-	return (exec_builtin_result(status));
-}
-
 static void	exec_update_underscore(t_shell *sh, const t_cmd *cmd)
 {
 	const char		*val = NULL;
@@ -83,10 +39,9 @@ t_exec_result	apply_redirs_temporarily(t_cmd *cmd)
 	return (result);
 }
 
-static void exec_write_exit_ifneeded(t_builtin kind)
+static void	exec_write_exit_ifneeded(t_builtin kind)
 {
-	if (kind == BUILTIN_EXIT
-		&& (isatty(STDIN_FILENO)))
+	if (kind == BUILTIN_EXIT && (isatty(STDIN_FILENO)))
 		write(STDERR_FILENO, "exit", 4);
 }
 

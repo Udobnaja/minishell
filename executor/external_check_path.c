@@ -8,7 +8,7 @@ name - the name of the command
 len - the length of the current segment from the PATH variable
 out - the buffer into which the full path is written
 */
-static int exec_check_access(char out[PATH_MAX])
+static int	exec_check_access(char out[PATH_MAX])
 {
 	if (u_file_isdir(out))
 		return (0);
