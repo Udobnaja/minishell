@@ -43,15 +43,14 @@ static void	msh_clean_and_exit(t_shell *shell, int exit_status,
 	exit(exit_status);
 }
 
-char	*msh_get_name(int argc, char **argv)
+const char	*msh_get_name(int argc, char **argv)
 {
 	if (argc > 0 && argv && argv[0] && argv[0][0] != '\0')
 		return (argv[0]);
-	else
-		return (SHELL_NAME);
+	return (SHELL_NAME);
 }
 
-void	msh_run_pipeline(char *line, t_shell *sh)
+void	msh_run_pipeline(char *line, t_shell *sh, int is_interactive)
 {
 	t_pipeline			pipeline;
 	t_msh_parse_result	parse_result;
@@ -69,7 +68,7 @@ void	msh_run_pipeline(char *line, t_shell *sh)
 		{
 			free(line);
 			pipeline_destroy(&pipeline);
-			msh_clean_and_exit(sh, sh->last_status, 1);
+			msh_clean_and_exit(sh, sh->last_status, is_interactive);
 		}
 	}
 	else
@@ -107,13 +106,13 @@ void	msh_run_interactive(const char *sh_name, t_shell *sh)
 	while (1)
 	{
 		line = readline(msh_get_prompt(sh_name));
-		if (msh_interactive_signal_check(line, sh))
-			continue ;
 		if (!line)
 		{
-			write(STDOUT_FILENO, "exit\n", 5);
+			write(STDERR_FILENO, "exit\n", 5);
 			break ;
 		}
+		if (msh_interactive_signal_check(line, sh))
+			continue ;
 		if (*line == '\0')
 		{
 			free(line);
@@ -122,7 +121,7 @@ void	msh_run_interactive(const char *sh_name, t_shell *sh)
 		add_history(line);
 		if (msh_interactive_space_check(line))
 			continue ;
-		msh_run_pipeline(line, sh);
+		msh_run_pipeline(line, sh, 1);
 	}
 	msh_clean_and_exit(sh, sh->last_status, 1);
 }
@@ -131,23 +130,24 @@ void	msh_run_noninteractive(t_shell *sh)
 {
 	char	*line;
 
-	rl_outstream = stdin; // TEST ONLY ??
 	while (1)
 	{
 		line = get_next_line(fileno(stdin)); // readline();
 		if (!line)
 			break ;
+		if (msh_interactive_signal_check(line, sh))
+			continue ;
 		if (*line == '\0')
 		{
 			free(line);
-			break ;
+			continue ;
 		}
 		if (msh_has_only_spaces(line))
 		{
 			free(line);
 			continue ;
 		}
-		msh_run_pipeline(line, sh);
+		msh_run_pipeline(line, sh, 0);
 	}
 	msh_clean_and_exit(sh, sh->last_status, 0);
 }
