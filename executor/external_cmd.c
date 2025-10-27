@@ -70,13 +70,10 @@ static t_exec_result	wait_one(pid_t pid, const char *cmd)
 	return (exec_external_result(EXEC_OK, sh_status_from_wait(status)));
 }
 
-void	process_child(t_shell *sh, t_pipeline *pl)
+void	process_child(t_cmd *cmd, t_shell *sh, t_pipeline *pl, char	full[PATH_MAX])
 {
-	char			full[PATH_MAX];
 	t_exec_result	result;
-	t_cmd			*cmd;
 
-	cmd = pl->cmds[0];
 	sh_setup_rl_hook(SH_CHILD);
 	result = apply_redirections(cmd);
 	if (result.status != EXEC_OK)
@@ -110,6 +107,6 @@ t_exec_result	execute_external(t_shell *sh, t_pipeline *pl)
 	if (pid < 0)
 		return (exec_external_sys_error(EXEC_ERR_GEN, "fork", errno));
 	if (pid == 0)
-		process_child(sh, pl);
+		process_child(cmd, sh, pl, full);
 	return (wait_one(pid, cmd->argv[0]));
 }
