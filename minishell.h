@@ -41,5 +41,8 @@ t_parser_status			msh_pipeline(t_token_list *token_list, t_shell *shell,
 int						msh_parse_result_to_exit_status(
 							t_msh_parse_result result);
 void					msh_cleanup(t_shell *shell);
+const char				*msh_get_name(int argc, char **argv);
+void					msh_run_interactive(const char *sh_name, t_shell *sh);
+void					msh_run_noninteractive(t_shell *sh);
 
 #endif
