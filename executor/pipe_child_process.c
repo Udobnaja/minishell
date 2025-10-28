@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_child_process.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alavrukh <alavrukh@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:51:48 by alavrukh          #+#    #+#             */
-/*   Updated: 2025/10/27 22:51:49 by alavrukh         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:41:59 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

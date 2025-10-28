@@ -6,13 +6,12 @@
 /*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:17:32 by audobnai          #+#    #+#             */
-/*   Updated: 2025/10/27 22:17:33 by audobnai         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:35:00 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipeline_internal.h"
 
-static void	pipeline_free_redirects(t_redirect *redirect);
 static void	pipeline_argv(char **argv);
 static void	pipeline_free_cmd(t_cmd *cmd);
 
@@ -34,7 +33,7 @@ void	pipeline_destroy(t_pipeline *pipeline)
 	pipeline->count = 0;
 }
 
-static void	pipeline_free_redirects(t_redirect *redirect)
+void	pipeline_free_redirects(t_redirect *redirect)
 {
 	t_redirect	*next;
 
@@ -44,7 +43,10 @@ static void	pipeline_free_redirects(t_redirect *redirect)
 		if (redirect->type == REDIR_HEREDOC)
 		{
 			if (redirect->target.fd >= 0)
+			{
 				close(redirect->target.fd);
+				redirect->target.fd = -1;
+			}
 		}
 		else if ((redirect->type == REDIR_IN || redirect->type == REDIR_OUT
 				|| redirect->type == REDIR_APPEND) && redirect->target.path)
