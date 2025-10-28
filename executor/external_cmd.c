@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   external_cmd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alavrukh <alavrukh@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:51:37 by alavrukh          #+#    #+#             */
-/*   Updated: 2025/10/27 22:51:39 by alavrukh         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:42:05 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	exec_child(const char *full, t_cmd *cmd, t_shell *sh, t_pipe *p)
 		exec_child_process_clean(sh, p->pids, p->pl);
 		exit(result.exit_code);
 	}
+	exec_pl_close(p->pl);
 	execve(full, cmd->argv, envp);
 	{
 		result = exec_external_error_result(EXEC_ERR_GEN, cmd->argv[0], errno);

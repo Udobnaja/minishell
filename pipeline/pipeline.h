@@ -6,7 +6,7 @@
 /*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:20:04 by audobnai          #+#    #+#             */
-/*   Updated: 2025/10/27 22:20:05 by audobnai         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:35:11 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,6 @@ int						pipeline_init(const size_t cmds_count,
 							t_pipeline *pipeline);
 int						pipeline_push_cmd_argv(t_cmd *cmd, char *arg);
 void					pipeline_push_redirect(t_cmd *cmd, t_redirect *node);
+void					pipeline_free_redirects(t_redirect *redirect);
 
 #endif

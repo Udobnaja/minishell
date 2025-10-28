@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_internal.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alavrukh <alavrukh@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:51:06 by alavrukh          #+#    #+#             */
-/*   Updated: 2025/10/27 22:51:07 by alavrukh         ###   ########.fr       */
+/*   Updated: 2025/10/28 20:39:43 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ int				exec_check_in_curr_dir(const char *name, char out[PATH_MAX],
 					const char *path);
 int				check_candidate(const char *dir, size_t len, const char *name,
 					char out[PATH_MAX]);
+void			exec_pl_close(t_pipeline *pipeline);
 
 #endif
