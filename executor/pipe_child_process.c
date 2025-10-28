@@ -6,7 +6,7 @@
 /*   By: audobnai <audobnai@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 22:51:48 by alavrukh          #+#    #+#             */
-/*   Updated: 2025/10/28 20:41:59 by audobnai         ###   ########.fr       */
+/*   Updated: 2025/10/28 21:02:58 by audobnai         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	run_child_process(t_pipe *p, size_t i)
 		exec_child_process_clean(p->sh, p->pids, p->pl);
 		exit(result.exit_code);
 	}
-	if (cmd_is_empty(cmd))
+	if (cmd->argv[0][0] == '\0' && !cmd->name)
 	{
 		result = exec_external_result(EXEC_OK, SH_OK);
 		exec_child_process_clean(p->sh, p->pids, p->pl);
